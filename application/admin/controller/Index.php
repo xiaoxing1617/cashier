@@ -133,27 +133,40 @@ class Index extends Controller
             'this_month_income'=>$this_month_income
         ];
 
-        //更新
-        if(!$curl_json = curl_get("http://auth.96xy.cn/api/cashier?mode=getnews&limit=6")){
-            weuiMsg('info', "授权中心服务器异常");
-            return;
-        }
-        if(!$curl_arr = json_decode($curl_json,true)){
-            weuiMsg('info', "解析数据错误");
-            return;
-        }
-        if($curl_arr['code']!=0){
-            weuiMsg('info', $curl_arr['msg']);
-            return;
-        }else{
-            if(count($curl_arr['list'])<=0){
-                $data['news']['empty'] = true;
-                $data['news']['list'] = [];
-            }else{
-                $data['news']['empty'] = false;
-                $data['news']['list'] = $curl_arr['list'];
-            }
-        }
+        $list = array(
+            [
+                'id'=>0,
+                'title'=>"欢迎使用【星云聚合收银台系统】",
+                'url'=>"https://jq.qq.com/?_wv=1027&k=XRJStQ3p",
+                'release_time'=>"2021-10-31 00:00:00"
+            ],
+            [
+                'id'=>1,
+                'title'=>"点击加入网络技术QQ交流群",
+                'url'=>"https://jq.qq.com/?_wv=1027&k=XRJStQ3p",
+                'release_time'=>"2021-10-31 00:00:00"
+            ],
+            [
+                'id'=>2,
+                'title'=>"小星（开发者）QQ：1450839008",
+                'url'=>"https://jq.qq.com/?_wv=1027&k=XRJStQ3p",
+                'release_time'=>"2021-10-31 00:00:00"
+            ],
+            [
+                'id'=>3,
+                'title'=>"当前为1.45完全开源版（无加密免授权）",
+                'url'=>"https://jq.qq.com/?_wv=1027&k=XRJStQ3p",
+                'release_time'=>"2021-10-31 00:00:00"
+            ],
+            [
+                'id'=>4,
+                'title'=>"星益云www.96xy.cn",
+                'url'=>"https://jq.qq.com/?_wv=1027&k=XRJStQ3p",
+                'release_time'=>"2021-10-31 00:00:00"
+            ]
+        );
+        $data['news']['empty'] = false;
+        $data['news']['list'] = $list;
 
         $login = Login::where("uid", "admin")->order("id desc")->find();
         if (!$login) {

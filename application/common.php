@@ -29,6 +29,7 @@ use rsa\Rsa;
 //=====禁止倒卖二开，负责将追究法律责任
 //=====星益云版权所有
 //=====2021年10月17日13:00
+//=====小星（开发者）QQ：1450839008
 //================================================================================================
 
 //================================================
@@ -50,23 +51,6 @@ if (PHP_SESSION_ACTIVE != session_status()) {
 }
 $_SERVER['SERVER_NAME'] = get_domain();
 //================================================
-//===================检查授权=======================
-//================================================
-/*
-if (!$curl_json = curl_get("http://auth.96xy.cn/api/cashier?mode=query&url=" . base64_encode(get_domain()))) {
-    weuiMsg('warn-primary', "云端服务器正在努力抢救中，由此给您带来的不便我们深表歉意！", '授权中心服务器异常', false);
-    exit();
-}
-if (!$curl_arr = json_decode($curl_json, true)) {
-    weuiMsg('warn-primary', "解析数据错误", '抱歉', false);
-    exit();
-}
-if ($curl_arr['code'] != 0) {
-    weuiMsg('warn-primary', $curl_arr['msg'], ($curl_arr['code'] == 102) ? '未授权' : '警告', false);
-    exit();
-}
-*/
-//================================================
 //===================检查安装=======================
 //================================================
 if (!is_file(APP_PATH . 'install/install.lock') && Request::instance()->baseUrl() != "/install") {
@@ -80,23 +64,6 @@ if (!is_file(APP_PATH . 'install/install.lock') && Request::instance()->baseUrl(
     }
 }
 extension_loaded('openssl') or die(weuiMsg('warn-primary', '', '需要支持openssl扩展', false));
-//================================================
-//===================检查私钥=======================
-//================================================
-/*
-if(Request::instance()->baseUrl() != "/install") {
-    if (!Config::get('database.private_key') or Config::get('database.private_key') == '' or Config::get('database.private_key') == NULL) {
-        weuiMsg('warn-primary', "请联系售卖你授权的人索要私钥，每个授权都有一个自己的授权私钥。请勿泄露自己的私钥，否则平台将（不退款）取消你的授权！", '授权私钥为空', false);
-        exit();
-    } else {
-        $check_private_key_arr = check_private_key(Config::get('database.private_key'));
-        if ($check_private_key_arr['code'] == 1) {
-            weuiMsg('warn-primary', $check_private_key_arr['msg'], '授权私钥异常', false);
-            exit();
-        }
-    }
-}
-*/
 //================================================
 //===================核心函数方法====================
 //================================================
@@ -116,31 +83,6 @@ function get_domain()
         $domain = substr($domain, 7);
     }
     return $domain;
-}
-/**
- * 获取通知地址及参数
- *
- * @return Array
- */
-function check_private_key($private_key = "")
-{
-    if ($private_key == "" or $private_key == NULL) {
-        return ['code' => 1, 'msg' => '授权私钥为空'];
-    }
-    $Rsa = new Rsa("", $private_key);
-    $prestr = "70a520582ade522f";
-    $sign = $Rsa->privEncrypt($prestr);  //私钥加密
-    if (!$curl_json = curl_get("http://auth.96xy.cn/api/cashier?mode=check_private_key&build=" . BUILD . "&url=" . base64_encode(get_domain()) . "&sign=" . base64_encode($sign))) {
-        return ['code' => 1, 'msg' => '云端服务器正在努力抢救中，由此给您带来的不便我们深表歉意！'];
-    }
-    if (!$curl_arr = json_decode($curl_json, true)) {
-        return ['code' => 1, 'msg' => '解析数据错误'];
-    }
-    $curl_arr = json_decode($curl_json, true);
-    if ($curl_arr['code'] != 0) {
-        return ['code' => 1, 'msg' => $curl_arr['msg']];
-    }
-    return ['code' => 0, 'msg' => '校验成功', 'private_key' => $private_key];
 }
 
 /**

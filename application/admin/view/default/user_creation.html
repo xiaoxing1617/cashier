@@ -1,0 +1,155 @@
+{include file='default/head' /}
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space1">
+        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">{$title}</div>
+                <div class="layui-card-body">
+
+                    <form class="layui-form layui-form-pane" id="form_data">
+
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">电子邮箱</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="email" class="layui-input" placeholder="请设置电子邮箱...">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">商户账号</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="account" class="layui-input" placeholder="请设置商户账号...">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">商户密码</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="password" class="layui-input" placeholder="请设置商户账号...">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">商户名称</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="nickname" class="layui-input" placeholder="请设置商户名称...">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">商户QQ</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="qq" class="layui-input" placeholder="请设置商户QQ...">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">商户微信</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="weixin" class="layui-input" placeholder="请设置商户微信...">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">收银台模板</label>
+                                <div class="layui-input-block">
+                                    <select name="cashier_template">
+                                        {foreach name="cashier_arr" item="v" key="key"}
+                                        <option value="{$v}">{$v}</option>
+                                        {/foreach}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">商户状态</label>
+                                <div class="layui-input-block">
+                                    <select name="state">
+                                        <option value="1">正常</option>
+                                        <option value="0">封停</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">服务到期时间</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="expiration_time" id="expiration_time" class="layui-input" placeholder="留空则按系统设置的赠送天数">
+                                </div>
+                            </div>
+                        </div>
+                        <button class="layui-btn layui-btn-fluid" type="button" id="btn_submit">确认创建</button>
+                    </form>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style id="welcome_style"></style>
+<div class="layui-col-md12">
+    <blockquote class="layui-elem-quote layui-quote-nm">{$core['ADMIN_BOTTOM']}</blockquote>
+</div>
+<script type="text/javascript">
+        layui.use(['form', 'layedit','laydate'], function () {
+            var form = layui.form
+                , layer = layui.layer
+                , layedit = layui.layedit,
+                laydate = layui.laydate;  //日期
+
+
+            laydate.render({
+                elem: '#expiration_time'
+                ,type: 'datetime'
+            });
+            var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+            //监听提交
+            $('#btn_submit').click(function (){
+                var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/userOper/addUser",
+                    data: $('#form_data').serialize(),
+                    dataType: "json",
+                    success: function (json) { //SUCCESS
+                        var data = $.parseJSON(json);
+                        if (data.code == 0) {
+                            layer.close(Load); //关闭加载
+                            var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                                layer.close(indexa);
+                                //关闭iframe
+                                parent.layer.close(index);
+                            });
+                        } else {
+                            layer.close(Load); //关闭加载
+                            var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                                layer.close(indexa);
+                                if(data.url!="" && data.url!=null){
+                                    window.location.href=data.url;
+                                }
+                            })
+                        }
+                    },
+                    error: function () { //ERROR
+                        layer.close(Load); //关闭加载
+                        layer.msg('系统繁忙');
+                    }
+                });
+            });
+        });
+
+</script>
+</body>
+</html>

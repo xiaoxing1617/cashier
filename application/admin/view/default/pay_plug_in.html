@@ -1,0 +1,61 @@
+{include file='default/head' /}
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space1">
+        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">{$title}</div>
+                <div class="layui-card-body">
+
+                    <div class="layui-form">
+                    <div class="layui-table-box" style="overflow: auto">
+                        <table class="layui-table">
+                            <colgroup>
+                                <col width="10">
+                                <col width="200">
+                                <col width="100">
+                                <col width="100">
+                                <col width="300">
+                                <col>
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th>参数名</th>
+                                <th>插件名称</th>
+                                <th>插件链接</th>
+                                <th>作者QQ</th>
+                                <th>支持的支付方式</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {foreach name="getPayExtendList" item="v" key="key"}
+                            <tr>
+                                <td>{$key}</td>
+                                <td>{$v.name}</td>
+                                <td><a href="{$v.url}" target="_blank">点击跳转</a></td>
+                                <td>{$v.qq}</td>
+                                <td>
+                                    {foreach name="v.support" item="s"}
+                                    【<img style="vertical-align:middle" src="__PUBLIC__/icon/{$s.icon}" width="15"> {$s.name}】
+                                    {/foreach}
+                                </td>
+                            </tr>
+                            {/foreach}
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<style id="welcome_style"></style>
+<div class="layui-col-md12">
+    <blockquote class="layui-elem-quote layui-quote-nm">{$core['ADMIN_BOTTOM']}</blockquote>
+</div>
+</body>
+</html>

@@ -1,0 +1,38 @@
+{
+  "name":"QQ钱包官方接口",
+  "alias": "qqpay",
+  "author":"QQ钱包官方",
+  "date":"2021-07-24 11:10:00",
+  "remarks": "本接口由QQ钱包官方开发的SDK接口。如果不打算使用退款功能的话，操作员ID、操作员密码、apiclient_cert.pem内容、apiclient_key.pem内容可以不用填写，都填成 * 即可。<hr>支付场景触发情况：<br>1.电脑浏览器：使用Native扫码付能力，将生成二维码进行扫码支付。所以必须勾选开通Native能力。<br>2.手机浏览器：使用Native扫码付能力，将二维码换成链接，自动拉取手机QQ访问链接进入支付界面。所以必须勾选开通Native能力。<br/>3.手机QQ内：如果您没有勾选开通JSAPI能力时，将使用Native扫码付能力，将二维码换成链接，直接访问链接进入支付界面。如果您已勾选开通了JSAPI能力，将优先使用JSAPI支付。所以，Native能力和JSAPI能力必须勾选开通其中一个。",
+  "qq":"1450839008",
+  "support":["qqpay"],
+  "url":"https://mp.qpay.tenpay.com/",
+  "form":{
+    "value1_name": "QQ钱包商户号",
+    "value1_type": "text",
+    "value2_name": "QQ钱包API密钥",
+    "value2_type": "text",
+    "value3_name": "企业付款 - 操作员ID",
+    "value3_type": "text",
+    "value4_name": "企业付款 - 操作员密码",
+    "value4_type": "text",
+    "value5_name": "apiclient_cert.pem内容",
+    "value5_type": "text",
+    "value5_rows":3,
+    "value6_name": "apiclient_key.pem内容",
+    "value6_type": "text",
+    "value6_rows":3,
+    "value7_name": "已开通的产品",
+    "value7_type": "checkbox",
+    "value7_data": [
+      {
+        "value": "native",
+        "title": "扫码支付(含H5)"
+      },
+      {
+        "value": "jsapi",
+        "title": "JSAPI(公众号)支付"
+      }
+    ]
+  }
+}

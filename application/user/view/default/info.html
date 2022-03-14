@@ -1,0 +1,260 @@
+{include file='default/head' /}
+
+<!-- Page content -->
+<div class="page-content">
+    <!-- Page title -->
+    <div class="page-title">
+        <div class="row justify-content-between align-items-center">
+            <div class="col-md-6 mb-3 mb-md-0">
+                <h5 class="h3 font-weight-400 mb-0 text-white">{$title}</h5>
+            </div>
+        </div>
+    </div>
+    <!-- Page title -->
+    <!-- 主体 -->
+    <div class="card bg-gradient-warning hover-shadow-lg border-0">
+        <div class="card-body py-3">
+            <div class="row row-grid align-items-center">
+                <div class="col-lg-8">
+                    <div class="media align-items-center">
+                        <a href="#" class="avatar avatar-lg rounded-circle mr-3">
+                            <img alt="..." src="http://q1.qlogo.cn/g?b=qq&nk={$user['qq']}&s=640">
+                        </a>
+                        <div class="media-body">
+                            <h5 class="text-white mb-0">{$user['nickname']}</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-auto flex-fill mt-4 mt-sm-0 text-sm-right d-none d-lg-block">
+                    <a href="/user/renew" class="btn btn-sm btn-white rounded-pill btn-icon shadow">
+                        <span class="btn-inner--icon"><i class="fa fa-fire"></i></span>
+                        <span class="btn-inner--text">续费服务</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-12 col-md-12 col-lg-12">
+            <div class="card card-fluid">
+                <div class="card-header">
+                    <h6 class="mb-0">修改信息</h6>
+                </div>
+                <div class="card-body">
+
+                    <form id="form_data">
+                        <div class="form-group mb-1">
+                            <label class="form-control-label">电子邮箱</label>
+                            <input type="text" class="form-control" name="email" placeholder="暂不可修改"
+                                   value="{$user['email']}" disabled>
+                            <div class="col-sm-12">
+                                <p class="mb-0">请前往[账号安全]修改</p>
+                            </div>
+                        </div>
+                        <div class="form-group mb-1">
+                            <label class="form-control-label">商户名称</label>
+                            <input type="text" class="form-control" name="nickname" placeholder="请填写你的商户名称"
+                                   value="{$user['nickname']}">
+                            <div class="col-sm-12">
+                                <p class="mb-0">当使用商户名称作为[支付商品名称]时，请注意商户名称不要出现违规违法及敏感内容，否则平台将拦截支付并记录违规行为！！！</p>
+                            </div>
+                        </div>
+                        <div class="form-group mb-1">
+                            <label class="form-control-label">QQ号码</label>
+                            <input type="text" class="form-control" name="qq" placeholder="请填写你的QQ号码"
+                                   value="{$user['qq']}">
+                            <div class="col-sm-12">
+                                <p class="mb-0">这里的QQ仅用于获取头像及昵称</p>
+                            </div>
+                        </div>
+                        <div class="form-group mb-1">
+                            <label class="form-control-label">微信号</label>
+                            <input type="text" class="form-control" name="weixin" placeholder="请填写你的微信号"
+                                   value="{$user['weixin']}">
+                        </div>
+                        <br/>
+                        <button type="button" class="btn btn-sm btn-primary rounded-pill" id="form_submit">确认修改</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" id="api">
+        <div class="col-xl-12 col-md-12 col-lg-12">
+            <div class="card card-fluid">
+                <div class="card-header">
+                    <h6 class="mb-0">API信息</h6>
+                </div>
+                <div class="card-body">
+
+                    <div class="form-group mb-1">
+                        <label class="form-control-label">商户UID</label>
+                        <input type="text" class="form-control" value="{$user['uid']}" disabled>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label class="form-control-label">API密钥</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" value="****************************************************************" disabled>
+                            <div class="input-group-append">
+                                <button type="button"
+                                        class="btn btn-sm btn-primary btn-icon">
+                                        <span class="btn-inner--text" style="color:#fff;" id="resetLayer">重置</span>
+                                 </button>
+                            </div>
+                            <div class="col-sm-12">
+                                <p class="mb-0">为了保障安全平台不予展示密钥，重置后请注意保存！</p>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="https://www.kancloud.cn/xingyi/kfwd/2396471" class="btn btn-sm btn-primary rounded-pill" target="_blank">开发文档</a>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 主体 -->
+</div>
+
+{include file='default/bottom' /}
+<script src="__PUBLIC__/clipboard/clipboard.js"></script>
+<script>
+    var ck;
+    $("#resetLayer").click(function () {
+       ck = layer.open({
+            type: 1,
+            title: "重置API密钥",
+            scrollbar: false,
+            area: [layerWidth, '300px'], //宽高
+            content: '<div style="margin:14px 18px"><div class="alert badge-danger">重置后，之前的密钥将会<b>失效</b>，同时第三方将<b>无法调用</b>API，请确认已与技术沟通完成。<b>重置后请注意保存密钥，平台不予提供密钥查看！</b></div><div class="form-group mb-2"><label class="form-control-label">邮箱验证（{$user["email"]}）</label><div class="input-group"><input type="text" class="form-control" name="captcha" id="input-captcha" placeholder="验证码"><div class="input-group-append"><button type="button" id="send_captcha" class="btn btn-primary btn-sm"><span class="btn-inner-text">发送验证码</span></button></div></div></div><button type="button" class="btn btn-sm btn-primary rounded-pill" id="reset_submit">重置密钥</button><input type="hidden" id="input-only"></div>'
+        });
+    });
+
+    //获取收款码
+    $("#form_submit").click(function () {
+        var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+        $.ajax({
+            type: "POST",
+            url: "/user/info/setInfo",
+            data: $('#form_data').serialize(),
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                if (data.code == 0) {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                        layer.close(indexa);
+                        window.location.reload();
+                    });
+                } else {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                        if (data.url != "" && data.url != null) {
+                            window.location.href = data.url;
+                        }
+                    })
+                }
+            },
+            error: function () { //ERROR
+                layer.close(Load); //关闭加载
+                layer.msg('系统繁忙');
+                return false;
+            }
+        });
+    });
+
+    //发送验证码
+    $(document).on('click', '#send_captcha', function () {
+        var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+        $.ajax({
+            type: "POST",
+            url: "/send_captcha",
+            data: {"type": "email", "email": "own"},
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                if (data.code == 0) {
+                    layer.close(Load); //关闭加载
+
+                    var time_s = 60;
+                    var timeInterval = setInterval(function () {
+                        time_s--;
+                        if (time_s <= 0) {
+                            $('#send_captcha').attr("disabled", false);
+                            $("#send_captcha").text('发送验证码');
+                            clearInterval(timeInterval);
+                        } else {
+                            $('#send_captcha').attr("disabled", true);
+                            $("#send_captcha").text(time_s + '秒后重新发送');
+                        }
+                    }, 1000);
+                    $('#input-only').val(data.only);
+                    var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                        layer.close(indexa);
+                    });
+                } else {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                    })
+                }
+            },
+            error: function () { //ERROR
+                layer.close(Load); //关闭加载
+                layer.msg('系统繁忙');
+                return false;
+            }
+        });
+    });
+
+    //重置密钥
+    $(document).on('click', '#reset_submit', function () {
+        var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+        $.ajax({
+            type: "POST",
+            url: "/user/info/reset_key",
+            data: {"captcha": $("#input-captcha").val(), "only": $("#input-only").val()},
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                if (data.code == 0) {
+                    layer.close(Load); //关闭加载
+                        layer.close(ck); //关闭加载
+                        layer.open({
+                            type: 1,
+                            title: "API密钥",
+                            scrollbar: false,
+                            area: [layerWidth, "360px"], //宽高
+                            content: '<div style="margin:14px 18px">重置成功！请注意保存密钥，平台不予提供查看密钥。<div class="alert badge-success" style="font-size: 19px"><b>API密钥(64位)：</b><p style="word-wrap:break-word" id="key_val">'+data.key+'</p></div><br/><div class="text-center"><button type="button" class="btn btn-sm btn-danger" id="copy_key">复制密钥</button></div></div>'
+                        });
+
+                        var clipboard = new ClipboardJS("#copy_key",{
+                            text: function() {
+                                return $("#key_val").html();
+                            }
+                        });
+                        clipboard.on("success", function () {
+                            layer.msg("复制成功", {time: 900});
+                        });
+                        clipboard.on("error", function () {
+                            layer.msg("复制失败", {time: 900});
+                        });
+                } else {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                    })
+                }
+            },
+            error: function () { //ERROR
+                layer.close(Load); //关闭加载
+                layer.msg('系统繁忙');
+                return false;
+            }
+        });
+    });
+</script>

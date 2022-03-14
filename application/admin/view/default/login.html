@@ -1,0 +1,145 @@
+{include file='default/head' /}
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space1">
+        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">{$title}</div>
+                <div class="layui-card-body">
+
+                    <!--                    -->
+                    <div class="layui-form search">
+                        <div class="layui-inline">
+                            <select name="search_type" id="search_type">
+                                <option value="ip">IP地址</option>
+                                <option value="uid" {$uid!=null?'selected':''}>商户UID</option>
+                            </select>
+                        </div>
+                        <div class="layui-inline">
+                            <input class="layui-input" name="search_value" id="search_value" autocomplete="off"
+                                   placeholder="留空查询则重载全部" value="{$uid!=null?$uid:''}">
+                        </div>
+                        <div class="layui-inline">
+                            <select class="form-control" id="search_mode_type">
+                                <option value="all">全部登录设备</option>
+                                <option value="1">电脑</option>
+                                <option value="2">手机</option>
+                            </select>
+                        </div>
+                        <button class="layui-btn" data-type="reload" id="btn_search"><i
+                                class="layui-icon layui-icon-search"></i> 查询
+                        </button>
+                    </div>
+                    <!-- 表格 -->
+                    <table id="data_Table" lay-filter="data_Table"></table>
+                    <!-- 表格 -->
+
+                    <script type="text/html" id="time">
+                        {{#  if(d.time != "" && d.time != null){ }}
+                        {{ d.time }}
+                        {{#  }else{ }}
+                        无
+                        {{#  } }}
+                    </script>
+                    <script type="text/html" id="ip">
+                        {{#  if(d.ip != "" && d.ip != null){ }}
+                        {{ d.ip }}
+                        {{#  }else{ }}
+                        未知
+                        {{#  } }}
+                    </script>
+                    <script type="text/html" id="mode">
+                        {{#  if(d.mode == "1"){ }}
+                        电脑
+                        {{#  }else{ }}
+                        手机
+                        {{#  } }}
+                    </script>
+                    <script type="text/html" id="uid_name">
+                        {{#  if(d.uid == "admin"){ }}
+                        <b>{{ d.uid }}（管理员登录）</b>
+                        {{#  }else{ }}
+                        {{ d.uid }}
+                        {{#  } }}
+                    </script>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style id="welcome_style"></style>
+<div class="layui-col-md12">
+    <blockquote class="layui-elem-quote layui-quote-nm">{$core['ADMIN_BOTTOM']}</blockquote>
+</div>
+<script>
+    layui.use(['jquery', 'form', 'layedit', 'laydate', 'element', 'laytpl', 'table', 'laypage', 'layer', 'carousel', 'slider'], function () {
+        $ = layui.jquery;
+        var form = layui.form //表单
+            , layer = layui.layer  //弹出层
+            , laypage = layui.laypage //分页
+            , layedit = layui.layedit  //元素操作
+            , laydate = layui.laydate  //日期
+            , laytpl = layui.laytpl  //模板引擎
+            , table = layui.table  //表格
+            , element = layui.element;
+//===================数据初始化
+        table.render({
+            elem: '#data_Table'
+            , height: 450
+            , url: '/admin/LoginRecord/getList'
+            , method: "POST"
+            , page: true //开启分页
+            , even: true //开启隔行背景
+            , toolbar: '#data_Table_toolbar'
+            , title: "表格数据"
+            , cols: [[ //表头
+                {field: 'id', title: 'ID', minWidth: 70, sort: true, fixed: "left"}
+                , {field: 'uid', title: '商户UID', minWidth: 100, templet: "#uid_name"}
+                , {field: 'time', title: '登录时间', minWidth: 160, templet: "#time"}
+                , {field: 'ip', title: 'IP地址', minWidth: 160, templet: "#ip"}
+                , {field: 'mode', title: '登录设备', minWidth: 100, templet: "#mode"}
+            ]]
+            , even: true
+            , id: 'data_Table'
+            , limit: 15 //每页默认显示的数量
+            , limits:[]//每页条数的选择项
+            , text: {
+                none: '暂无数据'
+            }
+        });
+
+        var $ = layui.$, active = {
+            reload: function () {
+                var search_type = $('#search_type').val();  //搜索类型
+                var search_value = $('#search_value').val();  //搜索内容
+                var search_mode_type = $('#search_mode_type').val();  //登录设备
+                layer.msg('拼命查询中...', {icon: 16, shade: 0.3, time: 1500});
+                //执行重载
+                table.reload('data_Table', {
+                    page: {
+                        curr: 1 //从第 1 页开始
+                    }
+                    , method: "POST"
+                    //额外接口参数
+                    , where: {
+                        mode: search_type
+                        , value: search_value
+                        ,type:search_mode_type
+                    }
+                });
+            }
+        };
+        $("#btn_search").click(function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        })
+        {if condition = "$uid != null"}
+        $('#btn_search').trigger("click");
+        {/if}
+
+        });
+</script>
+</body>
+</html>

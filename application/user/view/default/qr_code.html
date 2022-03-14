@@ -1,0 +1,233 @@
+{include file='default/head' /}
+<script type="text/javascript" src="//lib.baomitu.com/jquery/3.6.0/jquery.min.js"></script>
+<script src="__PUBLIC__/Xadmin/lib/layui/layui.js"></script>
+<script src="__PUBLIC__/Xadmin/lib/layui/layui.all.js"></script>
+<script>
+    var Load;
+
+    function setIframeHeight(iframe) {
+        if (iframe) {
+            var iframeWin = iframe.contentWindow || iframe.contentDocument.parentWindow;
+            if (iframeWin.document.body) {
+                iframe.height = iframeWin.document.documentElement.scrollHeight || iframeWin.document.body.scrollHeight;
+            }
+        }
+        layer.close(Load); //关闭加载
+    };
+</script>
+<!-- Page content -->
+<div class="page-content">
+    <!-- Page title -->
+    <div class="page-title">
+        <div class="row justify-content-between align-items-center">
+            <div class="col-md-6 mb-3 mb-md-0">
+                <h5 class="h3 font-weight-400 mb-0 text-white">{$title}</h5>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-9 col-md-9 col-lg-9">
+            <div class="card card-fluid">
+                <div class="card-header">
+                    <h6 class="mb-0">生成收款码</h6>
+                </div>
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-xl-12 col-md-12 col-lg-12">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">模板</span>
+                                    </div>
+                                    <select class="form-control" id="code_alias">
+                                        {foreach name="payment_array" item="v" key="key"}
+                                        <option value="{$v.alias}">{$v.name}</option>
+                                        {/foreach}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-6 col-md-6 col-lg-6">
+                            <button type="button" class="btn btn-primary btn-block" id="preview">选择模板</button>
+                        </div>
+                        <div class="col-xl-6 col-md-6 col-lg-6">
+                            <button type="button" class="btn btn-primary btn-block" onclick="preview()">立即生成</button>
+                        </div>
+                    </div>
+                </div>
+                <iframe id="iframe" onload="setIframeHeight(this)"
+                        src="" scrolling="no" frameborder="0"
+                        width="100%"></iframe>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-3 col-lg-3">
+            <div class="card text-center d-flex flex-column justify-content-center">
+                <div class="card-header">
+                    <h6 class="mb-0">更多</h6>
+                </div>
+                <div class="card-body">
+                    <button type="button" class="btn btn-primary" id="resetLayer">重置收款码</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<input type="hidden" id="base64">
+{include file='default/bottom' /}
+<script>
+    var photos_start;
+    var photos_json =
+        {
+            "title": "选择模板", //相册标题
+            "id": 1,
+            "data": [
+                {foreach name = "payment_array" item = "v" key = "key"}
+                {
+                    "alt": "{$v.name}",
+                    "pid": {$key},
+                    "value": "{$v.alias}",
+                    "src": "__PUBLIC__/qr-bg/{$v.imgName}",
+                    "thumb": "__PUBLIC__/qr-bg/{$v.imgName}"
+                },
+                {/foreach}
+            ]
+        }
+    ;
+    $("#code_alias").change(function(){
+        var selected=$(this).children('option:selected').val();
+        var data = photos_json.data;
+        var value =  $("#code_alias").val();
+        for(i = 0; i < data.length; i++) {
+            if (data[i].value == value) {
+                photos_start = data[i].pid;
+            }
+        }
+    });
+    layui.use(['layer', 'form'], function () {
+        var layer = layui.layer
+            , form = layui.form;
+
+        $("#preview").click(function () {
+            photos_json.start=photos_start;
+            layer.photos({
+                photos: photos_json
+                , anim: 0
+                , shade: [0.1, '#000']
+                , tab: function (pic, layero) {
+                    photos_start = pic.pid;
+                    $("#code_alias").val(pic.value);
+                    form.render();
+                }
+            });
+            layer.msg('点击图片外任意位置关闭', {
+                offset: 't',
+                anim: 6
+                , icon: 0
+                ,zIndex:999999999
+            });
+        })
+    });
+</script>
+<script>
+    function preview() {
+        var alias = $("#code_alias").val();
+        Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+        $("#iframe").attr("src", "/api/query_code?mode=this_web&template=" + alias);
+    }
+
+    preview();
+
+    $("#resetLayer").click(function () {
+        layer.open({
+            type: 1,
+            title: "重置收款码",
+            scrollbar: false,
+            area: [layerWidth, '360px'], //宽高
+            content: '<div style="margin:14px 18px"><div class="alert badge-danger">重置后，之前保存的收款码将<b>无法收款</b>，同时收银台链接也将<b>失效重置</b>，需重新保存最新的收款码。<b>请慎重操作！</b><hr/>上次重置时间：{$user["code_reset_time"]}</div><div class="form-group mb-2"><label class="form-control-label">邮箱验证（{$user["email"]}）</label><div class="input-group"><input type="text" class="form-control" name="captcha" id="input-captcha" placeholder="验证码"><div class="input-group-append"><button type="button" id="send_captcha" class="btn btn-primary btn-sm"><span class="btn-inner-text">发送验证码</span></button></div></div></div><button type="button" class="btn btn-sm btn-primary rounded-pill" id="reset_submit">我已了解，确认重置</button><input type="hidden" id="input-only"></div>'
+        });
+    });
+
+    //发送验证码
+    $(document).on('click', '#send_captcha', function () {
+        var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+        $.ajax({
+            type: "POST",
+            url: "/send_captcha",
+            data: {"type": "email", "email": "own"},
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                if (data.code == 0) {
+                    layer.close(Load); //关闭加载
+
+    var time_s = 60;
+    var timeInterval = setInterval(function () {
+        time_s--;
+        if (time_s <= 0) {
+            $('#send_captcha').attr("disabled", false);
+            $("#send_captcha").text('发送验证码');
+            clearInterval(timeInterval);
+        } else {
+            $('#send_captcha').attr("disabled", true);
+            $("#send_captcha").text(time_s + '秒后重新发送');
+        }
+    }, 1000);
+    $('#input-only').val(data.only);
+    var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+        layer.close(indexa);
+    });
+    } else {
+        layer.close(Load); //关闭加载
+        var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+            layer.close(indexa);
+        })
+    }
+    },
+    error: function () { //ERROR
+        layer.close(Load); //关闭加载
+        layer.msg('系统繁忙');
+        return false;
+    }
+    });
+    });
+    //开始重置
+    $(document).on('click', '#reset_submit', function () {
+        var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+        $.ajax({
+            type: "POST",
+            url: "/user/qr_code/reset",
+            data: {"captcha": $("#input-captcha").val(), "only": $("#input-only").val()},
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                if (data.code == 0) {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                        layer.close(indexa);
+                        window.location.reload();
+                    });
+                } else {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                    })
+                }
+            },
+            error: function () { //ERROR
+                layer.close(Load); //关闭加载
+                layer.msg('系统繁忙');
+                return false;
+            }
+        });
+    });
+
+    //获取收款码
+
+</script>
+</body>
+</html>

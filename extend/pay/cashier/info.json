@@ -1,0 +1,18 @@
+{
+  "name":"星益云聚合收银台",
+  "alias": "cashier",
+  "author":"小星",
+  "date":"2021-09-16 16:00:00",
+  "remarks": "本接口由星益云聚合收银台SDK接口，接口地址<b>【开头必须带http或https，结尾须带/】</b>，否则将无法跳转支付。",
+  "qq":"1450839008",
+  "support":["alipay","wxpay","qqpay"],
+  "url":"http://pay.96xy.cn/",
+  "form":{
+    "value1_name": "接口地址",
+    "value1_type": "text",
+    "value2_name": "商户UID",
+    "value2_type": "text",
+    "value3_name": "商户密钥",
+    "value3_type": "text"
+  }
+}

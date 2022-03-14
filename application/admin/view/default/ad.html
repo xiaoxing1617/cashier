@@ -1,0 +1,546 @@
+{include file='default/head' /}
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space1">
+        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">{$title}</div>
+                <div class="layui-card-body">
+
+                    <div class="layui-tab">
+                        <ul class="layui-tab-title">
+                            <li class="layui-this">商户后台广告</li>
+                            <li class="">支付完成动作</li>
+                        </ul>
+                        <div class="layui-tab-content">
+                            <!--_____item_____-->
+                            <div class="layui-tab-item layui-show">
+                                <fieldset class="layui-elem-field layui-field-title" style="margin-bottom: 50px;">
+                                    <legend>顶部横幅图片</legend>
+                                </fieldset>
+                                <form class="layui-form layui-form-pane" id="user_manage_top_data">
+                                <div class="layui-form-item">
+                                    <div class="layui-block">
+                                        <label class="layui-form-label">开启展示</label>
+                                        <div class="layui-input-block">
+                                            <input type="radio" lay-filter="switch" lay-skin="radio" name="switch" {$data['user_manage_top']['state']==0?"checked":""} value="0" title="关闭">
+                                            <input type="radio" lay-filter="switch" lay-skin="radio" name="switch" {$data['user_manage_top']['state']==1?"checked":""} value="1" title="开启">
+                                        </div>
+                                    </div>
+                                </div>
+                                    <div class="layui-form-item">
+                                        <div class="layui-block">
+                                            <label class="layui-form-label">开启起始时间</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" id="user_manage_top_time_start" name="time_start" class="layui-input" placeholder="点击设置" value="{$data['user_manage_top']['time_start']}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <div class="layui-block">
+                                            <label class="layui-form-label">开启结束时间</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" id="user_manage_top_time_end" name="time_end" class="layui-input" placeholder="点击设置" value="{$data['user_manage_top']['time_end']}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-block">
+                                        <label class="layui-form-label">图片</label>
+                                        <div class="layui-input-block">
+                                            <img src="__PUBLIC__/ad-img/{$data['user_manage_top']['data']['name']}"
+                                                 style="max-width: 100%;width: 700px;" id="user_manage_top_img">
+                                            &nbsp;
+                                            <button type="button" class="layui-btn layui-btn-primary layui-btn-lg"
+                                                    id="user_manage_top" value="1"><i class="layui-icon">&#xe67c;</i>上传图片
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-block">
+                                        <label class="layui-form-label">跳转网址</label>
+                                        <div class="layui-input-block">
+                                            <input type="text" name="url" class="layui-input" placeholder="请填写点击图片要跳转的网址..." value="{$data['user_manage_top']['data']['url']}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <blockquote class="layui-elem-quote">
+                                    <h3>
+                                        支持jpg、png、gif格式的图片，最大可上传5MB大小图片。建议图片为1080*120宽高！跳转地址需要带http或https协议头
+                                    </h3>
+                                </blockquote>
+                                <button type="button" class="layui-btn layui-btn-lg layui-btn-fluid" id="user_manage_top_temp_submit">确认修改</button><button type="button" class="layui-btn layui-btn-lg layui-btn-fluid" id="user_manage_top_submit" style="display: none">确认修改</button>
+                                </form>
+
+                                <fieldset class="layui-elem-field layui-field-title" style="margin-bottom: 50px;">
+                                    <legend>底部横幅图片</legend>
+                                </fieldset>
+
+
+                                <form class="layui-form layui-form-pane" id="user_manage_bottom_data">
+                                    <div class="layui-form-item">
+                                        <div class="layui-block">
+                                            <label class="layui-form-label">开启展示</label>
+                                            <div class="layui-input-block">
+                                                <input type="radio" lay-filter="switch" lay-skin="radio" name="switch" {$data['user_manage_bottom']['state']==0?"checked":""} value="0" title="关闭">
+                                                <input type="radio" lay-filter="switch" lay-skin="radio" name="switch" {$data['user_manage_bottom']['state']==1?"checked":""} value="1" title="开启">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <div class="layui-block">
+                                            <label class="layui-form-label">开启起始时间</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" id="user_manage_bottom_time_start" name="time_start" class="layui-input" placeholder="点击设置" value="{$data['user_manage_bottom']['time_start']}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <div class="layui-block">
+                                            <label class="layui-form-label">开启结束时间</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" id="user_manage_bottom_time_end" name="time_end" class="layui-input" placeholder="点击设置" value="{$data['user_manage_bottom']['time_end']}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <div class="layui-block">
+                                            <label class="layui-form-label">图片</label>
+                                            <div class="layui-input-block">
+                                                <img src="__PUBLIC__/ad-img/{$data['user_manage_bottom']['data']['name']}"
+                                                     style="max-width: 100%;width: 700px;" id="user_manage_bottom_img">
+                                                &nbsp;
+                                                <button type="button" class="layui-btn layui-btn-primary layui-btn-lg"
+                                                        id="user_manage_bottom" value="1"><i class="layui-icon">&#xe67c;</i>上传图片
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <div class="layui-block">
+                                            <label class="layui-form-label">跳转网址</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" name="url" class="layui-input" placeholder="请填写点击图片要跳转的网址..." value="{$data['user_manage_bottom']['data']['url']}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <blockquote class="layui-elem-quote">
+                                        <h3>
+                                            支持jpg、png、gif格式的图片，最大可上传5MB大小图片。建议图片为1080*120宽高！跳转地址需要带http或https协议头
+                                        </h3>
+                                    </blockquote>
+                                    <button type="button" class="layui-btn layui-btn-lg layui-btn-fluid" id="user_manage_bottom_temp_submit">确认修改</button><button type="button" class="layui-btn layui-btn-lg layui-btn-fluid" id="user_manage_bottom_submit" style="display: none">确认修改</button>
+                                </form>
+
+                            </div>
+                            <!--_____item_____-->
+                            <!--_____item_____-->
+                            <div class="layui-tab-item">
+                                <fieldset class="layui-elem-field layui-field-title" style="margin-bottom: 50px;">
+                                    <legend>修改剪切板</legend>
+                                </fieldset>
+                                <form class="layui-form layui-form-pane" id="payment_shear_plate_data">
+                                    <div class="layui-form-item">
+                                        <div class="layui-block">
+                                            <label class="layui-form-label">是否开启</label>
+                                            <div class="layui-input-block">
+                                                <input type="radio" lay-filter="switch" lay-skin="radio" name="switch" {$data['payment_shear_plate']['state']==0?"checked":""} value="0" title="关闭">
+                                                <input type="radio" lay-filter="switch" lay-skin="radio" name="switch" {$data['payment_shear_plate']['state']==1?"checked":""} value="1" title="开启">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <div class="layui-block">
+                                            <label class="layui-form-label">开启起始时间</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" id="payment_shear_plate_time_start" name="time_start" class="layui-input" placeholder="点击设置" value="{$data['payment_shear_plate']['time_start']}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <div class="layui-block">
+                                            <label class="layui-form-label">开启结束时间</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" id="payment_shear_plate_time_end" name="time_end" class="layui-input" placeholder="点击设置" value="{$data['payment_shear_plate']['time_end']}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <div class="layui-block">
+                                            <label class="layui-form-label">预选内容</label>
+                                            <div class="layui-input-block">
+                                                <textarea placeholder="请设置预选剪切内容..." class="layui-textarea" name="content">{$data['payment_shear_plate']['data']}</textarea>
+                                            </div>
+                                        </div>
+                                        <blockquote class="layui-elem-quote">
+                                            <h3>
+                                                支持设置多个剪切内容，每个内容使用<span style="color:#f00;"><;end></span>结尾，系统将随机其中一个使用。<br/>由于对于用户没有参与交互的，浏览器一般是会阻止的。并且出于浏览器安全问题及不违背浏览器规则的情况下，无法自动修改剪切板。<span style="color:#f00;">只有当用户点击【关闭页面】时才会触发修改剪切板的动作！！！</span>
+                                            </h3>
+                                        </blockquote>
+                                        <button type="button" class="layui-btn layui-btn-lg layui-btn-fluid" id="payment_shear_plate_submit">确认修改</button>
+                                    </div>
+                                </form>
+
+                                <fieldset class="layui-elem-field layui-field-title" style="margin-bottom: 50px;">
+                                    <legend>弹出广告</legend>
+                                </fieldset>
+                                <form class="layui-form layui-form-pane" id="payment_popup_notified_data">
+                                    <div class="layui-form-item">
+                                        <div class="layui-block">
+                                            <label class="layui-form-label">是否开启</label>
+                                            <div class="layui-input-block">
+                                                <input type="radio" lay-filter="switch" lay-skin="radio" name="switch" {$data['payment_popup_notified']['state']==0?"checked":""} value="0" title="关闭">
+                                                <input type="radio" lay-filter="switch" lay-skin="radio" name="switch" {$data['payment_popup_notified']['state']==1?"checked":""} value="1" title="开启">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <div class="layui-block">
+                                            <label class="layui-form-label">开启起始时间</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" id="payment_popup_notified_time_start" name="time_start" class="layui-input" placeholder="点击设置" value="{$data['payment_popup_notified']['time_start']}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <div class="layui-block">
+                                            <label class="layui-form-label">开启结束时间</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" id="payment_popup_notified_time_end" name="time_end" class="layui-input" placeholder="点击设置" value="{$data['payment_popup_notified']['time_end']}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <div class="layui-block">
+                                            <label class="layui-form-label">广告内容</label>
+                                            <div class="layui-input-block">
+                                                <textarea placeholder="请设置广告内容..." class="layui-textarea" name="content">{$data['payment_popup_notified']['data']}</textarea>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="layui-btn layui-btn-lg layui-btn-fluid" id="payment_popup_notified_submit">确认修改</button>
+                                    </div>
+                                </form>
+
+                                <fieldset class="layui-elem-field layui-field-title" style="margin-bottom: 50px;">
+                                    <legend>底部横幅图片</legend>
+                                </fieldset>
+                                <form class="layui-form layui-form-pane" id="payment_bottom_banner_data">
+                                    <div class="layui-form-item">
+                                        <div class="layui-block">
+                                            <label class="layui-form-label">开启展示</label>
+                                            <div class="layui-input-block">
+                                                <input type="radio" lay-filter="switch" lay-skin="radio" name="switch" {$data['payment_bottom_banner']['state']==0?"checked":""} value="0" title="关闭">
+                                                <input type="radio" lay-filter="switch" lay-skin="radio" name="switch" {$data['payment_bottom_banner']['state']==1?"checked":""} value="1" title="开启">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <div class="layui-block">
+                                            <label class="layui-form-label">开启起始时间</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" id="payment_bottom_banner_time_start" name="time_start" class="layui-input" placeholder="点击设置" value="{$data['payment_bottom_banner']['time_start']}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <div class="layui-block">
+                                            <label class="layui-form-label">开启结束时间</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" id="payment_bottom_banner_time_end" name="time_end" class="layui-input" placeholder="点击设置" value="{$data['payment_bottom_banner']['time_end']}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <div class="layui-block">
+                                            <label class="layui-form-label">图片</label>
+                                            <div class="layui-input-block">
+                                                <img src="__PUBLIC__/ad-img/{$data['payment_bottom_banner']['data']['name']}"
+                                                     style="max-width: 100%;width: 700px;" id="payment_bottom_banner_img">
+                                                &nbsp;
+                                                <button type="button" class="layui-btn layui-btn-primary layui-btn-lg"
+                                                        id="payment_bottom_banner" value="1"><i class="layui-icon">&#xe67c;</i>上传图片
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <div class="layui-block">
+                                            <label class="layui-form-label">跳转网址</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" name="url" class="layui-input" placeholder="请填写点击图片要跳转的网址..." value="{$data['payment_bottom_banner']['data']['url']}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <blockquote class="layui-elem-quote">
+                                        <h3>
+                                            支持jpg、png、gif格式的图片，最大可上传5MB大小图片。跳转地址需要带http或https协议头
+                                        </h3>
+                                    </blockquote>
+                                    <button type="button" class="layui-btn layui-btn-lg layui-btn-fluid" id="payment_bottom_banner_temp_submit">确认修改</button><button type="button" class="layui-btn layui-btn-lg layui-btn-fluid" id="payment_bottom_banner_submit" style="display: none">确认修改</button>
+                                </form>
+
+                            </div>
+                            <!--_____item_____-->
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style id="welcome_style"></style>
+<div class="layui-col-md12">
+    <blockquote class="layui-elem-quote layui-quote-nm">{$core['ADMIN_BOTTOM']}</blockquote>
+</div>
+<script>
+    layui.use(['form', 'layedit', 'laydate','upload'], function () {
+        var form = layui.form
+            , layer = layui.layer
+            , layedit = layui.layedit
+            , upload = layui.upload
+            , laydate = layui.laydate;
+
+        var laydate_arr = [
+            "#payment_bottom_banner_time_start",
+            "#payment_bottom_banner_time_end",
+            "#user_manage_top_time_start",
+            "#user_manage_top_time_end",
+            "#user_manage_bottom_time_start",
+            "#user_manage_bottom_time_end",
+            "#payment_shear_plate_time_start",
+            "#payment_shear_plate_time_end",
+            "#payment_popup_notified_time_start",
+            "#payment_popup_notified_time_end"
+        ];
+        laydate_device_batch(laydate_arr);
+
+        //支付成功页底部横幅
+        upload_device("payment_bottom_banner","jpg|png|gif","#payment_bottom_banner_submit",1024*5,"#payment_bottom_banner_img","{$data['payment_bottom_banner']['data']['name']}",function (d){
+            var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+            $.ajax({
+                type: "POST",
+                url: "/admin/ad_manage/setPaymentBottomBanner",
+                data: $('#payment_bottom_banner_data').serialize()+"&file_name="+d.name,
+                dataType: "json",
+                success: function (json) { //SUCCESS
+                    var data = $.parseJSON(json);
+                    if (data.code == 0) {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                            layer.close(indexa);
+                            window.location.reload();
+                        });
+                    } else {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                            layer.close(indexa);
+                            if(data.url!="" && data.url!=null){
+                                window.location.href=data.url;
+                            }
+                        })
+                    }
+                },
+                error: function () { //ERROR
+                    layer.close(Load); //关闭加载
+                    layer.msg('系统繁忙');
+                }
+            });
+        });
+        //弹出通知
+        $("#payment_popup_notified_submit").click(function (){
+            var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+            $.ajax({
+                type: "POST",
+                url: "/admin/ad_manage/setPaymentPopupNotified",
+                data: $('#payment_popup_notified_data').serialize(),
+                dataType: "json",
+                success: function (json) { //SUCCESS
+                    var data = $.parseJSON(json);
+                    if (data.code == 0) {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                            layer.close(indexa);
+                            window.location.reload();
+                        });
+                    } else {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                            layer.close(indexa);
+                            if(data.url!="" && data.url!=null){
+                                window.location.href=data.url;
+                            }
+                        })
+                    }
+                },
+                error: function () { //ERROR
+                    layer.close(Load); //关闭加载
+                    layer.msg('系统繁忙');
+                }
+            });
+        });
+        //修改剪切板
+        $("#payment_shear_plate_submit").click(function (){
+            var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+            $.ajax({
+                type: "POST",
+                url: "/admin/ad_manage/setPaymentShearPlate",
+                data: $('#payment_shear_plate_data').serialize(),
+                dataType: "json",
+                success: function (json) { //SUCCESS
+                    var data = $.parseJSON(json);
+                    if (data.code == 0) {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                            layer.close(indexa);
+                            window.location.reload();
+                        });
+                    } else {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                            layer.close(indexa);
+                            if(data.url!="" && data.url!=null){
+                                window.location.href=data.url;
+                            }
+                        })
+                    }
+                },
+                error: function () { //ERROR
+                    layer.close(Load); //关闭加载
+                    layer.msg('系统繁忙');
+                }
+            });
+        });
+
+        //头部横幅
+        upload_device("user_manage_top","jpg|png|gif","#user_manage_top_submit",1024*5,"#user_manage_top_img","{$data['user_manage_top']['data']['name']}",function (d){
+            var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+            $.ajax({
+                type: "POST",
+                url: "/admin/ad_manage/setUserManageTop",
+                data: $('#user_manage_top_data').serialize()+"&file_name="+d.name,
+                dataType: "json",
+                success: function (json) { //SUCCESS
+                    var data = $.parseJSON(json);
+                    if (data.code == 0) {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                            layer.close(indexa);
+                            window.location.reload();
+                        });
+                    } else {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                            layer.close(indexa);
+                            if(data.url!="" && data.url!=null){
+                                window.location.href=data.url;
+                            }
+                        })
+                    }
+                },
+                error: function () { //ERROR
+                    layer.close(Load); //关闭加载
+                    layer.msg('系统繁忙');
+                }
+            });
+        });
+        //底部横幅
+        upload_device("user_manage_bottom","jpg|png|gif","#user_manage_bottom_submit",1024*5,"#user_manage_bottom_img","{$data['user_manage_bottom']['data']['name']}",function (d){
+            var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+            $.ajax({
+                type: "POST",
+                url: "/admin/ad_manage/setUserManageBottom",
+                data: $('#user_manage_bottom_data').serialize()+"&file_name="+d.name,
+                dataType: "json",
+                success: function (json) { //SUCCESS
+                    var data = $.parseJSON(json);
+                    if (data.code == 0) {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                            layer.close(indexa);
+                            window.location.reload();
+                        });
+                    } else {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                            layer.close(indexa);
+                            if(data.url!="" && data.url!=null){
+                                window.location.href=data.url;
+                            }
+                        })
+                    }
+                },
+                error: function () { //ERROR
+                    layer.close(Load); //关闭加载
+                    layer.msg('系统繁忙');
+                }
+            });
+        });
+
+
+
+
+
+        function upload_device(mode,exts,bindAction,size,img_id,name,fun){
+            $("#"+mode+"_temp_submit").click(function (){
+                var d = {
+                    "name":name
+                };
+                fun(d);
+            });
+            var Load;
+            upload.render({
+                elem: '#'+mode //绑定元素
+                , url: '/admin/ad_manage/upload' //上传接口
+                , method: 'POST'
+                , data: {"mode": mode}
+                , before: function (obj) {
+                    Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+                }
+                , done: function (data) {
+                    layer.close(Load); //关闭加载
+                    if (data.code == 0) {
+                        fun(data);
+                    } else {
+                        var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                            layer.close(indexa);
+                            if (data.url != "" && data.url != null) {
+                                window.location.href = data.url;
+                            }
+                        })
+                    }
+                }
+                , error: function () {
+                    layer.close(Load); //关闭加载
+                }
+                , exts: exts
+                , auto : false
+                , bindAction:bindAction
+                , size: size
+                ,drag:false
+                ,choose: function(obj){
+                    obj.preview(function(index, file, base64){
+                        $(img_id).attr("src",base64);
+                    });
+                    $("#"+mode+"_temp_submit").css("display","none");
+                    $("#"+mode+"_submit").css("display","block");
+                }
+            });
+        }
+        function laydate_device_batch(arr){
+            for (var i=0;i<arr.length;i++){
+                laydate.render({
+                    elem: arr[i]
+                    ,type: 'datetime'
+                });
+            }
+        }
+
+    });
+</script>
+
+</body>
+</html>

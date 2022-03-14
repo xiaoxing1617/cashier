@@ -1,0 +1,65 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="{$core['describe']}">
+    <meta name="author" content="Webpixels">
+    <title>{$title} - {$core['title']}</title>
+    <!-- Favicon -->
+    <link rel="icon" href="__PUBLIC__/../favicon.ico" type="image/png">
+    <!-- Purpose CSS -->
+    <link rel="stylesheet" href="__PUBLIC__/uikit/css/purpose.css" id="stylesheet">
+    <link href="//cdn.bootcss.com/layer/3.0.1/skin/default/layer.css" rel="stylesheet">
+</head>
+
+<body class="application application-offset ready">
+<!-- Application container -->
+<div class="container-fluid container-application">
+    <!-- Sidenav -->
+    <!-- Content -->
+    <div class="main-content position-relative">
+        <!-- Page content -->
+        <div class="page-content">
+            <div class="min-vh-100 py-5 d-flex align-items-center">
+                <div class="w-100">
+                    <div class="row justify-content-center">
+                        <div class="col-sm-10 col-lg-6">
+                            <div class="card shadow zindex-100 mb-5">
+                                <div class="card-body px-md-5 py-5">
+                                    <div class="mb-0">
+                                        <h6 class="h3">{$title}</h6>
+                                        <p class="text-muted mb-0">{$core['title']}</p>
+                                    </div>
+                                </div>
+                                <iframe onload="setIframeHeight(this)"
+                                        src="/api/query_code?mode=demo_web" scrolling="no" frameborder="0"
+                                        width="100%"></iframe>
+                                <div class="card-footer px-md-5"><small>我也想要一个这样的聚合二维码 → </small>
+                                    <a href="/register/" class="small font-weight-bold">立即注册</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+    </div>
+</div>
+<!-- Scripts -->
+<script type="text/javascript" src="//lib.baomitu.com/jquery/3.6.0/jquery.min.js"></script>
+<script src="__PUBLIC__/uikit/js/purpose.js"></script>
+<script src="//cdn.bootcss.com/layer/3.0.1/layer.min.js"></script>
+<script>
+    var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+    function setIframeHeight(iframe) {
+        if (iframe) {
+            var iframeWin = iframe.contentWindow || iframe.contentDocument.parentWindow;
+            if (iframeWin.document.body) {
+                iframe.height = iframeWin.document.documentElement.scrollHeight || iframeWin.document.body.scrollHeight;
+            }
+        }
+        layer.close(Load); //关闭加载
+    };
+</script>
+</body>
+</html>

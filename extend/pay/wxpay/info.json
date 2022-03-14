@@ -1,0 +1,51 @@
+{
+  "name":"微信支付官方接口",
+  "alias": "wxpay",
+  "author":"微信支付官方",
+  "date":"2021-07-24 11:10:00",
+  "remarks": "本接口由微信支付官方开发的SDK接口。如果你不打算使用交易退款功能apiclient_cert.pem和apiclient_key.pem证书则填 * 即可！<hr/>支付场景触发情况：<br>1.电脑浏览器：使用Native扫码付能力，将生成二维码进行扫码支付。所以必须勾选开通Native能力。<br/>2.手机浏览器：使用微信H5支付能力，将会自动拉取微信进入支付页面发起支付。所以必须勾选开通H5支付能力。<br/>3.微信内：如果您没有勾选开通JSAPI能力，则会使用H5支付能力，先跳转到浏览器再从浏览器跳转到微信进入支付界面，如果您勾选开通了JSAPI能力则会优先使用JSAPI能力，所以，JSAPI能力和H5支付能力必须勾选开通其中一个。<hr/>授权TXT文件名：就是公众号让你下载的txt文件名称，填写名称即可，不要带.txt后缀。安全域名填写本站域名！<br/>【配置教程：https://www.kancloud.cn/xingyi/wxpay/2381862】",
+  "qq":"1450839008",
+  "support":["wxpay"],
+  "url":"https://pay.weixin.qq.com/",
+  "form":{
+    "value1_name": "微信公众号APPID",
+    "value1_type": "text",
+
+    "value2_name": "微信支付商户号",
+    "value2_type": "text",
+
+    "value3_name": "微信支付商户密钥",
+    "value3_type": "text",
+
+    "value4_name": "微信公众号SECRET",
+    "value4_type": "text",
+
+    "value5_name": "授权TXT文件名",
+    "value5_type": "wx_file_txt",
+
+    "value6_name": "apiclient_cert.pem内容",
+    "value6_type": "text",
+    "value6_rows":3,
+
+    "value7_name": "apiclient_key.pem内容",
+    "value7_type": "text",
+    "value7_rows":3,
+
+    "value8_name": "已开通的产品",
+    "value8_type": "checkbox",
+    "value8_data": [
+      {
+        "value": "native",
+        "title": "Native(扫码)支付"
+      },
+      {
+        "value": "h5",
+        "title": "H5支付"
+      },
+      {
+        "value": "jsapi",
+        "title": "JSAPI(公众号)支付"
+      }
+    ]
+  }
+}

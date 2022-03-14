@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>支付成功</title>
+    <link href="//res.wx.qq.com/open/libs/weui/2.4.2/weui.min.css" rel="stylesheet">
+    <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+</head>
+<body>
+
+<div class="weui-msg">
+    <div class="weui-msg__icon-area">
+        <i class="weui-icon-success weui-icon_msg"></i>
+    </div>
+    <div class="weui-msg__text-area">
+        <h3 class="">支付成功</h3>
+        <div class="ui-ellpisis weui-msg__desc">
+            <div class="ui-ellpisis-content">
+                <div style="-webkit-line-clamp: 1;">
+                    <p></p>
+                </div>
+                <div class="ui-ellpisis-placeholder" style="position: absolute; display: block;"></div>
+            </div>
+            <!---->
+        </div>
+    </div>
+    <div class="weui-msg__opr-area">
+        <a href="{$url}" id="close" class="weui-btn weui-btn_default">正在为您跳转页面</a>
+        </p>
+    </div>
+</div>
+<script>
+    setTimeout(function (){
+        window.location.href="{$url}";
+    },1000);
+</script>
+</body>
+</html>

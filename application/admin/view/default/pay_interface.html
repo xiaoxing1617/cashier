@@ -1,0 +1,281 @@
+{include file='default/head' /}
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space1">
+        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">{$title}</div>
+                <div class="layui-card-body">
+
+                    <!--                    -->
+                    <div class="layui-form search">
+                        <div class="layui-inline">
+                            <select name="search_type" id="search_type">
+                                <option value="name">接口名称</option>
+                                <option value="uid">商户UID</option>
+                            </select>
+                        </div>
+                        <div class="layui-inline">
+                            <input class="layui-input" name="search_value" id="search_value" autocomplete="off"
+                                   placeholder="留空查询则重载全部" value="">
+                        </div>
+                        <div class="layui-inline">
+                            <select class="form-control" id="search_pay_type">
+                                <option value="all">全部支付方式</option>
+                                {foreach name="pay_list" item="v" key="key"}
+                                <option value="{$v.alias}">{$v.name}</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                        <button class="layui-btn" data-type="reload" id="btn_search"><i
+                                class="layui-icon layui-icon-search"></i> 查询
+                        </button>
+                    </div>
+
+                    <!-- 表格 -->
+                    <table id="data_Table" lay-filter="data_Table"></table>
+                    <!-- 表格 -->
+
+                    <script type="text/html" id="oper">
+                        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+                        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="con">配置</a>
+                        <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="del">删除</a>
+                    </script>
+
+                    <script type="text/html" id="money">
+                        {{ d.min_money }}~{{ d.max_money }}元
+                    </script>
+                    <script type="text/html" id="type_temp">
+                        <img style="vertical-align:middle" src="__PUBLIC__/icon/{{ d.type_icon }}" width="17"> <b>{{ d.type }}</b>
+                    </script>
+
+                    <script type="text/html" id="state_oper">
+                        {{#  if(d.state != "1"){ }}
+                        <button type="button" class="layui-btn layui-btn-danger layui-btn-xs" lay-event="state_1">已关闭</button>
+                        {{#  }else{ }}
+                        <button type="button" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="state_0">已开启</button>
+                        {{#  } }}
+                    </script>
+                    <script type="text/html" id="creation_time">
+                        {{#  if(d.creation_time != "" && d.creation_time != null){ }}
+                        {{ d.creation_time }}
+                        {{#  }else{ }}
+                        无
+                        {{#  } }}
+                    </script>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style id="welcome_style"></style>
+<div class="layui-col-md12">
+    <blockquote class="layui-elem-quote layui-quote-nm">{$core['ADMIN_BOTTOM']}</blockquote>
+</div>
+<script>
+    layui.use(['jquery', 'form', 'layedit', 'laydate', 'element', 'laytpl', 'table', 'laypage', 'layer', 'carousel', 'slider'], function () {
+        $ = layui.jquery;
+        var form = layui.form //表单
+            , layer = layui.layer  //弹出层
+            , laypage = layui.laypage //分页
+            , layedit = layui.layedit  //元素操作
+            , laydate = layui.laydate  //日期
+            , laytpl = layui.laytpl  //模板引擎
+            , table = layui.table  //表格
+            , element = layui.element;
+//===================数据初始化
+        table.render({
+            elem: '#data_Table'
+            , height: 450
+            , url: '/admin/PayInterface/getList'
+            , method: "POST"
+            , page: true //开启分页
+            , even: true //开启隔行背景
+            , toolbar: '#data_Table_toolbar'
+            , title: "表格数据"
+            , cols: [[ //表头
+                {field: 'id', title: 'ID', width: 70, sort: true, fixed: "left"}
+                , {field: 'name', title: '接口名称', width: 170}
+                , {field: 'uid', title: '归属商户UID', width: 100}
+                , {field: 'type', title: '接口支付方式', width: 120,templet: "#type_temp"}
+                , {field: 'money', title: '支付金额限制', width: 160, templet: "#money"}
+                , {field: 'state', title: '接口状态', width: 90, toolbar: "#state_oper"}
+                , {field: 'plug_in', title: '接口支付插件', width: 130}
+                , {field: 'creation_time', title: '添加时间', width: 155, templet: "#creation_time"}
+                , {
+                    field: 'oper',
+                    title: '操作',
+                    width: 190,
+                    unresize: true,
+                    fixed: "right",
+                    align: 'center',
+                    toolbar: '#oper'
+                }
+            ]]
+            , even: true
+            , id: 'data_Table'
+            , limit: 15 //每页默认显示的数量
+            , limits:[]//每页条数的选择项
+            , text: {
+                none: '暂无数据'
+            }
+        });
+
+
+        var $ = layui.$, active = {
+            reload: function () {
+                var search_type = $('#search_type').val();  //搜索类型
+                var search_value = $('#search_value').val();  //搜索内容
+                var search_pay_type = $('#search_pay_type').val();  //支付方式
+                layer.msg('拼命查询中...', {icon: 16, shade: 0.3, time: 1500});
+                //执行重载
+                table.reload('data_Table', {
+                    page: {
+                        curr: 1 //从第 1 页开始
+                    }
+                    , method: "POST"
+                    //额外接口参数
+                    , where: {
+                        mode: search_type
+                        , value: search_value
+                        ,type:search_pay_type
+                    }
+                });
+            }
+        };
+        $("#btn_search").click(function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        })
+
+        //操作
+        table.on('tool(data_Table)', function (obj) {
+            var data = obj.data;
+            var event = obj.event;
+            var title = "";
+            var name = "【ID："+data.id+"】";
+            var type = data.type;
+
+            switch (event) {
+                case "state_1":
+                    oper('state_1',data.id);
+                    break;
+                case "state_0":
+                    oper('state_0',data.id);
+                    break;
+                case "edit":
+                    title = "编辑"+name;
+                    oper_url(title,data.uid,data.type,"edit",data.id);
+                    break;
+                case "con":
+                    title = "配置"+name;
+                    oper_url(title,data.uid,data.type,"con",data.id);
+                    break;
+                case "del":
+                    layer.confirm('你确定要删除该接口吗？<br/><span style="color: #f00">1.删除后将无法恢复！！！<br/>2.删除后对应商户将无法使用该接口收款。<br/><b>请慎重操作！</b></span>', {
+                        btn: ['确认删除', '算了'] //按钮
+                    }, function () {
+                        oper('del',data.id);
+                    });
+                    break;
+                default:
+                    layer.alert("不支持该操作类型")
+            }
+        });
+
+        function oper(mode, id) {
+            var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+            $.ajax({
+                type: "POST",
+                url: "/admin/PayInterface/oper",
+                data: {"mode": mode, "id": id},
+                dataType: "json",
+                success: function (json) { //SUCCESS
+                    var data = $.parseJSON(json);
+                    if (data.code == 0) {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                            layer.close(indexa);
+                            //执行重载
+                            table.reload('data_Table', {
+                                page: {
+                                    curr: 1 //从第 1 页开始
+                                }
+                                , method: "POST"
+                                //额外接口参数
+                                , where: {
+                                    mode: "all"
+                                }
+                            });
+                        });
+                    } else {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                            layer.close(indexa);
+                            return false;
+                        })
+                    }
+                },
+                error: function () { //ERROR
+                    layer.close(Load); //关闭加载
+                    layer.msg('系统繁忙');
+                    return false;
+                }
+            });
+        }
+
+        function oper_url(title,uid,type,mode,id){
+            var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+            $.ajax({
+                type: "POST",
+                url: "/adminLoginUser",
+                data: {"uid": uid},
+                dataType: "json",
+                success: function (json) { //SUCCESS
+                    var data = $.parseJSON(json);
+                    if (data.code == 0) {
+                        layer.close(Load); //关闭加载
+                        layer.open({
+                            type: 2,
+                            scrollbar: false,
+                            title: title,
+                            shadeClose: true,
+                            shade: 0.3,
+                            area: [layerWidth, '90%'],
+                            content: '/user/pay_inter/oper?type='+type+'&mode='+mode+'&id='+id
+                            , end: function () {
+//执行重载
+                                table.reload('data_Table', {
+                                    page: {
+                                        curr: 1 //从第 1 页开始
+                                    }
+                                    , method: "POST"
+                                    //额外接口参数
+                                    , where: {
+                                        mode: "all"
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                            layer.close(indexa);
+                            return false;
+                        })
+                    }
+                },
+                error: function () { //ERROR
+                    layer.close(Load); //关闭加载
+                    layer.msg('系统繁忙');
+                    return false;
+                }
+            });
+            //
+        }
+    });
+</script>
+</body>
+</html>

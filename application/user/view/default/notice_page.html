@@ -1,0 +1,240 @@
+{include file='default/head' /}
+
+<!-- Page content -->
+<div class="page-content">
+    <!-- Page title -->
+    <div class="page-title">
+        <div class="row justify-content-between align-items-center">
+            <div class="col-md-6 mb-3 mb-md-0">
+                <h5 class="h3 font-weight-400 mb-0 text-white">{$title}</h5>
+            </div>
+        </div>
+    </div>
+    <!-- Page title -->
+    <!-- 主体 -->
+    <div class="row">
+        <div class="col-xl-12 col-md-12 col-lg-12">
+            <div class="row">
+
+                {if condition="$mod == 'see'"}
+
+                <div class="col-xl-12 col-md-12 col-lg-12 mb-10">
+                    <div class="card">
+                        <div class="card-body p-md-5">
+                            <!-- Topic header -->
+                            {if condition="$data['code'] === 0"}
+                            <h2 class="mb-2">{$data['title']}</h2>
+                            <p class="lead mb-0">发布时间：{$data['release_time']}</p>
+                            <div class="media align-items-center mt-4">
+                                <a href="#" class="avatar avatar-sm rounded-circle mr-3">
+                                    <img alt="Image placeholder" src="{$data['img']}">
+                                </a>
+                                <div class="media-body">
+                                    <span class="h6 mb-0">{$data['uid']}</span>
+                                    <span class="text-sm text-muted">（发布者）</span>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center mt-4">
+                                <ul class="list-inline">
+                                    <li class="list-inline-item pr-3">
+                                        <span class="badge badge-pill badge-soft-info">已读</span>
+                                    </li>
+                                    <li class="list-inline-item pr-3">
+                                        <span class="badge badge-pill badge-soft-success"><span id="browse">{$count['browse']}</span>次浏览</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- Topic body -->
+                            <article class="mt-5">
+                                {$data['content']}
+                            </article>
+                        </div>
+                        <div class="card-footer px-md-5 py-4 bg-lighter border-0 delimiter-top">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <button id="fabulous_btn" onclick="oper('fabulous')"
+                                            class="btn{$count['fabulous_switch']?' btn-soft-danger':''} btn-xs btn-secondary"
+                                            type="button"><i
+                                            class="far fa-thumbs-up"></i> <span id="fabulous">{$count['fabulous']}</span>
+                                    </button>
+                                    <button id="negative_btn" onclick="oper('negative')"
+                                            class="btn{$count['negative_switch']?' btn-soft-danger':''} btn-xs btn-secondary"
+                                            type="button"><i
+                                            class="far fa-thumbs-down"></i> <span id="negative">{$count['negative']}</span>
+                                    </button>
+                                </div>
+                                <div>
+                                    {if condition="$data['confirm']"}
+                                    <button type="button" onclick="oper('confirm')" class="btn btn-sm btn-secondary rounded-pill">确认收到</button>
+                                    {/if}
+                                </div>
+                            </div>
+                            {else}
+                            <h2 class="mb-2 text-center">{$data['msg']}</h2>
+                            {/if}
+                        </div>
+                    </div>
+                    <a href="/user/notice_page" class="btn btn-sm btn-primary rounded-pill">返回公告列表</a>
+                </div>
+
+                {else}
+                <div class="col-xl-12 col-md-12 col-lg-12">
+                    <div class="card card-fluid">
+                        <div class="card-header">
+                            <h6 class="mb-0">公告列表</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table align-items-center">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">公告标题</th>
+                                        <th scope="col">发布时间</th>
+                                        <th scope="col">更多</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="list" id="list"></tbody>
+                                </table>
+                            </div>
+                            <hr/>
+                            <div class="btn-toolbar" id="toolbar_ye"></div>
+
+                        </div>
+                    </div>
+                </div>
+                {/if}
+
+
+            </div>
+        </div>
+
+    </div>
+    <!-- 主体 -->
+</div>
+
+{include file='default/bottom' /}
+{if condition="$mod == 'see'"}
+<script>
+    {if condition="$data['confirm']"}
+    layer.msg('请阅读后确认', {
+        offset: 't',
+        anim: 6
+    });
+    {/if}
+    function oper(mode) {
+        var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+        $.ajax({
+            type: "POST",
+            url: "/user/NoticePage/setNotice",
+            data: {"mode": mode, "nid": {$data['id']}},
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                layer.close(Load); //关闭加载
+                if (data.code == 0) {
+                    layer.msg(data.msg,{time: 1200, icon: 1,shade: [0.4, '#000']}, function () {
+                        if (data.url != "" && data.url != null) {
+                            window.location.href = data.url;
+                        }
+                    });
+                    $("#negative").html(data.count.negative);
+                    $("#fabulous").html(data.count.fabulous);
+                    $("#browse").html(data.count.browse);
+                    if(data.count.fabulous_switch){
+                        $("#fabulous_btn").attr("class",'btn btn-soft-danger btn-xs btn-secondary');
+                    }else{
+                        $("#fabulous_btn").attr("class",'btn btn-xs btn-secondary');
+                    }
+                    if(data.count.negative_switch){
+                        $("#negative_btn").attr("class",'btn btn-soft-danger btn-xs btn-secondary');
+                    }else{
+                        $("#negative_btn").attr("class",'btn btn-xs btn-secondary');
+                    }
+                } else {
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                        if (data.url != "" && data.url != null) {
+                            window.location.href = data.url;
+                        }
+                    })
+                }
+            }
+            , error: function () { //ERROR
+                layer.close(Load); //关闭加载
+                layer.msg('系统繁忙');
+                return false;
+            }
+        });
+    }
+</script>
+{else}
+<script>
+    getList("all", 1);
+
+    function getList(mode, page = 1, value1 = null, value2 = null) {
+        var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+        $.ajax({
+            type: "POST",
+            url: "/user/NoticePage/getNotice",
+            data: {"mode": mode, "page": page, "value1": value1, "value2": value2},
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                if (data.code == 0) {
+                    layer.close(Load); //关闭加载
+                    //===渲染
+                    var html = "";
+                    for (var i = 0; i < data.list.length; i++) {
+                        var temp = data.list[i];
+                        html += "<tr>" +
+                            "<td>" + temp.id + "</td>" +
+                            "<td><a href='/user/notice_page?mod=see&id="+temp.id+"'>"+(temp.topping?'<span class=\'badge badge-pill badge-soft-danger badge-secondary\'>置顶</span>&nbsp;&nbsp;':'')+temp.title + "</td></a>" +
+                            "<td>" + temp.release_time + "</td>" +
+                            "<td><span class='badge badge-pill"+(temp.read?'':' badge-soft-info')+" badge-secondary'>"+(temp.read?'已读':'未读')+"</span>&nbsp;&nbsp;"+(temp.confirm==1 || temp.confirm==2?'<span class=\'badge badge-pill'+(temp.confirm==1?"":" badge-soft-warning")+' badge-secondary\'>'+(temp.confirm==1?"已确认":"待确认")+'</span>':'')+"</td>"
+                            "</tr>";
+                    }
+                    $("#list").html(html);
+                    //===渲染
+                    //===分页
+                    var ye = "";
+
+                    if (data.total_page > 0) {
+                        if (data.page > 1) {
+                            ye += '<div class="btn-group mr-2"><button class="btn-group btn btn-warning btn-xs" onclick="getList(\'' + mode + '\',1)">第一页</button></div>';
+                        }
+                        ye += '<div class="btn-group mr-2">';
+                        for (var i = 0; i < data.total_page; i++) {
+                            var j = i + 1;
+                            if (data.page == j) {
+                                ye += '<button class="btn-group btn btn-primary btn-xs" disabled>' + j + '</button>';
+                            } else {
+                                ye += '<button class="btn-group btn btn-primary btn-xs"  onclick="getList(\'' + mode + '\',' + j + ')">' + j + '</button>';
+                            }
+                        }
+                        ye += '</div>';
+                        if (data.page < data.total_page) {
+                            ye += '<div class="btn-group mr-2"><button class="btn-group btn btn-warning btn-xs" onclick="getList(\'' + mode + '\',' + data.total_page + ')">尾页</button></div>';
+                        }
+                    }
+                    $("#toolbar_ye").html(ye);
+                    //===分页
+                } else {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                        if (data.url != "" && data.url != null) {
+                            window.location.href = data.url;
+                        }
+                    })
+                }
+            },
+            error: function () { //ERROR
+                layer.close(Load); //关闭加载
+                layer.msg('系统繁忙');
+                return false;
+            }
+        });
+    }
+</script>
+{/if}

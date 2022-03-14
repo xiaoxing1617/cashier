@@ -1,0 +1,591 @@
+{include file='default/head' /}
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space1">
+        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">{$title}</div>
+                <div class="layui-card-body">
+
+                    {if condition="$mode == 'see'"}
+                    <div style="text-align: center;font-size: 19px;font-weight: bold">{$notice['title']}</div>
+                    <hr/>
+                    <div style="font-size: 16px">
+                        {$notice['content']}
+                        <br/>
+                        <div style="text-align: right">{$notice['release_time']}</div>
+                    </div>
+                    {elseif condition="$mode == 'edit' or $mode == 'add'"}
+                    <form class="layui-form layui-form-pane" id="form_data">
+                        <input type="hidden" name="id" value="{$notice['id']?$notice['id']:''}">
+
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">公告标题</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="title" class="layui-input" placeholder="请设置公告标题..."
+                                           value="{$notice['title']?$notice['title']:''}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">公告类型</label>
+                                <div class="layui-input-block">
+                                    <select class="form-control" id="group" name="group">
+                                        {foreach name="group" item="v" key="key"}
+                                        {if condition="isset($notice['group'])"}
+                                        <option value="{$key}" {$notice[
+                                        'group']==$key?"selected":""}>{$v}</option>
+                                        {else}
+                                        <option value="{$key}">{$v}</option>
+                                        {/if}
+                                        {/foreach}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">是否置顶</label>
+                                <div class="layui-input-block">
+                                    {if condition="isset($notice['topping'])"}
+                                    <input type="radio" name="topping" value="1" {$notice['topping']=='1'?'checked':''}
+                                    title="置顶">
+                                    <input type="radio" name="topping" value="0" {$notice['topping']=='0'?'checked':''}
+                                    title="不置顶">
+                                    {else}
+                                    <input type="radio" name="topping" value="1" title="置顶">
+                                    <input type="radio" name="topping" value="0" checked title="不置顶">
+                                    {/if}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">弹出窗口</label>
+                                <div class="layui-input-block">
+                                    {if condition="isset($notice['popup'])"}
+                                    <input type="radio" name="popup" value="1" {$notice['popup']=='1'?'checked':''}
+                                    title="开启弹窗">
+                                    <input type="radio" name="popup" value="0" {$notice['popup']=='0'?'checked':''}
+                                    title="关闭弹窗">
+                                    {else}
+                                    <input type="radio" name="popup" value="1" title="开启弹窗">
+                                    <input type="radio" name="popup" value="0" checked title="关闭弹窗">
+                                    {/if}
+                                </div>
+                            </div>
+                        </div>
+                        <blockquote class="layui-elem-quote layui-quote-nm">
+                            每个公告类型只能设置一个弹窗公告，如果您将当前公告开启弹窗，将会把之前设置的弹窗公告关闭！
+                        </blockquote>
+
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">公告内容</label>
+                                <div class="layui-input-block">
+                                    <textarea name="content" placeholder="请填写公告内容..." class="layui-textarea">{$notice['content']?$notice['content']:''}</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">是否公开</label>
+                                <div class="layui-input-block">
+                                    {if condition="isset($notice['show'])"}
+                                    <input type="radio" name="show" value="1" {$notice['show']=='1'?'checked':''}
+                                    title="开启公开">
+                                    <input type="radio" name="show" value="0" {$notice['show']=='0'?'checked':''}
+                                    title="取消公开">
+                                    {else}
+                                    <input type="radio" name="show" value="1" checked title="开启公开">
+                                    <input type="radio" name="show" value="0" title="取消公开">
+                                    {/if}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">是否需要确认</label>
+                                <div class="layui-input-block">
+                                    {if condition="isset($notice['confirm'])"}
+                                    <input type="radio" name="confirm" value="1" {$notice['confirm']=='1'?'checked':''}
+                                    title="需要确认">
+                                    <input type="radio" name="confirm" value="0" {$notice['confirm']=='0'?'checked':''}
+                                    title="无需确认">
+                                    {else}
+                                    <input type="radio" name="confirm" value="1" title="需要确认">
+                                    <input type="radio" name="confirm" value="0" checked title="无需确认">
+                                    {/if}
+                                </div>
+                            </div>
+                        </div>
+                        <blockquote class="layui-elem-quote layui-quote-nm">
+                            公告类型为[商户公告]时，则需要商户确认收到。后续还会更新更多公告类型，敬请期待！
+                        </blockquote>
+
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">发布时间</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="release_time" id="release_time_input" class="layui-input"
+                                           placeholder="请设置公告发布时间..."
+                                           value="{$notice['release_time']?$notice['release_time']:''}">
+                                </div>
+                            </div>
+                        </div>
+                        <blockquote class="layui-elem-quote layui-quote-nm">
+                            您可以设置当前时间即立即发布，或设置指定发布时间，系统将会自动发布。
+                        </blockquote>
+
+                        <button type="button" class="layui-btn layui-btn-lg layui-btn-fluid" id="form_submit">确认
+                        </button>
+                    </form>
+                    {else}
+                    <!--                    -->
+                    <div class="layui-form search">
+                        <div class="layui-inline">
+                            <select name="search_type" id="search_type">
+                                <option value="id">公告ID</option>
+                                <option value="title">公告标题</option>
+                            </select>
+                        </div>
+                        <div class="layui-inline">
+                            <input class="layui-input" id="search_value" autocomplete="off"
+                                   placeholder="留空查询则重载全部" value="">
+                        </div>
+                        <div class="layui-inline">
+                            <select class="form-control" id="search_pay_type">
+                                <option value="all">全部类型公告</option>
+                                {foreach name="group" item="v" key="key"}
+                                <option value="{$key}">{$v}</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                        <div class="layui-inline">
+                            <input class="layui-input" id="search_uid" autocomplete="off"
+                                   placeholder="发布人UID - 留空则全部" value="">
+                        </div>
+                        <button class="layui-btn" data-type="reload" id="btn_search"><i
+                                class="layui-icon layui-icon-search"></i> 查询
+                        </button>
+                        <a class="layui-btn layui-btn-primary" id="creation_notice">发布新公告</a>
+                    </div>
+
+                    <script type="text/html" id="data_Table_toolbar">
+                        <div class="layui-btn-container">
+                            <button class="layui-btn layui-btn-warm layui-btn-sm" lay-event="del">删除公告</button>
+                            <span style="margin: 0px 6px"></span>
+                            <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="confirm_1">需要确认</button>
+                            <button class="layui-btn layui-btn-danger layui-btn-sm" lay-event="confirm_0">无需确认</button>
+                            <span style="margin: 0px 6px"></span>
+                            <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="show_1">开启公开</button>
+                            <button class="layui-btn layui-btn-danger layui-btn-sm" lay-event="show_0">取消公开</button>
+                            <span style="margin: 0px 6px"></span>
+                            <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="topping_1">设置置顶</button>
+                            <button class="layui-btn layui-btn-danger layui-btn-sm" lay-event="topping_0">取消置顶</button>
+                        </div>
+                    </script>
+
+                    <!-- 表格 -->
+                    <table id="data_Table" lay-filter="data_Table"></table>
+                    <!-- 表格 -->
+
+                    <script type="text/html" id="oper">
+                        <a class="layui-btn layui-btn-xs" lay-event="see">查看</a>
+                        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="edit">编辑</a>
+                        <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="del">删除</a>
+                    </script>
+
+                    <script type="text/html" id="release_time">
+                        {{#  if(d.release_time != "" && d.release_time != null){ }}
+                        {{ d.release_time }}
+                        {{#  }else{ }}
+                        <span style="color: #f00"><b>未知</b></span>
+                        {{#  } }}
+                    </script>
+                    <script type="text/html" id="establish_time">
+                        {{#  if(d.establish_time != "" && d.establish_time != null){ }}
+                        {{ d.establish_time }}
+                        {{#  }else{ }}
+                        <span style="color: #f00"><b>未知</b></span>
+                        {{#  } }}
+                    </script>
+                    <script type="text/html" id="popup">
+                        {{#  if(d.popup=='1'){ }}
+                        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="popup_0">开启弹窗</a>
+                        {{#  }else{ }}
+                        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="popup_1">关闭弹窗</a>
+                        {{#  } }}
+                    </script>
+                    <script type="text/html" id="confirm">
+                        {{#  if(d.confirm=='1'){ }}
+                        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="confirm_0">需要确认</a>
+                        {{#  }else{ }}
+                        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="confirm_1">无需确认</a>
+                        {{#  } }}
+                    </script>
+                    <script type="text/html" id="show">
+                        {{#  if(d.show=='1'){ }}
+                        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="show_0">已公开</a>
+                        {{#  }else{ }}
+                        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="show_1">未公开</a>
+                        {{#  } }}
+                    </script>
+                    <script type="text/html" id="title">
+                        {{#  if(d.topping=='1'){ }}
+                        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="topping_0">已置顶</a>
+                        {{#  }else{ }}
+                        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="topping_1">未置顶</a>
+                        {{#  } }}
+                        &nbsp;{{ d.title }}
+                    </script>
+                    {/if}
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<style id="welcome_style"></style>
+<div class="layui-col-md12">
+    <blockquote class="layui-elem-quote layui-quote-nm">{$core['ADMIN_BOTTOM']}</blockquote>
+</div>
+{if condition="$mode == 'edit' or $mode == 'add'"}
+<script>
+    var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+    layui.use(['form', 'layedit', 'laydate'], function () {
+        var form = layui.form
+            , layer = layui.layer
+            , layedit = layui.layedit
+            , laydate = layui.laydate;
+
+        laydate.render({
+            elem: '#release_time_input'
+            , type: 'datetime'
+        });
+
+        //监听提交
+        $('#form_submit').click(function () {
+            var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+            $.ajax({
+                type: "POST",
+                url: "/admin/NoticeManage/setNotice",
+                data: $('#form_data').serialize() + "&mode={$mode}",
+                dataType: "json",
+                success: function (json) { //SUCCESS
+                    var data = $.parseJSON(json);
+                    if (data.code == 0) {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                            layer.close(indexa);
+                            parent.layer.close(index);
+                        });
+                    } else {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                            layer.close(indexa);
+                            if (data.url != "" && data.url != null) {
+                                window.location.href = data.url;
+                            }
+                        })
+                    }
+                },
+                error: function () { //ERROR
+                    layer.close(Load); //关闭加载
+                    layer.msg('系统繁忙');
+                }
+            });
+        });
+    });
+</script>
+{else}
+<script>
+    layui.use(['jquery', 'form', 'layedit', 'laydate', 'element', 'laytpl', 'table', 'laypage', 'layer', 'carousel', 'slider'], function () {
+        $ = layui.jquery;
+        var form = layui.form //表单
+            , layer = layui.layer  //弹出层
+            , laypage = layui.laypage //分页
+            , layedit = layui.layedit  //元素操作
+            , laydate = layui.laydate  //日期
+            , laytpl = layui.laytpl  //模板引擎
+            , table = layui.table  //表格
+            , element = layui.element;
+//===================数据初始化
+        table.render({
+            elem: '#data_Table'
+            , height: 450
+            , url: '/admin/NoticeManage/getList'
+            , method: "POST"
+            , page: true //开启分页
+            , even: true //开启隔行背景
+            , toolbar: '#data_Table_toolbar'
+            , title: "表格数据"
+            , cols: [[ //表头
+                {type: 'checkbox', fixed: "left"}
+                , {field: 'id', title: 'ID', width: 70, sort: true}
+                , {field: 'browse', title: '已读数量', width: 90}
+                , {field: 'title', title: '公告标题', width: 350, templet: "#title"}
+                , {field: 'group', title: '公告类型', width: 100}
+                , {field: 'uid', title: '发布人', width: 100}
+                , {field: 'fabulous_negative', title: '互动统计', width: 240}
+                , {field: 'popup', title: '弹出窗口', width: 105, templet: "#popup"}
+                , {field: 'confirm', title: '是否需要确认', width: 110, templet: "#confirm"}
+                , {field: 'release_time', title: '发布时间', width: 155, templet: "#release_time"}
+                , {field: 'establish_time', title: '创建时间', width: 155, templet: "#establish_time"}
+                , {field: 'show', title: '公开展示', width: 105, templet: "#show"}
+                , {
+                    field: 'oper',
+                    title: '操作',
+                    width: 190,
+                    unresize: true,
+                    fixed: "right",
+                    align: 'center',
+                    toolbar: '#oper'
+                }
+            ]]
+            , even: true
+            , id: 'data_Table'
+            , limit: 15 //每页默认显示的数量
+            , limits: []//每页条数的选择项
+            , text: {
+                none: '暂无数据'
+            }
+        });
+
+        var $ = layui.$, active = {
+            reload: function () {
+                var search_type = $('#search_type').val();  //搜索类型
+                var search_value = $('#search_value').val();  //搜索内容
+                var search_uid = $('#search_uid').val();  //商户UID
+                var search_pay_type = $('#search_pay_type').val();  //支付方式
+                layer.msg('拼命查询中...', {icon: 16, shade: 0.3, time: 1500});
+                //执行重载
+                table.reload('data_Table', {
+                    page: {
+                        curr: 1 //从第 1 页开始
+                    }
+                    , method: "POST"
+                    //额外接口参数
+                    , where: {
+                        mode: search_type
+                        , value: search_value
+                        , uid: search_uid
+                        , group: search_pay_type
+                    }
+                });
+            }
+        };
+        $("#btn_search").click(function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        })
+        $("#creation_notice").click(function () {
+            oper_url("add", "0");
+        });
+        // $('#btn_search').trigger("click");
+
+
+        //头工具栏事件
+        table.on('toolbar(data_Table)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            var data = checkStatus.data;
+            if (data.length <= 0) {
+                layer.msg("至少选中一条");
+                return;
+            }
+            let ids = [];
+            data.forEach((item) => {
+                ids.push(item.id);
+            });
+            switch (obj.event) {
+                case 'del':
+                    var index1 = layer.confirm('你确定要将所选中的【删除】吗？（' + (checkStatus.isAll ? '已全选' : '选中了' + data.length + ' 条') + '）<br/><span style="color: #f00">1.删除后将无法恢复！！！<br/>2.删除后交易额将会产生影响。<br/><b>请慎重操作，操作后无法撤销！</b></span>', {
+                        btn: ['确认删除', '算了'] //按钮
+                    }, function () {
+                        layer.close(index1);
+                        var index2 = layer.prompt(
+                            {
+                                title: '请输入（6位）安全密码'
+                                , formType: 1
+                                , maxlength: 6
+                            },
+                            function (aqmm) {
+                                layer.close(index2);
+                                oper("del", ids.join(","), aqmm);
+                            });
+                    });
+                    break;
+                case "confirm_0":
+                    oper("confirm_0", ids.join(","));
+                    break;
+                case "confirm_1":
+                    oper("confirm_1", ids.join(","));
+                    break;
+                case "show_0":
+                    oper("show_0", ids.join(","));
+                    break;
+                case "show_1":
+                    oper("show_1", ids.join(","));
+                    break;
+                case "topping_0":
+                    oper("topping_0", ids.join(","));
+                    break;
+                case "topping_1":
+                    oper("topping_1", ids.join(","));
+                    break;
+                default:
+                    layer.msg("不支持该操作类型");
+            }
+            ;
+        });
+
+        //操作
+        table.on('tool(data_Table)', function (obj) {
+            var data = obj.data;
+            var event = obj.event;
+            switch (event) {
+                case "del":
+                    var index1 = layer.confirm('你确定要删除该公告吗？<br/><span style="color: #f00">1.删除后将无法恢复！！！<br/>2.删除后所有浏览记录等数据将清空。<br/><b>请慎重操作！</b></span>', {
+                        btn: ['确认删除', '算了'] //按钮
+                    }, function () {
+                        layer.close(index1);
+                        var index2 = layer.prompt(
+                            {
+                                title: '请输入（6位）安全密码'
+                                , formType: 1
+                                , maxlength: 6
+                            },
+                            function (aqmm) {
+                                layer.close(index2);
+                                oper(event, data.id, aqmm);
+                            });
+                    });
+                    break;
+                case "popup_0":
+                    oper("popup_0", data.id);
+                    break;
+                case "popup_1":
+                    var index1 = layer.confirm('你确定要将该公告设置为【弹出窗口】吗？<br/><span style="color: #f00">确认后将把之前设置弹窗的公告关闭弹窗，把当前公告设置为弹窗公告。<br/><b>每个公告类型只能设置一条弹窗公告！</b></span>', {
+                        btn: ['确认设置', '算了'] //按钮
+                    }, function () {
+                        oper("popup_1", data.id);
+                    });
+                    break;
+                case "confirm_0":
+                    oper("confirm_0", data.id);
+                    break;
+                case "confirm_1":
+                    oper("confirm_1", data.id);
+                    break;
+                case "show_0":
+                    oper("show_0", data.id);
+                    break;
+                case "show_1":
+                    oper("show_1", data.id);
+                    break;
+                case "topping_0":
+                    oper("topping_0", data.id);
+                    break;
+                case "topping_1":
+                    oper("topping_1", data.id);
+                    break;
+                case "see":
+                    oper_url("see", data.id);
+                    break;
+                case "edit":
+                    oper_url("edit", data.id);
+                    break;
+                default:
+                    layer.alert("不支持该操作类型")
+            }
+        });
+
+        function oper_url(mode, id) {
+            if (mode == "see") {
+                var title = "查看公告" + "（ID：" + id + "）";
+            } else if (mode == "edit") {
+                var title = "编辑公告" + "（ID：" + id + "）";
+            }else if(mode=="add"){
+                var title = "发布新公告";
+            } else {
+                return;
+            }
+            layer.open({
+                type: 2,
+                scrollbar: false,
+                title: title,
+                shadeClose: false,
+                shade: 0.3,
+                area: [layerWidth, "90%"],
+                content: "/admin/NoticeManage/?mode=" + mode + "&id=" + id,
+                end: function () {
+                    //执行重载
+                    table.reload('data_Table', {
+                        page: {
+                            curr: 1 //从第 1 页开始
+                        }
+                        , method: "POST"
+                        //额外接口参数
+                        , where: {
+                            mode: "all"
+                            , value: "all"
+                        }
+                    });
+                }
+            });
+        }
+
+        function oper(mode, id, aqmm = "") {
+            var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+            $.ajax({
+                type: "POST",
+                url: "/admin/NoticeManage/oper",
+                data: {"mode": mode, "id": id, "security_password": aqmm},
+                dataType: "json",
+                success: function (json) { //SUCCESS
+                    var data = $.parseJSON(json);
+                    if (data.code == 0) {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                            layer.close(indexa);
+                            //执行重载
+                            table.reload('data_Table', {
+                                page: {
+                                    curr: 1 //从第 1 页开始
+                                }
+                                , method: "POST"
+                                //额外接口参数
+                                , where: {
+                                    mode: "all"
+                                }
+                            });
+                        });
+                    } else {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                            layer.close(indexa);
+                            return false;
+                        })
+                    }
+                },
+                error: function () { //ERROR
+                    layer.close(Load); //关闭加载
+                    layer.msg('系统繁忙');
+                    return false;
+                }
+            });
+        }
+    });
+</script>
+{/if}
+</body>
+</html>

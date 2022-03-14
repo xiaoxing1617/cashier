@@ -1,0 +1,183 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="{$core['describe']}">
+    <meta name="author" content="Webpixels">
+    <title>{$title} - {$core['title']}</title>
+    <!-- Favicon -->
+    <link rel="icon" href="__PUBLIC__/../favicon.ico" type="image/png">
+    <!-- Font Awesome 5 -->
+    <link rel="stylesheet" href="//cdn.bootcdn.net/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Purpose CSS -->
+    <link rel="stylesheet" href="__PUBLIC__/uikit/css/purpose.css" id="stylesheet">
+    <link href="//cdn.bootcss.com/layer/3.0.1/skin/default/layer.css" rel="stylesheet">
+    <style>
+        #qrdiv{
+            position: relative;
+            left: 0px;
+            width: 200px;
+            height: 200px;
+            margin: 0px auto;
+        }
+        #icon{
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background:rgba(0,0,0,0.7);
+            line-height: 200px;
+            text-align: center;
+            color: #fff;
+            font-size: 18px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body class="application application-offset ready">
+<!-- Application container -->
+<div class="container-fluid container-application">
+    <!-- Sidenav -->
+    <!-- Content -->
+    <div class="main-content position-relative">
+        <!-- Page content -->
+        <div class="page-content">
+            <div class="min-vh-100 py-5 d-flex align-items-center">
+                <div class="w-100">
+                    <div class="row justify-content-center">
+                        <div class="col-sm-8 col-lg-4">
+                            <div class="card shadow zindex-100 mb-0">
+                                <div class="card-body px-md-5 py-5">
+                                    <div class="mb-5">
+                                        <h6 class="h3">{$title}</h6>
+                                        <p class="text-muted mb-0" id="msg"></p>
+                                    </div>
+                                    <span class="clearfix"></span>
+                                    <div id="qrdiv">
+                                        <div id="icon" style="display: none"></div>
+                                    <img src="" id="qrimg"
+                                         style="width: 100%;height: 100%;margin: 0px auto;display: none"
+                                         alt="" onclick="getQr()"/>
+                                    </div>
+                                    <input type="hidden" id="sig"/>
+                                </div>
+                                <div class="card-footer px-md-5"><small>还没有账户？</small>
+                                    <a href="/register/" class="small font-weight-bold">立即注册</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+    </div>
+</div>
+<!-- Scripts -->
+<script type="text/javascript" src="//lib.baomitu.com/jquery/3.6.0/jquery.min.js"></script>
+<script src="__PUBLIC__/uikit/js/purpose.js"></script>
+<script src="//cdn.bootcss.com/layer/3.0.1/layer.min.js"></script>
+<script>
+    var num = 0;
+    var sw = true;
+    getQr();
+    function getQr() {
+        sw = true;
+        $("#msg").html("正在获取二维码...");
+        $("#icon").css("display", "block");
+        $("#icon").html("正在获取二维码...");
+        $.ajax({
+            type: "POST",
+            url: "/login/qqlogin/getqr",
+            data: {'': ''},
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                if (data.code == 0) {
+                    $("#qrimg").attr("src", "data:image/jpg;base64," + data.data);
+                    $("#qrimg").css("display", "block");
+                    $("#msg").html("获取二维码成功");
+                    $("#sig").val(data.qrsig);
+                    $("#icon").css("display", "none");
+                    islogin();
+                } else {
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                    })
+                    $("#icon").css("display", "block");
+                    $("#icon").html("获取失败");
+                }
+            },
+            error: function () { //ERROR
+                layer.msg('系统繁忙');
+                return false;
+            }
+        });
+    };
+    setInterval(function (){
+        if(num>=5){
+            $("#msg").html("请重新刷新页面");
+            $("#icon").css("display", "block");
+            $("#icon").html("请重新刷新页面");
+            sw=false;
+            return;
+        }
+        getQr();
+        num++;
+    }, 60000);  //每一分钟获取一次
+
+
+    // 检查是否登录完成
+    function islogin() {
+        if(sw===false){
+            return;
+        }
+        $.ajax({
+            type: "post",
+            dataType: "json",
+            url: "/login/qqlogin/islogin",
+            timeout: 10000, //ajax请求超时时间10s
+            data: {"qrsig": $("#sig").val()}, //post数据
+            success: function (json, textStatus) {
+                var data = $.parseJSON(json);
+                //从服务器得到数据，显示数据并继续查询
+                if (data.code == -1) {
+                    //异常
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                        if (data.url != "" && data.url != null) {
+                            window.location.href = data.url;
+                        }
+                    })
+                } else if (data.code == 4) {
+                    //二维码失效
+                    $("#msg").html("二维码失效，正在重新获取...");
+                    getQr();
+                } else if (data.code == 3) {
+                    //已扫码
+                    $("#msg").html("<span style='color: #f00'>请在手机上确认</span>");
+                    $("#icon").css("display", "block");
+                    $("#icon").html("请在手机上确认");
+                    setTimeout("islogin()", 2000);
+                } else if (data.code == 0) {
+                    //登录成功
+                    layer.msg('登录成功', {icon: 6, shade: 0.3, time: 15000});
+                    window.location.href = data.url;
+                } else {
+                    //其他
+                    $("#msg").html(data.msg);
+                    setTimeout("islogin()", 2000);
+                }
+            },
+            //Ajax请求超时，继续查询
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                if (textStatus == "timeout") {
+                    setTimeout("islogin()", 1000);
+                } else { //异常
+                    setTimeout("islogin()", 4000);
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

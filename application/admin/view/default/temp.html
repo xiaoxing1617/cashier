@@ -1,0 +1,177 @@
+{include file='default/head' /}
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space1">
+        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">{$title}</div>
+                <div class="layui-card-body">
+
+                    <div class="layui-tab layui-tab-brief">
+                        <ul class="layui-tab-title">
+                            <li class="layui-this">首页模板</li>
+                            <li>商户登录模板</li>
+                            <li>后台登录模板</li>
+                            <li>商户注册模板</li>
+                            <li>支付回调模板</li>
+                        </ul>
+<!--         ==================               -->
+                        <div class="layui-tab-content">
+                            <div class="layui-tab-item layui-show">
+
+                                <div class="layui-collapse" lay-accordion>
+                                    {foreach name="$temp['index']" item="v" key="key"}
+                                    <div class="layui-colla-item">
+                                        <h2 class="layui-colla-title">{$v}</h2>
+                                        <div style="text-align: center"
+                                             class="layui-colla-content {$v==$core['index_template']?" layui-show
+                                        ":""}">
+                                        <button type="button" class="layui-btn layui-btn-lg"
+                                                onclick="template('index','{$v}')">设置模板
+                                        </button>
+                                        <hr class="layui-border-red">
+                                        <img src="__PUBLIC__/template-img/index/{$v}.png" class="template-img"/>
+                                    </div>
+                                </div>
+                                {/foreach}
+                            </div>
+
+                        </div>
+<!--         ==================               -->
+<!--         ==================               -->
+                        <div class="layui-tab-item">
+
+                            <div class="layui-collapse" lay-accordion>
+                                {foreach name="$temp['login']" item="v" key="key"}
+                                <div class="layui-colla-item">
+                                    <h2 class="layui-colla-title">{$v}</h2>
+                                    <div style="text-align: center"
+                                         class="layui-colla-content {$v==$core['login_user_template']?" layui-show
+                                    ":""}">
+                                    <button type="button" class="layui-btn layui-btn-lg"
+                                            onclick="template('login_user','{$v}')">设置模板
+                                    </button>
+                                    <hr class="layui-border-red">
+                                    <img src="__PUBLIC__/template-img/login/{$v}_user.png" class="template-img"/>
+                                </div>
+                            </div>
+                            {/foreach}
+                        </div>
+                    </div>
+<!--         ==================               -->
+<!--         ==================               -->
+                        <div class="layui-tab-item">
+
+                            <div class="layui-collapse" lay-accordion>
+                                {foreach name="$temp['login']" item="v" key="key"}
+                                <div class="layui-colla-item">
+                                    <h2 class="layui-colla-title">{$v}</h2>
+                                    <div style="text-align: center"
+                                         class="layui-colla-content {$v==$core['login_admin_template']?" layui-show
+                                    ":""}">
+                                    <button type="button" class="layui-btn layui-btn-lg"
+                                            onclick="template('login_admin','{$v}')">设置模板
+                                    </button>
+                                    <hr class="layui-border-red">
+                                    <img src="__PUBLIC__/template-img/login/{$v}_admin.png" class="template-img"/>
+                                </div>
+                            </div>
+                            {/foreach}
+                        </div>
+
+                    </div>
+<!--         ==================               -->
+                    <div class="layui-tab-item">
+
+                        <div class="layui-collapse" lay-accordion>
+                            {foreach name="$temp['login']" item="v" key="key"}
+                            <div class="layui-colla-item">
+                                <h2 class="layui-colla-title">{$v}</h2>
+                                <div style="text-align: center"
+                                     class="layui-colla-content {$v==$core['register_template']?" layui-show
+                                ":""}">
+                                <button type="button" class="layui-btn layui-btn-lg"
+                                        onclick="template('register','{$v}')">设置模板
+                                </button>
+                                <hr class="layui-border-red">
+                                <img src="__PUBLIC__/template-img/register/{$v}.png" class="template-img"/>
+                            </div>
+                        </div>
+                        {/foreach}
+                    </div>
+
+                    </div>
+<!--         ==================               -->
+                    <div class="layui-tab-item">
+
+                        <div class="layui-collapse" lay-accordion>
+                            {foreach name="$temp['login']" item="v" key="key"}
+                            <div class="layui-colla-item">
+                                <h2 class="layui-colla-title">{$v}</h2>
+                                <div style="text-align: center"
+                                     class="layui-colla-content {$v==$core['return_template']?" layui-show
+                                ":""}">
+                                <button type="button" class="layui-btn layui-btn-lg"
+                                        onclick="template('return','{$v}')">设置模板
+                                </button>
+                                <hr class="layui-border-red">
+                                <img src="__PUBLIC__/template-img/return/{$v}.png" class="template-img"/>
+                            </div>
+                        </div>
+                        {/foreach}
+
+                    </div>
+
+                </div>
+ <!--         ==================               -->
+            </div>
+
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+<style id="welcome_style"></style>
+<div class="layui-col-md12">
+    <blockquote class="layui-elem-quote layui-quote-nm">{$core['ADMIN_BOTTOM']}</blockquote>
+</div>
+<script>
+    layui.use('element', function () {
+        var element = layui.element;
+    });
+
+    function template(mode, val) {
+        var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+        $.ajax({
+            type: "POST",
+            url: "/admin/temp/setTemp",
+            data: {"mode": mode, "val": val},
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                if (data.code == 0) {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                        layer.close(indexa);
+                        window.location.reload();
+                    });
+                } else {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                        if (data.url != "" && data.url != null) {
+                            window.location.href = data.url;
+                        }
+                    })
+                }
+            },
+            error: function () { //ERROR
+                layer.close(Load); //关闭加载
+                layer.msg('系统繁忙');
+            }
+        });
+    }
+</script>
+</body>
+</html>

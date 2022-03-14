@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>支付成功</title>
+    <link href="//res.wx.qq.com/open/libs/weui/2.4.2/weui.min.css" rel="stylesheet">
+    <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <style>
+        .portrait {
+            width: 55px;
+            height: 55px;
+            border-radius: 7px;
+            vertical-align: middle;
+            margin-right: 11px;
+            margin: auto;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="weui-msg">
+    <div class="weui-msg__icon-area">
+        <i class="weui-icon-success weui-icon_msg"></i>
+    </div>
+    <div class="weui-msg__text-area">
+        <h3 class="">支付成功</h3>
+        <div class="ui-ellpisis weui-msg__desc">
+            <div class="ui-ellpisis-content">
+                <div style="-webkit-line-clamp: 1;">
+                    <p></p>
+                </div>
+                <div class="ui-ellpisis-placeholder" style="position: absolute; display: block;"></div>
+            </div>
+            <!---->
+        </div>
+        <p class="weui-msg__desc"><h1>{$money}</h1></p>
+    </div>
+    <div class="weui-msg__opr-area">
+        <p class="weui-btn-area" style="margin-top:50px">
+            <img src="http://q.qlogo.cn/headimg_dl?dst_uin={$qq}&spec=640&img_type=jpg" class="portrait"/>
+        <p class="weui-msg__desc" style="white-space: nowrap;overflow: hidden;text-overflow:ellipsis;padding: 0px 50px">{$nickname}</p>
+            <a href="#" id="close" class="weui-btn weui-btn_default">关闭页面</a>
+        </p>
+    </div>
+    <div class="weui-msg__extra-area">
+        <div class="weui-footer"><p class="weui-footer__links"></p>
+            <p>支付方式：{$type}</p>
+            <p>支付时间：{$date}</p>
+        </div>
+    </div>
+    <a href="#" target="_blank" style="display: none" id="payment_bottom_banner">
+        <img src="" style="width: 82%;border-radius: 8px;border: 2px #eee solid;">
+    </a>
+    <div class="weui-loadmore weui-loadmore_line">
+        <span class="weui-loadmore__tips"><b>{$core['title']}</b> 提供服务</span>
+    </div>
+</div>
+<script type="text/javascript" src="//lib.baomitu.com/jquery/3.6.0/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/layer/3.0.1/layer.min.js"></script>
+<script src="__PUBLIC__/clipboard/clipboard.js"></script>
+<script src="//auth.96xy.cn/static/cashier/app.js"></script>
+<script>
+    $('#close').on('click',function(){
+        {if condition="$client == 'wxpay'"}
+        WeixinJSBridge.call('closeWindow');
+        {elseif condition="$client == 'alipay'"}
+        AlipayJSBridge.call('closeWebview');
+        {elseif condition="$client == 'qqpay'"}
+
+        {else}
+        window.close();
+        window.opener=null;
+        self.opener=null;
+        self.close();
+        {/if}
+            layer.msg("抱歉，请手动关闭");
+        })
+    $(function (){
+        if(window.innerWidth>600){
+            var layerWidth = "46%";
+        }else{
+            var layerWidth = "87%";
+        }
+        $.ajax({
+            type: "POST",
+            url: "/ReturnAd",
+            data: {"":""},
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                if (data.code == 0) {
+                    //修改剪切板
+                    if(data.payment_shear_plate.state==1) {
+                        var clipboard = new ClipboardJS("#close", {
+                            text: function () {
+                                return data.payment_shear_plate.content;
+                            }
+                        });
+                    }
+                    //广告层
+                    if(data.payment_popup_notified.state==1) {
+                        layer.open({
+                            type: 1
+                            ,
+                            title: "广告"
+                            ,
+                            closeBtn: false
+                            ,
+                            area: [layerWidth, "85%"]
+                            ,
+                            shade: 0.5
+                            ,
+                            resize: false
+                            ,
+                            btn: ['关闭']
+                            ,
+                            btnAlign: 'c'
+                            ,
+                            moveType: 1 //拖拽模式，0或者1
+                            ,
+                            content: '<div style="padding: 16px 20px; line-height: 22px; background-color: #ffffff; color: #ffffff; font-weight: 300;color: #000000"><div><article>' + data.payment_popup_notified.content + '</article></div></div>'
+                        });
+                    }
+                    //底部横幅广告
+                    if(data.payment_bottom_banner.state==1) {
+                        $("#payment_bottom_banner").attr("href",data.payment_bottom_banner.data.url);
+                        $("#payment_bottom_banner>img").attr("src","__PUBLIC__/ad-img/"+data.payment_bottom_banner.data.name);
+                        $("#payment_bottom_banner").css("display","block");
+                        $("#payment_bottom_banner>img").css("width",layerWidth);
+                    }
+                }
+            },
+            error: function () { //ERROR
+                layer.msg('系统繁忙');
+            }
+        });
+    })
+</script>
+</body>
+</html>

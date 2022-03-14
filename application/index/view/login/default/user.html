@@ -1,0 +1,173 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="{$core['describe']}">
+    <meta name="author" content="Webpixels">
+    <title>{$title} - {$core['title']}</title>
+    <!-- Favicon -->
+    <link rel="icon" href="__PUBLIC__/../favicon.ico" type="image/png">
+    <!-- Font Awesome 5 -->
+    <link rel="stylesheet" href="//cdn.bootcdn.net/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Purpose CSS -->
+    <link rel="stylesheet" href="__PUBLIC__/uikit/css/purpose.css" id="stylesheet">
+    <link href="//cdn.bootcss.com/layer/3.0.1/skin/default/layer.css" rel="stylesheet">
+</head>
+
+<body class="application application-offset ready">
+<!-- Application container -->
+<div class="container-fluid container-application">
+    <!-- Sidenav -->
+    <!-- Content -->
+    <div class="main-content position-relative">
+        <!-- Page content -->
+        <div class="page-content">
+            <div class="min-vh-100 py-5 d-flex align-items-center">
+                <div class="w-100">
+                    <div class="row justify-content-center">
+                        <div class="col-sm-8 col-lg-4">
+                            <div class="card shadow zindex-100 mb-0">
+                                <div class="card-body px-md-5 py-5">
+                                    <div class="mb-5">
+                                        <h6 class="h3">{$title}</h6>
+                                        <p class="text-muted mb-0">{$core['title']}</p>
+                                    </div>
+                                    <span class="clearfix"></span>
+                                    <form id="login_form">
+                                        <div class="form-group">
+                                            <label class="form-control-label">账号</label>
+                                            <div class="input-group input-group-merge">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-user"></i></span>
+                                                </div>
+                                                <input type="email" class="form-control" name="account"
+                                                       id="input-account" placeholder="请输入账号....">
+                                            </div>
+                                        </div>
+                                        <div class="form-group mb-4">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div>
+                                                    <label class="form-control-label">密码</label>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <a href="#"
+                                                       class="small text-muted text-underline--dashed border-primary">忘记密码？</a>
+                                                </div>
+                                            </div>
+                                            <div class="input-group input-group-merge">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-key"></i></span>
+                                                </div>
+                                                <input type="password" class="form-control" name="password"
+                                                       id="input-password" placeholder="请输入密码....">
+                                                <div class="input-group-append">
+                            <span class="input-group-text">
+                              <a href="#" data-toggle="password-text" data-target="#input-password">
+                                <i class="far fa-eye"></i>
+                              </a>
+                            </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {if condition="$user_login_switch == 1"}
+                                        <!--                    验证码                        -->
+                                        <div class="form-group mb-4">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div>
+                                                    <label class="form-control-label">验证码</label>
+                                                </div>
+                                            </div>
+                                            <div class="input-group input-group-merge">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-code"></i></span>
+                                                </div>
+                                                <input type="text" class="form-control" name="captcha"
+                                                       placeholder="请输入验证码....">
+                                                <div class="input-group-append">
+                            <span class="input-group-text" style="padding: 0">
+                              <img title="点击刷新验证码" src="/get_captcha?mode=user_login" id="code_img"
+                                   onClick="this.src='/get_captcha?mode=user_login';" style="height: 100%;width: 150px"/>
+                            </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {/if}
+                                        <div class="mt-4">
+                                            <button type="button" id="sign_in"
+                                                    class="btn btn-sm btn-primary btn-icon rounded-pill">
+                                                <span class="btn-inner--text">立即登录</span>
+                                                <span class="btn-inner--icon"><i
+                                                        class="fa fa-long-arrow-alt-right"></i></span>
+                                            </button>
+                                        </div>
+                                    </form>
+                                    <div>
+                                        {if condition="$core['veloce_qqlogin'] == '1'"}
+                                        <a href="/login/qqlogin">
+                                        <img src="__PUBLIC__/icon/qq.png" width="90" style="margin:0px auto;display: block">
+                                        </a>
+                                        {/if}
+                                    </div>
+                                </div>
+                                <div class="card-footer px-md-5"><small>还没有账户？</small>
+                                    <a href="/register/" class="small font-weight-bold">立即注册</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+    </div>
+</div>
+<!-- Scripts -->
+<script type="text/javascript" src="//lib.baomitu.com/jquery/3.6.0/jquery.min.js"></script>
+<script src="__PUBLIC__/uikit/js/purpose.js"></script>
+<script src="//cdn.bootcss.com/layer/3.0.1/layer.min.js"></script>
+<script>
+    {if condition="$user_login_switch == 1"}
+    var interval;
+    $('#code_img').on('load', function() {
+        clearInterval(interval);
+        interval = setInterval(function () {
+            $("#code_img").trigger("click");
+        }, 120000);  //2分钟自动刷新
+    });
+    {/if}
+    $("#sign_in").click(function () {
+        var Load = layer.load(2, {shade: [0.1, '#000']}); //开始加载
+        $.ajax({
+            type: "POST",
+            url: "/login_handle",
+            data: $.param({mode: 'user'}) + '&' + $('#login_form').serialize(),
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                if (data.code == 0) {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                        layer.close(indexa);
+                        window.location.href = data.url;
+                    });
+                } else {
+                    layer.close(Load); //关闭加载
+                    {if condition="$user_login_switch == 1"}
+                    if(data.code==101){
+                        $("#code_img").trigger("click");
+                    }
+                    {/if}
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                    })
+                }
+            },
+            error: function () { //ERROR
+                layer.close(Load); //关闭加载
+                layer.msg('系统繁忙');
+                return false;
+            }
+        });
+    });
+</script>
+</body>
+</html>

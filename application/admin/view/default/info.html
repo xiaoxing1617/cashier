@@ -1,0 +1,316 @@
+{include file='default/head' /}
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space1">
+        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">{$title}</div>
+                <div class="layui-card-body">
+
+                    <form class="layui-form layui-form-pane" id="form_data">
+
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">网站标题</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="title" class="layui-input" placeholder="请填写网站标题..."
+                                           value="{$core['title']}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">网站小标题</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="subtitle" class="layui-input" placeholder="请填写网站小标题..."
+                                           value="{$core['subtitle']}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">网站关键字</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="keyword" class="layui-input" placeholder="请填写网站关键字..."
+                                           value="{$core['keyword']}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">网站描述</label>
+                                <div class="layui-input-block">
+                                    <textarea name="describe" placeholder="请填写网站描述..." class="layui-textarea">{$core['describe']}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">底部信息</label>
+                                <div class="layui-input-block">
+                                    <textarea name="bottom_info" placeholder="请填写底部信息..." class="layui-textarea">{$core['bottom_info']}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <blockquote class="layui-elem-quote layui-quote-nm">该信息将在网站首页底部显示，可以用于展示备案号等，支持HTML代码。
+                        </blockquote>
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">站长QQ</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="qq" class="layui-input" placeholder="请填写站长QQ..."
+                                           value="{$core['qq']}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">开启注册</label>
+                                <div class="layui-input-block">
+                                    <input type="radio" name="register_open" {$core['register_open']=="0"?"checked":""} value="0" title="关闭">
+                                    <input type="radio" name="register_open" {$core['register_open']=="1"?"checked":""} value="1" title="开启">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">QQ快捷登录</label>
+                                <div class="layui-input-block">
+                                    <input type="radio" name="veloce_qqlogin" {$core['veloce_qqlogin']=="0"?"checked":""} value="0" title="关闭">
+                                    <input type="radio" name="veloce_qqlogin" {$core['veloce_qqlogin']=="1"?"checked":""} value="1" title="开启">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">后台css样式</label>
+                                <div class="layui-input-block">
+                                    <select name="home_template" lay-filter="home_template">
+                                        {foreach name="home_template_array" item="v" key="key"}
+                                        <option value="{$v}" {$core[
+                                        'home_template']==$v?"selected":""}>{$v}</option>
+                                        {/foreach}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">订单号前缀</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="order_prefix" class="layui-input" placeholder="请设置订单号前缀..."
+                                           value="{$core['order_prefix']}">
+                                </div>
+                            </div>
+                            <blockquote class="layui-elem-quote layui-quote-nm">
+                                发起支付时生成的系统订单号的前缀，2-3个字符，只能是数字和字母，可留空！
+                            </blockquote>
+                        </div>
+
+                        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+                            <legend>收款服务能力</legend>
+                        </fieldset>
+                        <blockquote class="layui-elem-quote layui-quote-nm">W：什么是收款服务能力？<br/>A：商户的收款权限能力，当服务到期后将无法进行正常收款。
+                        </blockquote>
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">续费价格</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="collection_cost" class="layui-input"
+                                           placeholder="请填写收款服务续费价格..." value="{$core['collection_cost']}">
+                                </div>
+                                <blockquote class="layui-elem-quote layui-quote-nm">这里指的是<span
+                                        style="color: #f00">一个月</span>续费的价格/元。
+                                </blockquote>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">收款UID</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="system_uid" class="layui-input" placeholder="请填写收款服务UID..."
+                                           value="{$core['system_uid']}">
+                                </div>
+                                <blockquote class="layui-elem-quote layui-quote-nm">这里指当<span
+                                        style="color: #f00">商户续费服务</span>时，支付给哪个商户UID。
+                                </blockquote>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">注册赠送天数</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="free_collection_service_days" class="layui-input"
+                                           placeholder="请填写正整数天数..." value="{$core['free_collection_service_days']}">
+                                </div>
+                                <blockquote class="layui-elem-quote layui-quote-nm">商户注册后赠送指定天数的<span
+                                        style="color: #f00">收款服务能力</span>，填0则不赠送。
+                                </blockquote>
+                            </div>
+                        </div>
+                        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+                            <legend>Demo演示收款</legend>
+                        </fieldset>
+                        <blockquote class="layui-elem-quote layui-quote-nm">W：什么是演示收款？<br/>A：访问者可在首页打开演示收款页面，扫描二维码体验收银台。
+                        </blockquote>
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">开启演示</label>
+                                <div class="layui-input-block">
+                                    <input type="radio" lay-filter="demo_open" lay-skin="radio" name="demo_open" {$core['demo_pay']=="0"?"checked":""} value="0" title="关闭">
+                                    <input type="radio" lay-filter="demo_open" lay-skin="radio" name="demo_open" {$core['demo_pay']!="0"?"checked":""} value="1" title="开启">
+                                </div>
+                            </div>
+                        </div>
+                        <div id="demo_div" style="display:{$core['demo_pay']!="0"?"block":"none"};">
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">收款UID</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="demo_uid" class="layui-input" placeholder="请填写演示收款UID..."
+                                           value="{$core['demo_uid']}">
+                                </div>
+                                <blockquote class="layui-elem-quote layui-quote-nm">这里指当访问者<span style="color: #f00">扫描演示付款</span>时，支付给哪个商户UID。
+                                </blockquote>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">收款码模板</label>
+                                <div class="layui-input-block">
+                                    <select name="demo_pay" lay-filter="aihao">
+                                        <option value="">请选择收款模板</option>
+                                        {foreach name="payment_array" item="v" key="key"}
+                                        <option value="{$v.alias}" {$core[
+                                        'demo_pay']==$v.alias?"selected":""}>{$v.name}</option>
+                                        {/foreach}
+                                    </select>
+                                </div>
+                                <blockquote class="layui-elem-quote layui-quote-nm">这里指演示<span
+                                        style="color: #f00">收款码</span>模板样式。
+                                </blockquote>
+                            </div>
+                        </div>
+                        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+                            <legend>验证码图片</legend>
+                        </fieldset>
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">字符集合</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="captcha_code" class="layui-input" placeholder="请填写验证码集合..."
+                                           value="{$core['captcha_code']}">
+                                </div>
+                                <blockquote class="layui-elem-quote layui-quote-nm">
+                                    必须是8-64位，且只能是数字或大小写字母。生成验证码图片时，将在验证码集合里随机获取4个字符作为验证码图片。
+                                </blockquote>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">后台登录</label>
+                                <div class="layui-input-block">
+                                    <input type="radio" lay-filter="admin_login" lay-skin="radio" name="admin_login_switch" {$core['captcha_switch']['admin_login']==0?"checked":""} value="0" title="关闭">
+                                    <input type="radio" lay-filter="admin_login" lay-skin="radio" name="admin_login_switch" {$core['captcha_switch']['admin_login']==1?"checked":""} value="1" title="开启">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">商户登录</label>
+                                <div class="layui-input-block">
+                                    <input type="radio" lay-filter="user_login" lay-skin="radio" name="user_login_switch" {$core['captcha_switch']['user_login']==0?"checked":""} value="0" title="关闭">
+                                    <input type="radio" lay-filter="user_login" lay-skin="radio" name="user_login_switch" {$core['captcha_switch']['user_login']==1?"checked":""} value="1" title="开启">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">商户注册</label>
+                                <div class="layui-input-block">
+                                    <input type="radio" lay-filter="user_register" lay-skin="radio" name="user_register_switch" {$core['captcha_switch']['user_register']==0?"checked":""} value="0" title="关闭">
+                                    <input type="radio" lay-filter="user_register" lay-skin="radio" name="user_register_switch" {$core['captcha_switch']['user_register']==1?"checked":""} value="1" title="开启">
+                                </div>
+                            </div>
+                        </div>
+                        <blockquote class="layui-elem-quote layui-quote-nm">
+                            以上开关建议开启，防止恶意提交等等
+                        </blockquote>
+
+                </div>
+
+                        <button type="button" class="layui-btn layui-btn-lg" id="form_submit">立即修改</button>
+                        <button type="reset" class="layui-btn layui-btn-primary layui-btn-lg">重置</button>
+
+
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<style id="welcome_style"></style>
+<div class="layui-col-md12">
+    <blockquote class="layui-elem-quote layui-quote-nm">{$core['ADMIN_BOTTOM']}</blockquote>
+</div>
+<script>
+    layui.use(['form', 'layedit', 'laydate'], function () {
+        var form = layui.form
+            , layer = layui.layer
+            , layedit = layui.layedit
+            , laydate = layui.laydate;
+
+
+        form.on('radio(demo_open)', function(data){
+            var val = data.value;
+            if (val == "1") {
+                $("#demo_div").css("display", "block");
+            } else {
+                $("#demo_div").css("display", "none");
+            }
+        });
+
+
+        //监听提交
+        $('#form_submit').click(function (){
+            var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+            $.ajax({
+                type: "POST",
+                url: "/admin/info/setInfo",
+                data: $('#form_data').serialize(),
+                dataType: "json",
+                success: function (json) { //SUCCESS
+                    var data = $.parseJSON(json);
+                    if (data.code == 0) {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                            layer.close(indexa);
+                            window.location.reload();
+                        });
+                    } else {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                            layer.close(indexa);
+                            if(data.url!="" && data.url!=null){
+                                window.location.href=data.url;
+                            }
+                        })
+                    }
+                },
+                error: function () { //ERROR
+                    layer.close(Load); //关闭加载
+                    layer.msg('系统繁忙');
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

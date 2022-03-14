@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>等待支付</title>
+    <link href="//res.wx.qq.com/open/libs/weui/2.4.2/weui.min.css" rel="stylesheet">
+    <meta id="viewport" name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+</head>
+<body>
+
+<div class="weui-msg">
+    <div class="weui-msg__icon-area">
+        <i class="weui-icon-waiting weui-icon_msg"></i>
+    </div>
+    <div class="weui-msg__text-area">
+        <h3 class="">{$money}</h3>
+        <div class="ui-ellpisis weui-msg__desc">
+            <div class="ui-ellpisis-content">
+                <div style="-webkit-line-clamp: 1;">
+                    <p></p>
+                </div>
+                <div class="ui-ellpisis-placeholder" style="position: absolute; display: block;"></div>
+            </div>
+            <!---->
+        </div>
+        <p class="weui-msg__desc">
+        <h1>等待支付</h1></p>
+    </div>
+    <div class="weui-msg__opr-area">
+        <p class="weui-btn-area" style="margin-top:50px">
+            <button type="button" onclick="callpay()" id="pay" class="weui-btn weui-btn_default">立即支付</button>
+        </p>
+    </div>
+    <div class="weui-msg__extra-area">
+        <div class="weui-footer"><p class="weui-footer__links"></p></div>
+    </div>
+</div>
+<script type="text/javascript" src="//lib.baomitu.com/jquery/3.6.0/jquery.min.js"></script>
+<script type="text/javascript" src="//lib.baomitu.com/layer/3.1.1/layer.min.js"></script>
+<script>
+    $(document).on('touchmove', function (e) {
+        e.preventDefault();
+    });
+
+    //调用微信JS api 支付
+    function jsApiCall() {
+        WeixinJSBridge.invoke('getBrandWCPayRequest', {$jsApiParameters}, function (res) {
+            if (res.err_msg == "get_brand_wcpay_request:ok") {
+                loadmsg();
+            }
+        });
+    }
+
+    function callpay() {
+        if (typeof WeixinJSBridge == "undefined") {
+            if (document.addEventListener) {
+                document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+            } else if (document.attachEvent) {
+                document.attachEvent('WeixinJSBridgeReady', jsApiCall);
+                document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+            }
+        } else {
+            jsApiCall();
+        }
+    }
+
+    // 检查是否支付完成
+    function loadmsg() {
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "/is_order/",
+            timeout: 10000, //ajax请求超时时间10s
+            data: {"out_trade_no": "{$out_trade_no}"}, //post数据
+            success: function (json, textStatus) {
+                var data = $.parseJSON(json);
+                //从服务器得到数据，显示数据并继续查询
+                if (data.code == 1) {
+                    layer.msg('支付成功', {icon: 16, shade: 0.01, time: 15000});
+                    window.location.href = '{$redirect_url}';
+                } else {
+                    setTimeout("loadmsg()", 2000);
+                }
+            }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+                if (textStatus == "timeout") {
+                    setTimeout("loadmsg()", 1000);
+                } else { //异常
+                    setTimeout("loadmsg()", 4000);
+                }
+            }
+        });
+    }
+
+    window.onload = callpay();
+</script>
+</body>
+</html>

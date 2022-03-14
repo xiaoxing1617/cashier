@@ -1,0 +1,18 @@
+{
+  "name":"彩虹易支付",
+  "alias": "epay",
+  "author":"彩虹",
+  "date":"2021-07-24 11:10:00",
+  "remarks": "本接口由彩虹团队开发的易支付SDK接口，接口地址<b>【开头必须带http或https，结尾须带/】</b>，否则将无法跳转支付。",
+  "qq":"511168030",
+  "support":["alipay","wxpay","qqpay"],
+  "url":"http://blog.cccyun.cn/",
+  "form":{
+    "value1_name": "接口地址",
+    "value1_type": "text",
+    "value2_name": "商户ID",
+    "value2_type": "text",
+    "value3_name": "商户密钥",
+    "value3_type": "text"
+  }
+}

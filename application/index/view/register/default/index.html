@@ -1,0 +1,268 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="{$core['describe']}">
+    <meta name="author" content="Webpixels">
+    <title>{$title} - {$core['title']}</title>
+    <!-- Favicon -->
+    <link rel="icon" href="__PUBLIC__/../favicon.ico" type="image/png">
+    <!-- Font Awesome 5 -->
+    <link rel="stylesheet" href="//cdn.bootcdn.net/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Purpose CSS -->
+    <link rel="stylesheet" href="__PUBLIC__/uikit/css/purpose.css" id="stylesheet">
+    <link href="//cdn.bootcss.com/layer/3.0.1/skin/default/layer.css" rel="stylesheet">
+</head>
+
+<body class="application application-offset ready">
+<!-- Application container -->
+<div class="container-fluid container-application">
+    <!-- Sidenav -->
+    <!-- Content -->
+    <div class="main-content position-relative">
+        <!-- Page content -->
+        <div class="page-content">
+            <div class="min-vh-100 py-5 d-flex align-items-center">
+                <div class="w-100">
+                    <div class="row justify-content-center">
+                        <div class="col-sm-12 col-lg-8">
+                            <div class="card shadow zindex-100 mb-0">
+                                <div class="card-body px-md-5 py-5">
+                                    <div class="mb-4">
+                                        <h6 class="h3">{$title}</h6>
+                                        <p class="text-muted mb-0">{$core['title']}</p>
+                                    </div>
+                                    <span class="clearfix"></span>
+                                    <form id="register_form">
+                                        <div class="form-group mb-2">
+                                            <label class="form-control-label">绑定邮箱</label>
+                                            <div class="input-group input-group-merge">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i
+                                                            class="fa fa-envelope"></i></span>
+                                                </div>
+                                                <input type="email" class="form-control" name="email"
+                                                       id="input-email" placeholder="请填写电子邮箱....">
+                                            </div>
+                                            <p class="text-muted mb-0" style="font-size:14px">非常重要，请慎重填写！</p>
+                                        </div>
+                                        <div class="form-group mb-2">
+                                            <label class="form-control-label">验证码</label>
+                                            <div class="input-group input-group-merge">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-code"></i></span>
+                                                </div>
+                                                <input type="text" class="form-control" name="captcha"
+                                                       id="input-captcha" placeholder="验证码">
+                                                <div class="input-group-append">
+
+                                                    <button type="button" id="send_captcha"
+                                                            class="btn btn-sm btn-primary btn-icon">
+                                                        <span class="btn-inner--text">发送验证码</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group mb-2">
+                                            <label class="form-control-label">账号</label>
+                                            <div class="input-group input-group-merge">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-user"></i></span>
+                                                </div>
+                                                <input type="text" class="form-control" name="account"
+                                                       id="input-account" placeholder="请设置账号....">
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group mb-2">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div>
+                                                    <label class="form-control-label">密码</label>
+                                                </div>
+                                            </div>
+                                            <div class="input-group input-group-merge">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-key"></i></span>
+                                                </div>
+                                                <input type="password" class="form-control" name="password"
+                                                       id="input-password" placeholder="请设置密码....">
+                                                <div class="input-group-append">
+                            <span class="input-group-text">
+                              <a href="#" data-toggle="password-text" data-target="#input-password">
+                                <i class="far fa-eye"></i>
+                              </a>
+                            </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group mb-2">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div>
+                                                    <label class="form-control-label">再次输入</label>
+                                                </div>
+                                            </div>
+                                            <div class="input-group input-group-merge">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                                                </div>
+                                                <input type="password" class="form-control" name="password_repeat"
+                                                       id="input-password_repeat" placeholder="再次输入密码....">
+                                                <div class="input-group-append">
+                            <span class="input-group-text">
+                              <a href="#" data-toggle="password-text" data-target="#input-password_repeat">
+                                <i class="far fa-eye"></i>
+                              </a>
+                            </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group mb-2">
+                                            <label class="form-control-label">QQ号码</label>
+                                            <div class="input-group input-group-merge">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-user-circle"></i></span>
+                                                </div>
+                                                <input type="text" class="form-control" name="qq"
+                                                       id="input-qq" placeholder="请填写QQ号码....">
+                                            </div>
+                                            <p class="text-muted mb-0" style="font-size:14px">用于获取头像及昵称</p>
+                                        </div>
+                                        {if condition="$user_register_switch == 1"}
+                                        <!--                    验证码                        -->
+                                        <div class="form-group mb-2">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div>
+                                                    <label class="form-control-label">校验码</label>
+                                                </div>
+                                            </div>
+                                            <div class="input-group input-group-merge">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-code"></i></span>
+                                                </div>
+                                                <input type="text" class="form-control" name="code"
+                                                       placeholder="请输入校验码....">
+                                                <div class="input-group-append">
+                            <span class="input-group-text" style="padding: 0">
+                              <img title="点击刷新校验码" src="/get_captcha?mode=user_register" id="code_img"
+                                   onClick="this.src='/get_captcha?mode=user_register';" style="height: 100%;width: 150px"/>
+                            </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {/if}
+                                        <div class="mt-4">
+                                            <button type="button" id="sign_in"
+                                                    class="btn btn-sm btn-primary btn-icon rounded-pill">
+                                                <span class="btn-inner--text">立即注册</span>
+                                                <span class="btn-inner--icon"><i
+                                                        class="fa fa-plane"></i></span>
+                                            </button>
+                                            <small>注册即同意</small><a href="/agreement" class="small font-weight-bold">服务协议</a>
+                                        </div>
+                                        <input type="hidden" id="input-only" name="only"/>
+                                    </form>
+                                </div>
+                                <div class="card-footer px-md-5"><small>已有账户？</small>
+                                    <a href="/login/" class="small font-weight-bold">立即登录</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+    </div>
+</div>
+<!-- Scripts -->
+<script type="text/javascript" src="//lib.baomitu.com/jquery/3.6.0/jquery.min.js"></script>
+<script src="__PUBLIC__/uikit/js/purpose.js"></script>
+<script src="//cdn.bootcss.com/layer/3.0.1/layer.min.js"></script>
+<script>
+    {if condition="$user_register_switch == 1"}
+    var interval;
+    $('#code_img').on('load', function() {
+        clearInterval(interval);
+        interval = setInterval(function () {
+            $("#code_img").trigger("click");
+        }, 120000);  //2分钟自动刷新
+    });
+    {/if}
+    $("#sign_in").click(function () {
+        var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+        $.ajax({
+            type: "POST",
+            url: "/register_handle",
+            data: $('#register_form').serialize(),
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                if (data.code == 0) {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.msg(data.msg, {time: 2000, icon: 6}, function () {
+                        layer.close(indexa);
+                        window.location.href = data.url;
+                    });
+                } else {
+                    layer.close(Load); //关闭加载
+                    {if condition="$user_register_switch == 1"}
+                    if(data.code==101){
+                        $("#code_img").trigger("click");
+                    }
+                    {/if}
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                    })
+                }
+            },
+            error: function () { //ERROR
+                layer.close(Load); //关闭加载
+                layer.msg('系统繁忙');
+                return false;
+            }
+        });
+    });
+    $("#send_captcha").click(function () {
+        var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+        $.ajax({
+            type: "POST",
+            url: "/send_captcha",
+            data: {"type":"email","email":$("#input-email").val()},
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                if (data.code == 0) {
+                    layer.close(Load); //关闭加载
+                    var time_s = 60;
+                    var timeInterval = setInterval(function() {
+                        time_s--;
+                        if (time_s <= 0) {
+                            $('#send_captcha').attr("disabled", false);
+                            $("#send_captcha").text('发送验证码');
+                            clearInterval(timeInterval);
+                        } else {
+                            $('#send_captcha').attr("disabled", true);
+                            $("#send_captcha").text(time_s + '秒后重新发送');
+                        }
+                    }, 1000);
+                    $('#input-only').val(data.only);
+                    var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                        layer.close(indexa);
+                    });
+                } else {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                    })
+                }
+            },
+            error: function () { //ERROR
+                layer.close(Load); //关闭加载
+                layer.msg('系统繁忙');
+                return false;
+            }
+        });
+    });
+</script>
+</body>
+</html>

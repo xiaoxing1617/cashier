@@ -1,0 +1,146 @@
+{include file='default/head' /}
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space1">
+        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">{$title}</div>
+                <div class="layui-card-body">
+
+                    <div class="layui-form search">
+                        <div class="layui-inline">
+                            <select name="search_type" id="search_type">
+                                <option value="uid">商户UID</option>
+                                <option value="service_trade_no">续费订单号</option>
+                                <option value="out_trade_no">系统订单号</option>
+                                <option value="month">续费月数</option>
+                            </select>
+                        </div>
+                        <div class="layui-inline">
+                            <input class="layui-input" name="search_value" id="search_value" autocomplete="off"
+                                   placeholder="留空查询则重载全部" value="">
+                        </div>
+                        <button class="layui-btn" data-type="reload" id="btn_search"><i
+                                class="layui-icon layui-icon-search"></i> 查询
+                        </button>
+                    </div>
+                    <!-- 表格 -->
+                    <table id="data_Table" lay-filter="data_Table"></table>
+                    <!-- 表格 -->
+
+
+                    <script type="text/html" id="oper">
+                        <a class="layui-btn layui-btn-xs" lay-event="info" href="/admin/bill/?out_trade_no={{d.out_trade_no}}">查询订单</a>
+                    </script>
+
+                    <script type="text/html" id="out_trade_no">
+                        {{#  if(d.out_trade_no != "" && d.out_trade_no != null){ }}
+                        {{ d.out_trade_no }}
+                        {{#  }else{ }}
+                        无
+                        {{#  } }}
+                    </script>
+                    <script type="text/html" id="service_trade_no">
+                        {{#  if(d.service_trade_no != "" && d.service_trade_no != null){ }}
+                        {{ d.service_trade_no }}
+                        {{#  }else{ }}
+                        <span style="color: #f00"><b>无</b></span>
+                        {{#  } }}
+                    </script>
+                    <script type="text/html" id="type_temp">
+                        <img style="vertical-align:middle" src="__PUBLIC__/icon/{{ d.type_icon }}" width="17"> <b>{{ d.type }}</b>
+                    </script>
+                    <script type="text/html" id="payment_time">
+                        {{#  if(d.payment_time != "" && d.payment_time != null){ }}
+                        {{ d.out_trade_no }}
+                        {{#  }else{ }}
+                        <span style="color: #f00"><b>无</b></span>
+                        {{#  } }}
+                    </script>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style id="welcome_style"></style>
+<div class="layui-col-md12">
+    <blockquote class="layui-elem-quote layui-quote-nm">{$core['ADMIN_BOTTOM']}</blockquote>
+</div>
+<script>
+    layui.use(['jquery', 'form', 'layedit', 'laydate', 'element', 'laytpl', 'table', 'laypage', 'layer', 'carousel', 'slider'], function () {
+        $ = layui.jquery;
+        var form = layui.form //表单
+            , layer = layui.layer  //弹出层
+            , laypage = layui.laypage //分页
+            , layedit = layui.layedit  //元素操作
+            , laydate = layui.laydate  //日期
+            , laytpl = layui.laytpl  //模板引擎
+            , table = layui.table  //表格
+            , element = layui.element;
+//===================数据初始化
+        table.render({
+            elem: '#data_Table'
+            , height: 450
+            , url: '/admin/Renew/getList'
+            , method: "POST"
+            , page: true //开启分页
+            , even: true //开启隔行背景
+            , toolbar: '#data_Table_toolbar'
+            , title: "表格数据"
+            , cols: [[ //表头
+                {field: 'id', title: 'ID', width: 70, sort: true, fixed: "left"}
+                , {field: 'out_trade_no', title: '系统订单号', width: 200, templet: "#out_trade_no"}
+                , {field: 'service_trade_no', title: '续费订单号', width: 200, templet: "#service_trade_no"}
+                , {field: 'month', title: '续费月数', width: 100}
+                , {field: 'uid', title: '续费商户UID', width: 100}
+                , {field: 'type', title: '支付方式', width: 100, templet: "#type_temp"}
+                , {field: 'money', title: '支付金额', width: 100}
+                , {field: 'payment_time', title: '支付时间', width: 155, templet: "#payment_time"}
+                , {
+                    field: 'oper',
+                    title: '操作',
+                    width: 120,
+                    unresize: true,
+                    fixed: "right",
+                    align: 'center',
+                    toolbar: '#oper'
+                }
+            ]]
+            , even: true
+            , id: 'data_Table'
+            , limit: 15 //每页默认显示的数量
+            , limits:[]//每页条数的选择项
+            , text: {
+                none: '暂无数据'
+            }
+        });
+        var $ = layui.$, active = {
+            reload: function () {
+                var search_type = $('#search_type').val();  //搜索类型
+                var search_value = $('#search_value').val();  //搜索内容
+                layer.msg('拼命查询中...', {icon: 16, shade: 0.3, time: 1500});
+                //执行重载
+                table.reload('data_Table', {
+                    page: {
+                        curr: 1 //从第 1 页开始
+                    }
+                    , method: "POST"
+                    //额外接口参数
+                    , where: {
+                        mode: search_type
+                        , value: search_value
+                    }
+                });
+            }
+        };
+        $("#btn_search").click(function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        })
+
+    });
+</script>
+</body>
+</html>

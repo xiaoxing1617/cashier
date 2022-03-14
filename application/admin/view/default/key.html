@@ -1,0 +1,100 @@
+{include file='default/head' /}
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space1">
+        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">{$title}</div>
+                <div class="layui-card-body">
+
+                    <form class="layui-form layui-form-pane">
+
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">系统KEY</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="key" class="layui-input" value="{$core['key']}" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                        <button type="button" class="layui-btn layui-btn-lg layui-btn-fluid" id="form_submit">重置KEY</button>
+                        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+                            <legend>监控地址</legend>
+                        </fieldset>
+                    <blockquote class="layui-elem-quote"><h3>
+                        <b>重新异步回调通知：{$domain}/again_notify?key={$core['key']}</b>
+                        <br/>
+                        给第三方订单发送异步回调通知，必须监控！！！至少每一分钟监控一次，服务器牛逼的话也可以每30秒监控一次！
+                        <br/>
+                        （如果有订单初次支付完成后出现异步通知失败的时候，此条监控任务可以自动重新通知。具体通知详情请见<a href="https://www.kancloud.cn/xingyi/kfwd/2396471" target="_blank" style="color:#00f;">开发文档</a>）
+                    </h3></blockquote>
+
+                    <blockquote class="layui-elem-quote"><h3>
+                        <b>微信TXT文件定时清理：{$domain}/deltxt?key={$core['key']}</b>
+                        <br/>
+                        定时清理商户添加的微信公众号TXT文件，删除后接口依然正常使用，每天0点监控一次即可！
+                    </h3></blockquote>
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<style id="welcome_style"></style>
+<div class="layui-col-md12">
+    <blockquote class="layui-elem-quote layui-quote-nm">{$core['ADMIN_BOTTOM']}</blockquote>
+</div>
+<script>
+    layui.use(['form', 'layedit', 'laydate'], function () {
+        var form = layui.form
+            , layer = layui.layer
+            , layedit = layui.layedit
+            , laydate = layui.laydate;
+
+
+        //监听提交
+        $('#form_submit').click(function (){
+            var index1 = layer.confirm('你确定要重置系统KEY吗？<br/><span style="color: #f00">1.重置后之前的KEY将废除，无法恢复！！！<br/>2.重置后请尽快修改相关监控地址。<br/><b>请慎重操作，操作后无法撤销！</b></span>', {
+                btn: ['确认重置', '算了'] //按钮
+            }, function () {
+                layer.close(index1);
+            var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+            $.ajax({
+                type: "POST",
+                url: "/admin/key/setKey",
+                data: {"":""},
+                dataType: "json",
+                success: function (json) { //SUCCESS
+                    var data = $.parseJSON(json);
+                    if (data.code == 0) {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.msg(data.msg, {time: 1500, icon: 6}, function () {
+                            layer.close(indexa);
+                            window.location.reload();
+                        });
+                    } else {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                            layer.close(indexa);
+                            if(data.url!="" && data.url!=null){
+                                window.location.href=data.url;
+                            }
+                        })
+                    }
+                },
+                error: function () { //ERROR
+                    layer.close(Load); //关闭加载
+                    layer.msg('系统繁忙');
+                }
+            });
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

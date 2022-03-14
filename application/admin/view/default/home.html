@@ -1,0 +1,256 @@
+{include file='default/head' /}
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md9">
+            <div class="layui-card">
+                <div class="layui-card-body ">
+                    <blockquote class="layui-elem-quote">
+                        欢迎回家：<span class="x-red">超级管理员</span>！
+                    </blockquote>
+                    <blockquote class="layui-elem-quote">
+                        上次登录时间：{$login['time']}（登录IP：{$login['ip']}）
+                        <br/>
+                        上次登录设备：{$login['mode']}
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-md3">
+            <div class="layui-card">
+                <div class="layui-card-body">
+
+                    <div style="margin: 0px auto;width: 100px;height: 100px;border-radius: 50%;overflow: hidden;border: 2px #999 solid">
+                        <img src="http://q1.qlogo.cn/g?b=qq&nk={$core['qq']}&s=640" style="width: 100%;height: 100%"/>
+                    </div>
+                    <div style="text-align: center;margin-top: 14px">
+                        <p style="font-size: 18px;font-weight: bolder">超级管理员</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-row">
+            <div class="layui-col-space8">
+                <div class="layui-col-md3">
+
+                    <div class="layui-col-space8">
+                        <div class="layui-col-md12">
+                            <div class="layui-card">
+                                <div class="layui-card-header">近月交易额</div>
+                                <div class="layui-card-body  ">
+                                    <p>当月交易额：<span class="layuiadmin-span-color">￥{$data['this_month_income']}</span>
+                                    <p>上月交易额：<span class="layuiadmin-span-color">￥{$data['last_month_income']}</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-col-space8">
+                        <div class="layui-col-md12">
+                            <div class="layui-card">
+                                <div class="layui-card-header">支付接口状态</div>
+                                <div class="layui-card-body ">
+                                    <p>已关闭数：<span class="layuiadmin-span-color">{$data['pay_guan']}个</span>
+                                    <p>已开启数：<span class="layuiadmin-span-color">{$data['pay_kai']}个</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-col-space8">
+                        <div class="layui-col-md12">
+                            <div class="layui-card">
+                                <div class="layui-card-header">新增商户号</div>
+                                <div class="layui-card-body ">
+                                    <p>今日新增：<span class="layuiadmin-span-color">{$data['today_user']}</span>
+                                    <p>昨日新增：<span class="layuiadmin-span-color">{$data['yesterday_user']}</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-col-space8">
+                        <div class="layui-col-md12">
+                            <div class="layui-card">
+                                <div class="layui-card-header">商户号状态</div>
+                                <div class="layui-card-body ">
+                                    <p>正常商户：<span class="layuiadmin-span-color">{$data['user_state1']}</span>
+                                    <p>封禁商户：<span class="layuiadmin-span-color">{$data['user_state0']}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="layui-col-md9">
+                    <div class="layui-card">
+                        <div class="layui-card-header">官方通知栏</div>
+                        <div class="layui-card-body">
+                            <table class="layui-table" lay-skin="line">
+                                <tbody>
+                                {if condition="$data['news']['empty']"}
+                                <tr>
+                                    <td>
+                                        <center style="color: #f00;font-size: 16px">系统暂无新闻</center>
+                                    </td>
+                                </tr>
+                                {else}
+                                {foreach name="$data['news']['list']" item="v" key="key"}
+                                <tr>
+                                    <td style="font-size: 17px;">
+                                        <a class="x-a" href="{$v.url}"
+                                           target="_blank">{$v.title}
+                                            <div style="text-align: right">
+                                                {$v.release_time}
+                                            </div>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {/foreach}
+                                {/if}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">数据统计</div>
+                <div class="layui-card-body ">
+                    <ul class="layui-row layui-col-space10 layui-this x-admin-carousel x-admin-backlog">
+                        <li class="layui-col-md2 layui-col-xs6">
+                            <a href="javascript:;" class="x-admin-backlog-body">
+                                <h3>交易总数量</h3>
+                                <p>
+                                    <cite>{$data['order_count']}</cite></p>
+                            </a>
+                        </li>
+                        <li class="layui-col-md2 layui-col-xs6">
+                            <a href="javascript:;" class="x-admin-backlog-body">
+                                <h3>商户总数量</h3>
+                                <p>
+                                    <cite>{$data['user_count']}</cite></p>
+                            </a>
+                        </li>
+                        <li class="layui-col-md2 layui-col-xs6">
+                            <a href="javascript:;" class="x-admin-backlog-body">
+                                <h3>接口总数量</h3>
+                                <p>
+                                    <cite>{$data['pay_count']}</cite></p>
+                            </a>
+                        </li>
+                        <li class="layui-col-md2 layui-col-xs6">
+                            <a href="javascript:;" class="x-admin-backlog-body">
+                                <h3>今日交易额</h3>
+                                <p>
+                                    <cite>￥{$data['today_income']}</cite></p>
+                            </a>
+                        </li>
+                        <li class="layui-col-md2 layui-col-xs6">
+                            <a href="javascript:;" class="x-admin-backlog-body">
+                                <h3>昨日交易额</h3>
+                                <p>
+                                    <cite>￥{$data['yesterday_income']}</cite></p>
+                            </a>
+                        </li>
+                        <li class="layui-col-md2 layui-col-xs6 ">
+                            <a href="javascript:;" class="x-admin-backlog-body">
+                                <h3>累计交易额</h3>
+                                <p>
+                                    <cite>￥{$data['total_income']}</cite></p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">服务器信息</div>
+                <div class="layui-card-body ">
+                    <table class="layui-table">
+                        <tbody>
+                        <tr>
+                            <th>操作系统</th>
+                            <td>{$data['php_uname_s']}</td>
+                        </tr>
+                        <tr>
+                            <th>运行环境</th>
+                            <td>{$data['php_uname']}</td>
+                        </tr>
+                        <tr>
+                            <th>PHP版本</th>
+                            <td>{$data['PHP_VERSION']}</td>
+                        </tr>
+                        <tr>
+                            <th>PHP运行方式</th>
+                            <td>{$data['php_sapi_name']}</td>
+                        </tr>
+                        <tr>
+                            <th>MYSQL版本</th>
+                            <td>{$data['mysql_VERSION']}</td>
+                        </tr>
+                        <tr>
+                            <th>ThinkPHP</th>
+                            <td>{$Think.version}</td>
+                        </tr>
+                        <tr>
+                            <th>MYSQL持续连接</th>
+                            <td>{$data['mysql_allow_persistent']}</td>
+                        </tr>
+                        <tr>
+                            <th>执行时间限制</th>
+                            <td>{$data['max_execution_time']}</td>
+                        </tr>
+                        <tr>
+                            <th>MYSQL最大连接数</th>
+                            <td>{$data['mysql_max_links']}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">关于系统</div>
+                <div class="layui-card-body ">
+                    <table class="layui-table">
+                        <tbody>
+                        <tr>
+                            <th>当前版本</th>
+                            <td>V{$data['VERSION']}（Build：{$data['BUILD']}）</td>
+                        </tr>
+                        <tr>
+                            <th>版权所有</th>
+                            <td><a href="http://www.96xy.cn/" target="_blank">星益云</a></td>
+                        </tr>
+                        <tr>
+                            <th>开发者QQ</th>
+                            <td>1450839008</td>
+                        </tr>
+                        <tr>
+                            <th>QQ交流群</th>
+                            <td>741930243</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <style id="welcome_style"></style>
+        <div class="layui-col-md12">
+            <blockquote class="layui-elem-quote layui-quote-nm">{$core['ADMIN_BOTTOM']}</blockquote>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+</html>

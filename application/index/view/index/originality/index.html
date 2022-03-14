@@ -1,0 +1,691 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>{$core['title']} - {$core['subtitle']}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="{$core['keyword']}">
+    <meta name="description" content="{$core['describe']}">
+    <link rel="shortcut icon" href="__PUBLIC__/../favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="__PUBLIC__/index/default/css/bootstrap.min.css">
+    <link href="https://lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+        .progress-wrap {
+            position: fixed;
+            right: 50px;
+            bottom: 50px;
+            height: 46px;
+            width: 46px;
+            cursor: pointer;
+            display: block;
+            border-radius: 50px;
+            box-shadow: inset 0 0 0 2px rgba(95, 58, 252, 0.2);
+            z-index: 99;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(15px);
+            -webkit-transition: all 200ms linear;
+            transition: all 200ms linear
+        }
+
+        .progress-wrap.active-progress {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0)
+        }
+
+        .progress-wrap::after {
+            position: absolute;
+            content: '\f176';
+            font-family: "Font Awesome 5 Pro";
+            text-align: center;
+            line-height: 46px;
+            font-size: 20px;
+            color: #5f3afc;
+            left: 0;
+            top: 0;
+            height: 46px;
+            width: 46px;
+            cursor: pointer;
+            display: block;
+            z-index: 1;
+            -webkit-transition: all 200ms linear;
+            transition: all 200ms linear
+        }
+
+        .progress-wrap svg path {
+            fill: none
+        }
+
+        .progress-wrap svg.progress-circle path {
+            stroke: #5f3afc;
+            stroke-width: 4;
+            box-sizing: border-box;
+            -webkit-transition: all 200ms linear;
+            transition: all 200ms linear
+        }
+    </style>
+    <link rel="stylesheet" href="__PUBLIC__/index/originality/css/default.css">
+    <link rel="stylesheet" href="__PUBLIC__/index/originality/css/style.css">
+</head>
+<body>
+<div id="loading" style="display: none;">
+    <div id="loading-center">
+        <div id="loading-center-absolute">
+            <div class="object" id="object_one"></div>
+            <div class="object" id="object_two" style="left:20px;"></div>
+            <div class="object" id="object_three" style="left:40px;"></div>
+            <div class="object" id="object_four" style="left:60px;"></div>
+            <div class="object" id="object_five" style="left:80px;"></div>
+        </div>
+    </div>
+</div><!-- pre loader area end --><!-- back to top start -->
+<div class="progress-wrap">
+    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"></path>
+    </svg>
+</div><!-- back to top end --><!-- header area start -->
+<header>
+    <div id="header-sticky" class="header__area header__transparent header__padding">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-xxl-3 col-xl-3 col-lg-2 col-md-6 col-6">
+                    <div class="logo"><a href="#"><img src="__PUBLIC__/../logo1.png" alt="logo" width="180"></a></div>
+                </div>
+                <div class="col-xxl-6 col-xl-6 col-lg-7 d-none d-lg-block">
+                    <div class="main-menu">
+                        <div class="mean-push"></div>
+                        <nav id="mobile-menu" style="display: none;">
+                            <ul>
+                                <li><a href="#">首页</a></li>
+                                <li><a href="https://www.kancloud.cn/xingyi/kfwd/2396471" target="_blank">开发文档</a></li>
+                                {if condition="$core['demo_pay'] != '0'"}
+                                <li><a href="/demo">演示收款</a></li>
+                                {/if}
+                                <li><a href="https://wpa.qq.com/msgrd?v=3&uin={$core['qq']}&site=pay&menu=yes"
+                                       target="_blank">联系客服</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-6 col-6">
+                    <div class="header__right text-end d-flex align-items-center justify-content-end">
+                        <div class="header__right-btn d-none d-md-flex align-items-center"><a href="/register"
+                                                                                              class="header__btn">注册商户</a>
+                            {if condition="islogin('user')"}
+                            <a href="/user" class="w-btn ml-45">商户后台</a>
+                            {else}
+                            <a href="/user" class="w-btn ml-45">登录商户</a>
+                            {/if}
+                        </div>
+                        <div class="sidebar__menu d-lg-none">
+                            <div class="sidebar-toggle-btn" id="sidebar-toggle"><span class="line"></span><span
+                                    class="line"></span><span class="line"></span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header><!-- header area end --><!-- sidebar area start -->
+<div class="sidebar__area">
+    <div class="sidebar__wrapper">
+        <div class="sidebar__close">
+            <button class="sidebar__close-btn" id="sidebar__close-btn"><span><i
+                    class="fa fa-times"></i></span><span>关闭</span>
+            </button>
+        </div>
+        <div class="sidebar__content">
+            <div class="logo mb-40"><a href="index.html"><img src="__PUBLIC__/../logo1.png" alt="logo" width="150"></a>
+            </div>
+            <br/>
+            <div class="mobile-menu mean-container">
+            </div>
+            <div class="sidebar__info mt-350">
+                <a href="/register" class="w-btn w-btn-4 d-block mb-15 mt-15">注册商户</a>
+                <br/>
+                {if condition="islogin('user')"}
+                <a href="/user" class="w-btn d-block">商户后台</a>
+                {else}
+                <a href="/user" class="w-btn d-block">登录商户</a>
+                {/if}
+            </div>
+        </div>
+    </div>
+</div><!-- sidebar area end -->
+<div class="body-overlay"></div><!-- sidebar area end -->
+<main><!-- hero area start -->
+    <section class="hero__area hero__height p-relative d-flex align-items-center"
+             data-background="__PUBLIC__/index/originality/img/hero-bg.jpg"
+             style="background-image: url(__PUBLIC__/index/originality/img/hero-bg.jpg);">
+        <div class="hero__shape"><img class="hero-circle-1"
+                                      src="__PUBLIC__/index/originality/img/circle-1.png"
+                                      alt=""><img
+                class="hero-circle-2"
+                src="__PUBLIC__/index/originality/img/circle-2.png" alt=""><img
+                class="hero-triangle-1"
+                src="__PUBLIC__/index/originality/img/triangle-1.png"
+                alt=""><img
+                class="hero-triangle-2"
+                src="__PUBLIC__/index/originality/img/triangle-2.png" alt="">
+        </div>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-xxl-7 col-xl-6 col-lg-6">
+                    <div class="hero__content pr-80"><h2 class="hero__title wow fadeInUp" data-wow-delay=".3s"
+                                                         style="visibility: visible; animation-delay: 0.3s; animation-name: fadeInUp;">
+                        {$core['title']}</h2>
+                        <p class="wow fadeInUp" data-wow-delay=".5s"
+                           style="visibility: visible; animation-delay: 0.5s; animation-name: fadeInUp;">
+                            {$core['describe']}</p>
+                        <div class="hero__search wow fadeInUp" data-wow-delay=".7s"
+                             style="visibility: visible; animation-delay: 0.7s; animation-name: fadeInUp;">
+                            <a href="/register" class="w-btn w-btn-2">注册商户</a>
+                            <div class="hero__search-info"><span><i
+                                    class="fa fa-check"></i>{$core['subtitle']}</span><span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xxl-5 col-xl-6 col-lg-6">
+                    <div class="hero__thumb text-end ml-220">
+                        <div class="hero__thumb-wrapper p-relative "><img class="hero-circle"
+                                                                          src="__PUBLIC__/index/originality/img/hero-circle.png"
+                                                                          alt="">
+                            <div class="hero__thumb-shape shape-1"><img
+                                    src="__PUBLIC__/index/originality/img/hero-1.png"
+                                    alt="">
+                            </div>
+                            <div class="hero__thumb-shape shape-2"><img
+                                    src="__PUBLIC__/index/originality/img/hero-2.png"
+                                    alt="">
+                            </div>
+                            <div class="hero__thumb-shape shape-3"><img
+                                    src="__PUBLIC__/index/originality/img/hero-3.png"
+                                    alt="">
+                            </div>
+                            <div class="hero__thumb-shape shape-4"><img
+                                    src="__PUBLIC__/index/originality/img/hero-4.png"
+                                    alt="">
+                            </div>
+                            <div class="hero__thumb-shape shape-5"><img
+                                    src="__PUBLIC__/index/originality/img/hero-5.png"
+                                    alt="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section><!-- hero area end --><!-- services area start -->
+    <section class="services__area p-relative pt-150 pb-130">
+        <div class="services__shape"><img class="services-circle-1"
+                                          src="__PUBLIC__/index/originality/img/circle-1.png"
+                                          alt=""><img class="services-circle-2"
+                                                      src="__PUBLIC__/index/originality/img/circle-2.png"
+                                                      alt=""><img
+                class="services-dot"
+                src="__PUBLIC__/index/originality/img/dot.png" alt=""><img
+                class="services-triangle"
+                src="__PUBLIC__/index/originality/img/triangle.png"
+                alt=""></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-xxl-6 offset-xxl-3 col-xl-6 offset-xl-3 col-lg-6 col-md-10 offset-md-1 p-0">
+                    <div class="section__title-wrapper text-center mb-75 wow fadeInUp" data-wow-delay=".3s"
+                         style="visibility: visible; animation-delay: 0.3s; animation-name: fadeInUp;"><h2
+                            class="section__title">我们的解决方案</h2></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-6 col-sm-6">
+                    <div class="services__inner hover__active mb-30 wow fadeInUp" data-wow-delay=".3s"
+                         style="visibility: visible; animation-delay: 0.3s; animation-name: fadeInUp;">
+                        <div class="services__item white-bg text-center transition-3 ">
+                            <div class="services__icon mb-25 d-flex align-items-end justify-content-center"><img
+                                    src="__PUBLIC__/index/originality/img/services-1.png"
+                                    alt=""></div>
+                            <div class="services__content"><h3 class="services__title"><a href="#">聚合接口</a>
+                            </h3>
+                                <p>真正的一次开发，多接口对接使用</p></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-6 col-sm-6">
+                    <div class="services__inner hover__active mb-30 wow fadeInUp" data-wow-delay=".5s"
+                         style="visibility: visible; animation-delay: 0.5s; animation-name: fadeInUp;">
+                        <div class="services__item white-bg mb-30 text-center transition-3">
+                            <div class="services__icon mb-25 d-flex align-items-end justify-content-center"><img
+                                    src="__PUBLIC__/index/originality/img/services-2.png"
+                                    alt=""></div>
+                            <div class="services__content"><h3 class="services__title"><a href="#">快速接入</a>
+                            </h3>
+                                <p>一行代码搞定支付宝、微信支付等多端支付接口</p></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-6 col-sm-6">
+                    <div class="services__inner hover__active mb-30 wow fadeInUp" data-wow-delay=".7s"
+                         style="visibility: visible; animation-delay: 0.7s; animation-name: fadeInUp;">
+                        <div class="services__item white-bg text-center transition-3">
+                            <div class="services__icon mb-25 d-flex align-items-end justify-content-center"><img
+                                    src="__PUBLIC__/index/originality/img/services-3.png"
+                                    alt=""></div>
+                            <div class="services__content"><h3 class="services__title"><a href="#">收银台</a>
+                            </h3>
+                                <p>没有自己的网站？直接使用自带的收银台收钱</p></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-6 col-sm-6">
+                    <div class="services__inner hover__active mb-30 wow fadeInUp" data-wow-delay=".9s"
+                         style="visibility: visible; animation-delay: 0.9s; animation-name: fadeInUp;">
+                        <div class="services__item white-bg text-center transition-3"
+                        "="">
+                        <div class="services__icon mb-25 d-flex align-items-end justify-content-center">
+                            <img src="__PUBLIC__/index/originality/img/services-4.png"
+                                 alt="">
+                        </div>
+                        <div class="services__content">
+                            <h3 class="services__title"><a href="#">超多模板</a></h3>
+                            <p>系统开发了超多好看漂亮的模板任意切换</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
+    <!-- services area end -->
+
+    <!-- about area start -->
+    <section class="about__area pb-120 p-relative">
+        <div class="about__shape">
+            <img class="about-triangle"
+                 src="__PUBLIC__/index/originality/img/triangle.png" alt="">
+            <img class="about-circle"
+                 src="__PUBLIC__/index/originality/img/circle.png" alt="">
+            <img class="about-circle-2"
+                 src="__PUBLIC__/index/originality/img/circle-2.png" alt="">
+            <img class="about-circle-3"
+                 src="__PUBLIC__/index/originality/img/circle-3.png" alt="">
+        </div>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-xxl-5 col-xl-6 col-lg-6 col-md-9">
+                    <div class="about__wrapper mb-10">
+                        <div class="section__title-wrapper mb-25">
+                            <h2 class="section__title">详细的订单统计和交易数据</h2>
+                            <p>商户后台可以查看订单详细信息，内置支持一键退款</p>
+                        </div>
+                        <a href="/user" class="w-btn w-btn-3 w-btn-1">商户登录</a>
+                    </div>
+                </div>
+                <div class="col-xxl-6 offset-xxl-1 col-xl-6 col-lg-6 col-md-10 order-first order-lg-last">
+                    <div class="about__thumb-wrapper p-relative ml-40 fix text-end">
+                        <img src="__PUBLIC__/index/originality/img/about-bg.png"
+                             alt="">
+                        <div class="about__thumb p-absolute">
+                            <img class="bounceInUp wow about-big" data-wow-delay=".3s"
+                                 src="__PUBLIC__/index/technolyblue/images/screens/1.jpg"
+                                 alt=""
+                                 style="visibility: visible; animation-delay: 0.3s; animation-name: bounceInUp;"
+                                 width="298">
+                            <img class="about-sm"
+                                 src="__PUBLIC__/index/technolyblue/images/discover-image.jpg"
+                                 alt="" width="200">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- about area end -->
+
+    <!-- about area start -->
+    <section class="about__area pb-160 pt-80 p-relative">
+        <div class="about__shape">
+            <img class="about-plus"
+                 src="__PUBLIC__/index/originality/img/plus.png" alt="">
+            <img class="about-triangle-2"
+                 src="__PUBLIC__/index/originality/img/triangle-2.png" alt="">
+            <img class="about-circle-4"
+                 src="__PUBLIC__/index/originality/img/circle-4.png" alt="">
+            <img class="about-circle-5"
+                 src="__PUBLIC__/index/originality/img/circle-5.png" alt="">
+        </div>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-xxl-6 col-xl-6 col-lg-6">
+                    <div class="about__thumb-wrapper p-relative ml--30 fix mr-70">
+                        <img src="__PUBLIC__/index/originality/img/about-bg-2.png"
+                             alt="">
+                        <div class="about__thumb about__thumb-2 p-absolute wow fadeInUp" data-wow-delay=".3s"
+                             style="visibility: visible; animation-delay: 0.3s; animation-name: fadeInUp;">
+                            <img class="about-big bounceInUp wow" data-wow-delay=".5s"
+                                 src="__PUBLIC__/index/technolyblue/images/screens/2.jpg"
+                                 alt=""
+                                 style="visibility: visible; animation-delay: 0.5s; animation-name: bounceInUp;"
+                                 width="298">
+                            <img class="about-sm about-sm-2"
+                                 src="__PUBLIC__/index/technolyblue/images/discover-image.jpg"
+                                 alt="" width="200">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-9">
+                    <div class="about__wrapper about__wrapper-2 ml-60 mb-30">
+                        <div class="section__title-wrapper mb-25">
+                            <h2 class="section__title">自己专属的收银台页面</h2>
+                            <p>成功支持商户后，可以在后台生成自己的收款码，扫码即可进入自己的收银台完成收款</p>
+                        </div>
+                        <a href="/register" class="w-btn w-btn-3 w-btn-1">注册商户</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- about area end -->
+
+    <!-- pricing area start -->
+    <section class="price__area grey-bg pt-105 pb-90">
+        <div class="container">
+            <div class="row">
+                <div class="col-xxl-7 col-xl-7 col-lg-8">
+                    <div class="section__title-wrapper mb-65 wow fadeInUp" data-wow-delay=".3s"
+                         style="visibility: visible; animation-delay: 0.3s; animation-name: fadeInUp;">
+                        <h2 class="section__title">选择我们</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-6">
+                    <div class="price__item white-bg mb-30 transition-3 fix wow fadeInUp" data-wow-delay=".3s"
+                         style="visibility: visible; animation-delay: 0.3s; animation-name: fadeInUp;">
+                        <div class="price__offer mb-15">
+                            <span>专业团队</span>
+                        </div>
+                        <div class="price__tag mb-15">
+                            <h3>实时维护监控</h3>
+                        </div>
+                        <div class="price__text mb-25">
+                            <p>防止掉单，不间断异步通知，安全可开的api接口</p>
+                        </div>
+                        <a href="/register" class="w-btn w-btn-4 w-100 price__btn">注册商户</a>
+                    </div>
+                </div>
+                <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-6">
+                    <div class="price__item hover__active active white-bg mb-30 transition-3 fix wow fadeInUp"
+                         data-wow-delay=".5s"
+                         style="visibility: visible; animation-delay: 0.5s; animation-name: fadeInUp;">
+                        <div class="price__offer mb-15">
+                            <span>收银台</span>
+                        </div>
+                        <div class="price__tag mb-15">
+                            <h3>专属的收银台</h3>
+                        </div>
+                        <div class="price__text mb-25">
+                            <p>一键生成超多好看的收款码，拥有属于自己的收银台页面</p>
+                        </div>
+                        <a href="/user" class="w-btn w-btn-4 w-100 price__btn">商户登录</a>
+                    </div>
+                </div>
+                <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-6">
+                    <div class="price__item white-bg mb-30 transition-3 fix wow fadeInUp" data-wow-delay=".3s"
+                         style="visibility: visible; animation-delay: 0.3s; animation-name: fadeInUp;">
+                        <div class="price__offer mb-15">
+                            <span>售后</span>
+                        </div>
+                        <div class="price__tag mb-15">
+                            <h3>完美的售后服务</h3>
+                        </div>
+                        <div class="price__text mb-25">
+                            <p>客服24小时在线为您解答您的问题，实时回应您的反馈及建议</p>
+                        </div>
+                        <a href="https://wpa.qq.com/msgrd?v=3&uin={$core['qq']}&site=pay&menu=yes" target="_blank"
+                           class="w-btn w-btn-4 w-100 price__btn">联系客服</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- pricing area end -->
+
+    <!-- features area start -->
+    <section class="features__area pt-60 pb-155 p-relative overflow-y-visible">
+        <div class="circle-animation features">
+            <span></span>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-xxl-6 col-xl-6 col-lg-6">
+                    <div class="section__title-wrapper mb-65 wow fadeInUp" data-wow-delay=".3s"
+                         style="visibility: visible; animation-delay: 0.3s; animation-name: fadeInUp;">
+                        <h2 class="section__title">为什么选择我们？</h2>
+                        <p>聚合收银台，聚合支付接口</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-6 col-sm-6">
+                    <div class="features__item mb-30 wow fadeInUp" data-wow-delay=".3s"
+                         style="visibility: visible; animation-delay: 0.3s; animation-name: fadeInUp;">
+                        <div class="features__icon mb-35">
+                            <span class="gradient-pink"><i class="far fa-heart-rate"></i></span>
+                        </div>
+                        <h3 class="features__title">开放的API接口</h3>
+                        <div class="features__list">
+                            <ul>
+                                <li>前后端分离</li>
+                                <li>丰富的API接口</li>
+                                <li>完善的API功能</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-6 col-sm-6">
+                    <div class="features__item mb-30 wow fadeInUp pl-15" data-wow-delay=".5s"
+                         style="visibility: visible; animation-delay: 0.5s; animation-name: fadeInUp;">
+                        <div class="features__icon mb-35">
+                            <span class="gradient-blue"><i class="fal fa-chart-pie-alt"></i></span>
+                        </div>
+                        <h3 class="features__title">专属的收银台</h3>
+                        <div class="features__list">
+                            <ul>
+                                <li>生成自己的收款码</li>
+                                <li>拥有自己的收银台页面</li>
+                                <li>解决个人商户收款问题</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-6 col-sm-6">
+                    <div class="features__item mb-30 wow fadeInUp pl-45" data-wow-delay=".7s"
+                         style="visibility: visible; animation-delay: 0.7s; animation-name: fadeInUp;">
+                        <div class="features__icon mb-35">
+                            <span class="gradient-yellow"><i class="fal fa-tag"></i></span>
+                        </div>
+                        <h3 class="features__title">完美的售后服务</h3>
+                        <div class="features__list">
+                            <ul>
+                                <li>客服24小时在线</li>
+                                <li>实时解答你的疑惑及问题</li>
+                                <li>实时接受您的反馈及建议</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-6 col-sm-6 d-lg-flex justify-content-end">
+                    <div class="features__item mb-30 wow fadeInUp" data-wow-delay=".9s"
+                         style="visibility: visible; animation-delay: 0.9s; animation-name: fadeInUp;">
+                        <div class="features__icon mb-35">
+                            <span class="gradient-purple"><i class="fal fa-layer-group"></i></span>
+                        </div>
+                        <h3 class="features__title">安全可靠</h3>
+                        <div class="features__list">
+                            <ul>
+                                <li>严格保障您的数据安全</li>
+                                <li>严格储存您的隐私信息</li>
+                                <li>全天实时异地备份数据</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- features area end -->
+
+    <!-- cta area start -->
+    <section class="cta__area mb--149 p-relative">
+        <div class="circle-animation cta-1">
+            <span></span>
+        </div>
+        <div class="circle-animation cta-1 cta-2">
+            <span></span>
+        </div>
+        <div class="circle-animation cta-3">
+            <span></span>
+        </div>
+        <div class="container">
+            <div class="cta__inner p-relative fix z-index-1 wow fadeInUp" data-wow-delay=".5s"
+                 style="visibility: visible; animation-delay: 0.5s; animation-name: fadeInUp;">
+                <div class="cta__shape">
+                    <img class="circle"
+                         src="__PUBLIC__/index/originality/img/cta-circle.png" alt="">
+                    <img class="circle-2"
+                         src="__PUBLIC__/index/originality/img/cta-circle-2.png" alt="">
+                    <img class="circle-3"
+                         src="__PUBLIC__/index/originality/img/cta-circle-3.png" alt="">
+                    <img class="triangle-1"
+                         src="__PUBLIC__/index/originality/img/cta-triangle.png" alt="">
+                    <img class="triangle-2"
+                         src="__PUBLIC__/index/originality/img/cta-triangle-2.png"
+                         alt="">
+                </div>
+                <div class="row">
+                    <div class="col-xxl-12">
+                        <div class="cta__wrapper d-lg-flex justify-content-between align-items-center">
+                            <div class="cta__content">
+                                <h3 class="cta__title">{$core['title']}<br>{$core['subtitle']}</h3>
+                            </div>
+                            <div class="cta__btn">
+                                <a href="/register" style="margin-left: 30px" class="w-btn w-btn-white">立即体验</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- cta area end -->
+
+</main>
+
+<!-- footer area start -->
+<footer class="footer__area grey-bg-3 pt-270 p-relative">
+    <div class="footer__shape">
+        <img class="footer-circle-1"
+             src="__PUBLIC__/index/originality/img/circle-1.png" alt="">
+        <img class="footer-circle-2"
+             src="__PUBLIC__/index/originality/img/circle-2.png" alt="">
+    </div>
+    <div class="footer__top pb-65">
+        <div class="container">
+            <div class="row">
+                <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay=".3s"
+                     style="visibility: visible; animation-delay: 0.3s; animation-name: fadeInUp;">
+                    <div class="footer__widget mb-50">
+                        <div class="footer__widget-title mb-25">
+                            <div class="footer__logo">
+                                <a href="index.html">
+                                    <img src="__PUBLIC__/../logo1.png" height="40" alt="logo">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="footer__widget-content">
+                            <p>{$core['title']}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xxl-2 col-xl-2 col-lg-2 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay=".5s"
+                     style="visibility: visible; animation-delay: 0.5s; animation-name: fadeInUp;">
+                    <div class="footer__widget mb-50 footer__pl-70">
+                        <div class="footer__widget-title mb-25">
+                            <h3>开发者</h3>
+                        </div>
+                        <div class="footer__widget-content">
+                            <div class="footer__link">
+                                <ul>
+                                    {if condition="$core['demo_pay'] != '0'"}
+                                    <li><a href="/demo">演示收款</a></li>
+                                    {/if}
+                                    <li><a href="https://www.kancloud.cn/xingyi/kfwd/2396471" target="_blank">开发文档</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xxl-5 col-xl-4 col-lg-4 col-md-6 col-sm-6 wow fadeInUp" data-wow-delay=".7s"
+                     style="visibility: visible; animation-delay: 0.7s; animation-name: fadeInUp;">
+                    <div class="footer__widget mb-50 footer__pl-90">
+                        <div class="footer__widget-title mb-25">
+                            <h3>友情链接</h3>
+                        </div>
+                        <div class="footer__widget-content">
+                            <div class="footer__link">
+                                <ul>
+                                    {foreach name="core['links']" item="v" key="key"}
+                                    <li><a href="{$v['href']}" target="_blank">{$v['name']}</a></li>
+                                    {/foreach}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xxl-2 col-xl-2 col-lg-2 col-md-4 col-sm-6 wow fadeInUp" data-wow-delay=".9s"
+                     style="visibility: visible; animation-delay: 0.9s; animation-name: fadeInUp;">
+                    <div class="footer__widget mb-50">
+                        <div class="footer__widget-title mb-25">
+                            <h3>联系我们</h3>
+                        </div>
+                        <div class="footer__widget-content">
+                            <div class="footer__link">
+                                <ul>
+                                    <li><a href="https://wpa.qq.com/msgrd?v=3&uin={$core['qq']}&site=pay&menu=yes"
+                                           target="_blank">客服QQ：{$core['qq']} </a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer__bottom">
+        <div class="container">
+            <div class="footer__copyright">
+                <div class="row">
+                    <div class="col-xxl-12 wow fadeInUp" data-wow-delay=".5s"
+                         style="visibility: visible; animation-delay: 0.5s; animation-name: fadeInUp;">
+                        <div class="footer__copyright-wrapper text-center">
+                            <p>{$core['bottom_info']}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- footer area end -->
+
+<!-- JS here -->
+<script src="__PUBLIC__/index/default/js/jquery-3.3.1.min.js"></script>
+<script src="__PUBLIC__/index/originality/js/jquery.meanmenu.js"></script>
+<script src="__PUBLIC__/index/originality/js/main.js"></script>
+<!--============= 星益云外部js =============-->
+<script src="//auth.96xy.cn/static/cashier/app.js"></script>
+<!--============= 星益云外部js =============-->
+</body>
+</html>

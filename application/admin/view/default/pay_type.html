@@ -1,0 +1,92 @@
+{include file='default/head' /}
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space1">
+        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">{$title}</div>
+                <div class="layui-card-body">
+
+                    <div class="layui-form">
+                    <div class="layui-table-box" style="overflow: auto">
+                        <table class="layui-table">
+                            <colgroup>
+                                <col width="10">
+                                <col width="100">
+                                <col width="150">
+                                <col width="200">
+                                <col>
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th>参数</th>
+                                <th>客户端</th>
+                                <th>名称</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {foreach name="pay_list" item="v" key="key"}
+                            <tr>
+                                <td>{$v.alias}</td>
+                                <td>{$v.client_name}</td>
+                                <td><img style="vertical-align:middle" src="__PUBLIC__/icon/{$v.icon}" width="17"> {$v.name}</td>
+                                <td>
+                                {if condition="$v.switch"}
+                                <button type="button" class="layui-btn layui-btn-normal layui-btn-xs" onclick="oper('switch_false','{$v.alias}')">已开启</button>
+                                {else}
+                                <button type="button" class="layui-btn layui-btn-danger layui-btn-xs" onclick="oper('switch_true','{$v.alias}')">已关闭</button>
+                                {/if}
+                                </td>
+                            </tr>
+                            {/foreach}
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<style id="welcome_style"></style>
+<div class="layui-col-md12">
+    <blockquote class="layui-elem-quote layui-quote-nm">{$core['ADMIN_BOTTOM']}</blockquote>
+</div>
+<script>
+    function oper(mode, alias) {
+        var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+        $.ajax({
+            type: "POST",
+            url: "/admin/PayType/oper",
+            data: {"mode": mode, "alias": alias},
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                if (data.code == 0) {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                        layer.close(indexa);
+                        window.location.reload();
+                    });
+                } else {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                        return false;
+                    })
+                }
+            },
+            error: function () { //ERROR
+                layer.close(Load); //关闭加载
+                layer.msg('系统繁忙');
+                return false;
+            }
+        });
+    }
+</script>
+</body>
+</html>

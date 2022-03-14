@@ -1,0 +1,227 @@
+{include file='default/head' /}
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space1">
+        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">{$title}<span id="current"></span></div>
+                <div class="layui-card-body">
+
+                    <blockquote class="layui-elem-quote layui-quote-nm" id="isUp"></blockquote>
+                    <blockquote class="layui-elem-quote layui-quote-nm" id="data"></blockquote>
+
+                    <button type="button" class="layui-btn layui-btn-lg" id="update">检查更新</button>&nbsp;&nbsp;<span
+                        style="color:#f00;">更新需谨慎，请注意备份数据，可能会导致数据丢失！</span>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/html" id="up_ui">
+    <div style="margin:14px 18px">
+        <blockquote class="layui-elem-quote">
+            待更新版本：<span id="up_list"></span>
+            <hr/>
+
+            <div style="font-size: 16px;margin-bottom: 3px;" id="up_msg">正在准备更新...</div>
+            <div class="layui-progress layui-progress-big" lay-filter="progress">
+                <div class="layui-progress-bar layui-bg-blue" id="layui-bg-blue"><span id="progress_num"></span>%&nbsp;&nbsp;</div>
+            </div>
+        </blockquote>
+        <p>当前版本号：<span id="current_ui"></span></p>
+        <p>最新版本号：<span id="current_ui_xin"></span></p>
+    </div>
+</script>
+
+<style id="welcome_style"></style>
+<div class="layui-col-md12">
+    <blockquote class="layui-elem-quote layui-quote-nm">{$core['ADMIN_BOTTOM']}</blockquote>
+</div>
+<script>
+    var current_progress = 0;
+    layui.use(['form', 'layedit', 'laydate','element'], function () {
+        var form = layui.form
+            , layer = layui.layer
+            , layedit = layui.layedit
+            , laydate = layui.laydate
+            , element = layui.element;
+
+
+        var indexa = layer.alert("您版本当前为1.43开源版，如需更新体验新版本请购买程序授权，当前版本任何问题及bug出错均不受理，造成财产损失请自理！<br>开发者QQ：1450839008", {title: "强烈警告", icon: 5}, function () {
+            layer.close(indexa);
+        })
+
+        //检查
+        $('#update').click(function () {
+            var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+            $.ajax({
+                type: "POST",
+                url: "/admin/update/getUpdate",
+                data: {"": ""},
+                dataType: "json",
+                success: function (json) { //SUCCESS
+                    var data = $.parseJSON(json);
+                    if (data.code == 0) {
+                        layer.close(Load); //关闭加载
+                        if (data.update == 0) {
+                            //无需更新
+                            $("#current").html("【当前版本：" + data.current_version + " (Build：" + data.current_build + ")】");
+                            $("#isUp").attr('class', 'layui-elem-quote layui-quote-nm layui-bg-green');
+                            $("#isUp").html(
+                                "<h2>恭喜你，已经是最新版本了，无需更新！<h2>"
+                            );
+                            var data_html = "<div style='font-size: 16px'>当前版本：<br/>";
+                        } else if (data.update == 1) {
+                            //需要更新
+                            $("#current").html("【当前版本：" + data.current_version + " (Build：" + data.current_build + ")】");
+                            $("#isUp").attr('class', 'layui-elem-quote layui-quote-nm layui-bg-red');
+                            var list = "";
+                            for (var key in data.uplist) {
+                                list += '<span class="layui-badge layui-bg-black">v' + data.uplist[key] + '</span>&nbsp;&nbsp;'
+                            }
+                            $("#isUp").html(
+                                "<h2>有新版本更新了，请尽快更新哦！<h2><br/>"
+                                + "<h3>更新流程：" + list + "</h3>"
+                                + "<button type=\"button\" class=\"layui-btn layui-btn-primary layui-btn-lg layui-btn-fluid\" id=\"up\">立即更新至新版本</button>"
+                            );
+                            var data_html = "<div style='font-size: 16px'>最新版本：<br/>";
+
+
+
+                            //开始更新
+                            $('#up').click(function () {
+                                layer.open({
+                                    type: 1,
+                                    title: "更新程序",
+                                    scrollbar: false,
+                                    area: [layerWidth, '230px'], //宽高
+                                    content: $("#up_ui").html()
+                                });
+                                var list = "";
+                                var i = 0;
+                                for (var key in data.uplist) {
+                                    list += '<span class="layui-badge layui-bg-black">v' + data.uplist[key] + '</span>&nbsp;&nbsp;';
+                                    i++;
+                                }
+                                var single_progress = parseInt(100/i);
+                                $("#up_list").html(list);
+                                up(single_progress,data.data.version,data.data.build);
+                            });
+                        } else {
+                            layer.msg('未知错误');
+                            return;
+                        }
+                        $("#data").html(
+                            data_html
+                            + "版本号：" + data.data.version + "（Build:" + data.data.build + "）<br/>"
+                            + "更新时间：" + data.data.update_time + "<br/>"
+                            + "更新内容：<hr/>" + data.data.text
+                            + "</div>"
+                        );
+                    } else {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                            layer.close(indexa);
+                            if (data.url != "" && data.url != null) {
+                                window.location.href = data.url;
+                            }
+                        })
+                    }
+                },
+                error: function () { //ERROR
+                    layer.close(Load); //关闭加载
+                    layer.msg('系统繁忙');
+                }
+            });
+        });
+
+        $('#update').trigger("click");
+
+    });
+
+    //更新
+    function up(single_progress,version,build) {
+        $("#current_ui_xin").html(version + " (Build：" + build + ")");
+        var t = single_progress;
+        var chuci = random(1,parseInt(single_progress/2));
+        single_progress = single_progress - chuci;
+        current_progress+=chuci;
+        $("#progress_num").html(current_progress);
+        element.progress('progress', current_progress+'%')
+        $("#up_msg").html("正在获取更新包...");
+        var s = setInterval(function (){
+            var diminishing = random(1,10);
+            var i = single_progress - diminishing;
+            if(i<=1){
+                return;
+            }
+            $("#up_msg").html("正在下载更新包...");
+            single_progress = single_progress - diminishing;
+            current_progress+=diminishing;
+            $("#progress_num").html(current_progress);
+            element.progress('progress', current_progress+'%');
+        },1000);
+        $.ajax({
+            type: "POST",
+            url: "/admin/update/update",
+            data: {"": ""},
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                $("#up_msg").html("下载完成，准备安装...");
+                var data = $.parseJSON(json);
+                $("#current_ui").html(data.current_version + " (Build：" + data.current_build + ")");
+                if (data.code == 0) {
+                    clearInterval(s);
+                    current_progress = current_progress + (single_progress);
+                    $("#progress_num").html(current_progress);
+                    element.progress('progress', current_progress+'%');
+                    var list = "";
+                    for (var key in data.upliet) {
+                        list += '<span class="layui-badge layui-bg-black">v' + data.upliet[key] + '</span>&nbsp;&nbsp;';
+                    }
+                    $("#up_list").html(list);
+                    up(t,version,build);
+                    $("#up_msg").html(data.msg);
+                }else if(data.code == 101){
+                    clearInterval(s);
+                    var list = "";
+                    for (var key in data.upliet) {
+                        list += '<span class="layui-badge layui-bg-black">v' + data.upliet[key] + '</span>&nbsp;&nbsp;';
+                    }
+                    $("#up_list").html(list);
+                    $("#up_msg").html("已更新至最新版本");
+                    current_progress = 100;
+                    $("#progress_num").html(current_progress);
+                    element.progress('progress', current_progress+'%');
+                    var indexa = layer.alert(data.msg, {title: "更新完成", icon: 6}, function () {
+                        layer.close(indexa);
+                        window.location.reload();
+                    })
+                } else {
+                    $("#up_msg").html("更新被中止！");
+                    $("#layui-bg-blue").attr("class","layui-progress-bar layui-bg-red");
+                    clearInterval(s);
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                        if (data.url != "" && data.url != null) {
+                            window.location.href = data.url;
+                        }
+                    })
+                }
+            },
+            error: function () { //ERROR
+                clearInterval(s);
+                $("#layui-bg-blue").attr("class","layui-progress-bar layui-bg-red");
+                layer.msg('系统繁忙');
+                $("#up_msg").html("系统繁忙");
+            }
+        });
+    };
+
+    function random(min, max) {
+        return Math.floor(Math.random() * (max - min)) + min;
+    }
+</script>
+</body>
+</html>

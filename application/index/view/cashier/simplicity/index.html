@@ -1,0 +1,187 @@
+<html lang="zh-cn">
+<head>
+    <title>{$title}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <link rel="stylesheet" href="__PUBLIC__/cashier/simplicity/css/default.css">
+    <link rel="stylesheet" href="__PUBLIC__/cashier/simplicity/css/style.css?version=1.0.0">
+    <style>
+        .preselection-money{
+            flex:3;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            padding: 0rem 0.8rem !important;
+        }
+        .preselection-money div{
+            margin: 0rem 0.87rem !important;
+            border-radius: 8px;
+            padding: 1.24rem 0.99rem !important;
+            overflow: hidden;
+            width: 100%;
+            white-space: nowrap;
+            text-overflow:ellipsis;
+            font-size: 2.1rem !important;
+            background: #FFF;
+            text-align: left !important;
+        }
+        .preselection-money div:active{
+            opacity: 0.6;
+        }
+        .preselection-money div.bghide{
+            background: none;
+        }
+        .preselection-money div.bghide:active{
+            opacity: 1;
+        }
+        body{
+           font-family:none;
+        }
+        .type-box{
+            display: flex;
+            justify-content: center;
+        }
+        .type-box .li{
+            width: 100%;
+            margin: 0.45rem 0.87rem !important;
+            border-radius: 4px;
+            padding: 0.9rem 0.99rem !important;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow:ellipsis;
+            font-size: 1.8rem !important;
+            background: #FFF;
+            text-align: center !important;
+        }
+        .type-box .li.active{
+            background: {$data['color']};
+            color: #fff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="layout-flex wrap">
+
+    <!-- content start -->
+    <div class="content">
+        <div class="mar20">
+            <table>
+                <tbody>
+                <tr>
+                    <td><img class="sico_pay" style="margin:5px 5px 5px 0px;width: 30px;height: 30px;" src="http://q.qlogo.cn/headimg_dl?dst_uin={$data['info']['qq']}&spec=640&img_type=jpg"></td>
+                    <td  class="selTitle">{$data['info']['nickname']}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+            <div class="set_amount">
+                <div class="payMoney marLeft10">付款金额</div>
+                <div class="amount_bd">
+                    <i class="i_money marLeft10" style="">¥</i>
+                    <span class="input_simu " id="amount"></span>
+
+                    <!-- 模拟input -->
+                    <em class="line_simu" id="line"></em>
+                    <!-- 模拟闪烁的光标 -->
+                    <div  id="clearBtn"  style="touch-action: pan-y; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></div>
+                    <!-- 清除按钮 -->
+                </div>
+            </div>
+
+        <div id="preselection">
+        {if condition="$data['preselection_switch']"}
+
+        {for start="0" end="6"}
+
+        {if condition="$i==0 or $i==3"}
+        <div class="preselection-money" style="margin-top: {$i==0?'1.8':'0'}rem">
+            {/if}
+            {if condition="isset($data['info']['preselection_money'][$i]) && trim($data['info']['preselection_money'][$i])!='' && $data['info']['preselection_money'][$i]!=NULL"}
+            <div class="js-preselection" data-number="{$data['info']['preselection_money'][$i]}" style="margin: {$i>=3 && $i<6?'1.12':'0'}rem 0.87rem !important">￥{$data['info']['preselection_money'][$i]}</div>
+            {else}
+            <div class="bghide"></div>
+            {/if}
+            {if condition="$i==2 or $i==5"}
+        </div>
+        {/if}
+
+        {/for}
+
+        {/if}
+
+        </div>
+        <div class="type-box">
+            {foreach name="data['pay_list']" item="v" key="key"}
+            {if condition="$v['switch']"}
+
+            <div class="li {$v['active']? 'active ' : ''}" onclick="change_type(this)" title="{$v['alias']}">{$v['name']}</div>
+            {/if}
+            {/foreach}
+        </div>
+    </div>
+    <!-- content end -->
+    <div class="copyRight">
+        由 <span style="font-weight:bold">{$core['title']}</span> 提供服务支持
+    </div>
+
+    <!-- 键盘 -->
+    <div class="keyboard">
+        <table class="key_table" id="keyboard" style="touch-action:pan-y; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+            <tbody>
+            <tr>
+                <td class="key border b_rgt_btm" data-value="1">1</td>
+                <td class="key border b_rgt_btm" data-value="2">2</td>
+                <td class="key border b_rgt_btm" data-value="3">3</td>
+                <td class="key border b_btm clear" data-value="delete"></td>
+            </tr>
+            <tr>
+                <td class="key border b_rgt_btm" data-value="4">4</td>
+                <td class="key border b_rgt_btm" data-value="5">5</td>
+                <td class="key border b_rgt_btm" data-value="6">6</td>
+                <td class="pay_btn" rowspan="3" id="payBtn" style="touch-action: pan-y; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);background:{$data['color']}"><em>确认</em>支付</td>
+            </tr>
+            <tr>
+                <td class="key border b_rgt_btm" data-value="7">7</td>
+                <td class="key border b_rgt_btm" data-value="8">8</td>
+                <td class="key border b_rgt_btm" data-value="9">9</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="key border b_rgt" data-value="0">0</td>
+                <td class="key border b_rgt" data-value="dot">.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<form id="pay_form" action="/submit" method="post">
+    <input type="hidden" id="pay_type" name="type" value="">
+    <input type="hidden" id="pay_money" name="money">
+    <input type="hidden" id="pay_code" value="{$data['info']['code']}" name="code" placeholder="不要试图修改这个，否则造成财产损失后果自负！">
+    <input type="hidden" id="pay_token" value="{$Request.token}" name="__token__"/>
+    <input type="hidden" id="pay_remarks" name="remarks">
+</form>
+<script type="text/javascript" src="//lib.baomitu.com/jquery/3.6.0/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/layer/3.0.1/layer.min.js"></script>
+<script src="__PUBLIC__/cashier/simplicity/js/hammer.js"></script>
+<script src="__PUBLIC__/cashier/simplicity/js/pay.js"></script>
+<script>
+    $("#pay_type").val($(".type-box .li.active").attr("title"));
+    document.body.addEventListener('touchmove', function (event) {
+        event.preventDefault();
+    },{ passive: false });
+    var tips = new Tips();
+
+    function change_type(e) {
+        $(".type-box .li").attr("class", "li");
+        $(e).attr("class", "li active");
+        var type = $(e).attr("title");
+        $("#pay_type").val(type);
+    }
+</script>
+</body>
+</html>

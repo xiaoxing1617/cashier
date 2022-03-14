@@ -1,0 +1,209 @@
+{include file='default/head' /}
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space10">
+        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">{$title}（上传后注意清理缓存）</div>
+                <div class="layui-card-body">
+
+                    <fieldset class="layui-elem-field layui-field-title">
+                        <legend>网站Icon图标</legend>
+                    </fieldset>
+                    <div class="layui-form-item">
+                        <div class="layui-block">
+                            <label class="layui-form-label">当前</label>
+                            <div class="layui-input-block">
+                                <img src="__PUBLIC__/../favicon.ico">
+                                &nbsp;
+                                <button type="button" style="height: 100px;padding-left: 50px;padding-right: 50px;"
+                                        class="layui-btn layui-btn-primary layui-btn-lg" id="ico">
+                                    <i class="layui-icon">&#xe67c;</i>上传并更改
+                                    <br/>
+                                    （可拖拽文件到这里上传）
+                                </button>
+                            </div>
+                            <br/>
+                            <blockquote class="layui-elem-quote">
+                                <h3>
+                                    只支持删除ico格式的图片，最大1MB，此图标作为浏览器标签首段图标显示，还可以在收藏夹内收藏内容的前段显示
+                                </h3>
+                            </blockquote>
+                        </div>
+                    </div>
+
+
+                    <fieldset class="layui-elem-field layui-field-title">
+                        <legend>网站Logo（黑底背景时）</legend>
+                    </fieldset>
+                    <div class="layui-form-item">
+                        <div class="layui-block">
+                            <label class="layui-form-label">当前</label>
+                            <div class="layui-input-block">
+                                <img src="__PUBLIC__/../logo.png" style="background: #000">
+                                &nbsp;
+                                <button type="button" style="height: 100px;padding-left: 50px;padding-right: 50px;"
+                                        class="layui-btn layui-btn-primary layui-btn-lg" id="logo">
+                                    <i class="layui-icon">&#xe67c;</i>上传并更改
+                                    <br/>
+                                    （可拖拽文件到这里上传）
+                                </button>
+                            </div>
+                            <br/>
+                            <blockquote class="layui-elem-quote">
+                                <h3>
+                                    只支持上传png格式的图片，最大5MB大小，由于部分首页模板底色可能是黑色的，此图片主要显示在底色为黑色的时候。请合理规划文字颜色！（注意：两种Logo排版格式最好一致，字体颜色有所改变即可）
+                                </h3>
+                            </blockquote>
+                        </div>
+                    </div>
+
+                    <fieldset class="layui-elem-field layui-field-title">
+                        <legend>网站Logo（白底背景时）</legend>
+                    </fieldset>
+                    <div class="layui-form-item">
+                        <div class="layui-block">
+                            <label class="layui-form-label">当前</label>
+                            <div class="layui-input-block">
+                                <img src="__PUBLIC__/../logo1.png" style="background: #FFF">
+                                &nbsp;
+                                <button type="button" style="height: 100px;padding-left: 50px;padding-right: 50px;"
+                                        class="layui-btn layui-btn-primary layui-btn-lg" id="logo1">
+                                    <i class="layui-icon">&#xe67c;</i>上传并更改
+                                    <br/>
+                                    （可拖拽文件到这里上传）
+                                </button>
+                            </div>
+                            <br/>
+                            <blockquote class="layui-elem-quote">
+                                <h3>
+                                    只支持上传png格式的图片，最大5MB大小，由于部分首页模板底色可能是白色的，此图片主要显示在底色为白色的时候。请合理规划文字颜色！（注意：两种Logo排版格式最好一致，字体颜色有所改变即可）
+                                </h3>
+                            </blockquote>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style id="welcome_style"></style>
+<div class="layui-col-md12">
+    <blockquote class="layui-elem-quote layui-quote-nm">{$core['ADMIN_BOTTOM']}</blockquote>
+</div>
+<script>
+    layui.use(['form', 'layedit', 'laydate', 'upload', 'element'], function () {
+        var form = layui.form
+            , layer = layui.layer
+            , layedit = layui.layedit
+            , laydate = layui.laydate
+            , upload = layui.upload
+            , element = layui.element;
+
+        //上传ico图标
+        var Load;
+        upload.render({
+            elem: '#ico' //绑定元素
+            , url: '/admin/logo/upload' //上传接口
+            , method: 'POST'
+            , data: {"mode": "ico"}
+            , before: function (obj) {
+                Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+            }
+            , done: function (data) {
+                layer.close(Load); //关闭加载
+                if (data.code == 0) {
+                    var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                        layer.close(indexa);
+                        window.location.reload();
+                    });
+                } else {
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                        if (data.url != "" && data.url != null) {
+                            window.location.href = data.url;
+                        }
+                    })
+                }
+            }
+            , error: function () {
+                layer.close(Load); //关闭加载
+            }
+            , accept: 'images'
+            , exts: 'ico'
+            , size: 1024 //最大允许上传1MB
+        });
+        //上传logo
+        upload.render({
+            elem: '#logo' //绑定元素
+            , url: '/admin/logo/upload' //上传接口
+            , method: 'POST'
+            , data: {"mode": "logo"}
+            , before: function (obj) {
+                Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+            }
+            , done: function (data) {
+                layer.close(Load); //关闭加载
+                if (data.code == 0) {
+                    var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                        layer.close(indexa);
+                        window.location.reload();
+                    });
+                } else {
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                        if (data.url != "" && data.url != null) {
+                            window.location.href = data.url;
+                        }
+                    })
+                }
+            }
+            , error: function () {
+                layer.close(Load); //关闭加载
+            }
+            , accept: 'images'
+            , exts: 'png'
+            , size: 1024*5 //最大允许上传5MB
+        });
+
+        //上传logo
+        upload.render({
+            elem: '#logo1' //绑定元素
+            , url: '/admin/logo/upload' //上传接口
+            , method: 'POST'
+            , data: {"mode": "logo1"}
+            , before: function (obj) {
+                Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+            }
+            , done: function (data) {
+                layer.close(Load); //关闭加载
+                if (data.code == 0) {
+                    var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                        layer.close(indexa);
+                        window.location.reload();
+                    });
+                } else {
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                        if (data.url != "" && data.url != null) {
+                            window.location.href = data.url;
+                        }
+                    })
+                }
+            }
+            , error: function () {
+                layer.close(Load); //关闭加载
+            }
+            , accept: 'images'
+            , exts: 'png'
+            , size: 1024*5 //最大允许上传5MB
+        });
+
+    });
+</script>
+
+</body>
+</html>

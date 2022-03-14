@@ -1,0 +1,481 @@
+{include file='default/head' /}
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space1">
+        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">{$title}</div>
+                <div class="layui-card-body">
+
+                    <!--                    -->
+                    <div class="layui-form search">
+                        <div class="layui-inline">
+                            <select name="search_type" id="search_type">
+                                <option value="uid">商户UID</option>
+                                <option value="qq">商户QQ</option>
+                                <option value="nickname">商户名称</option>
+                                <option value="account">商户账号</option>
+                                <option value="email">商户邮箱</option>
+                            </select>
+                        </div>
+                        <div class="layui-inline">
+                            <input class="layui-input" name="search_value" id="search_value" autocomplete="off"
+                                   placeholder="留空查询则重载全部" value="">
+                        </div>
+                        <button class="layui-btn" data-type="reload" id="btn_search"><i
+                                class="layui-icon layui-icon-search"></i> 查询
+                        </button>
+                        <a class="layui-btn layui-btn-primary" id="creation_user">创建商户</a>
+                    </div>
+
+
+                    <script type="text/html" id="data_Table_toolbar">
+                        <div class="layui-btn-container">
+                            <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="state_1">改为正常状态</button>
+                            <button class="layui-btn layui-btn-danger layui-btn-sm" lay-event="state_0">改为封禁状态</button>
+                            <button class="layui-btn layui-btn-warm layui-btn-sm" lay-event="del">注销选中商户</button>
+                        </div>
+                    </script>
+
+                    <!-- 表格 -->
+                    <table id="data_Table" lay-filter="data_Table"></table>
+                    <!-- 表格 -->
+
+                    <script type="text/html" id="renew">
+                        <div style="padding: 20px 17px;">
+
+                            <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                                <div class="select">
+                                    <select id="renew_type">
+                                        <option value="add_day">续费/天数</option>
+                                        <option value="add_month">续费/月数</option>
+                                        <option value="reduce_day">减扣/天数</option>
+                                        <option value="reduce_month">减扣/月数</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-form">
+                                <div class="layui-row">
+                                    <div class="layui-block layui-col-xs10 layui-col-sm10 layui-col-md10">
+                                        <input class="layui-input" name="renew_value" id="renew_value"
+                                               autocomplete="off"
+                                               placeholder="请填写数值..." value="">
+                                    </div>
+                                    <div class="layui-block layui-col-xs2 layui-col-sm2 layui-col-md2">
+                                        <button class="layui-btn layui-btn-fluid" data-type="reload" id="btn_renew"
+                                                onclick="btn_renew()">确认
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </script>
+                    <script type="text/html" id="record">
+                        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="renew">续费服务</a>
+                        <a class="layui-btn layui-btn-primary layui-btn-xs" href="/admin/LoginRecord/?uid={{d.uid}}">登录记录</a>
+                        <a class="layui-btn layui-btn-primary layui-btn-xs" href="/admin/bill/?uid={{d.uid}}">交易记录</a>
+                    </script>
+
+                    <script type="text/html" id="oper">
+                        <a class="layui-btn layui-btn-xs" lay-event="info">编辑</a>
+                        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="login">登录</a>
+                        <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="del">注销</a>
+                    </script>
+
+                    <script type="text/html" id="look_code">
+                        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="look_code">查看</a>
+                    </script>
+
+                    <script type="text/html" id="state_oper">
+                        {{#  if(d.state != 1){ }}
+                        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="state_1">封禁</a>
+                        {{#  }else{ }}
+                        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="state_0">正常</a>
+                        {{#  } }}
+                    </script>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style id="welcome_style"></style>
+<div class="layui-col-md12">
+    <blockquote class="layui-elem-quote layui-quote-nm">{$core['ADMIN_BOTTOM']}</blockquote>
+</div>
+<script type="text/javascript">
+    var renew_uid;
+    layui.use(['jquery', 'form', 'layedit', 'laydate', 'element', 'laytpl', 'table', 'laypage', 'layer', 'carousel', 'slider'], function () {
+        $ = layui.jquery;
+        var form = layui.form //表单
+            , layer = layui.layer  //弹出层
+            , laypage = layui.laypage //分页
+            , layedit = layui.layedit  //元素操作
+            , laydate = layui.laydate  //日期
+            , laytpl = layui.laytpl  //模板引擎
+            , table = layui.table  //表格
+            , element = layui.element;
+//===================数据初始化
+        table.render({
+            elem: '#data_Table'
+            , height: 450
+            , url: '/admin/userOper/getList'
+            , method: "POST"
+            , page: true //开启分页
+            , even: true //开启隔行背景
+            , toolbar: '#data_Table_toolbar'
+            , title: "表格数据"
+            , cols: [[ //表头
+                {type: 'checkbox', fixed: "left"}
+                , {field: 'id', title: 'ID', width: 80, sort: true}
+                , {field: 'uid', title: 'UID', width: 100}
+                , {field: 'code', title: '收款码', width: 80, align: 'center', toolbar: '#look_code'}
+                , {field: 'email', title: '商户邮箱', width: 140}
+                , {field: 'account', title: '商户账号', width: 140}
+                , {field: 'nickname', title: '商户名称', width: 160}
+                , {field: 'qq', title: '商户QQ', width: 150}
+                , {field: 'cashier_template', title: '收银台模板', width: 120}
+                , {field: 'expiration_time', title: '收款服务能力', width: 155}
+                , {field: 'state', title: '商户状态', width: 100, toolbar: '#state_oper'}
+                , {field: 'record', title: '更多', width: 270, toolbar: '#record'}
+                , {field: 'creation_time', title: '注册时间', width: 155}
+                , {
+                    field: 'oper',
+                    title: '操作',
+                    width: 200,
+                    unresize: true,
+                    fixed: "right",
+                    align: 'center',
+                    toolbar: '#oper'
+                }
+            ]]
+            , even: true
+            , id: 'data_Table'
+            , limit: 15 //每页默认显示的数量
+            , limits:[]//每页条数的选择项
+            , text: {
+                none: '暂无数据'
+            }
+        });
+
+        //头工具栏事件
+        table.on('toolbar(data_Table)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            var data = checkStatus.data;
+            if(data.length<=0){
+                layer.msg("至少选中一条");
+                return;
+            }
+            let uids = [];
+            data.forEach((item)=>{
+                uids.push(item.uid);
+            });
+            switch (obj.event) {
+                case 'state_1':
+                    layer.confirm('你确定要将所选中的【改为正常状态】吗？（'+(checkStatus.isAll ? '已全选' : '选中了' + data.length + ' 条')+'）<br/><span style="color: #f00">操作后无法撤销！</span>', {
+                        btn: ['确认操作', '算了'] //按钮
+                    }, function () {
+                        oper("state_1",uids.join(","));
+                    });
+                    break;
+                case 'state_0':
+                    layer.confirm('你确定要将所选中的【改为封禁状态】吗？（'+(checkStatus.isAll ? '已全选' : '选中了' + data.length + ' 条')+'）<br/><span style="color: #f00">操作后无法撤销！</span>', {
+                        btn: ['确认操作', '算了'] //按钮
+                    }, function () {
+                        oper("state_0",uids.join(","));
+                    });
+                    break;
+                case 'del':
+                   var index1= layer.confirm('你确定要将所选中的【注销】吗？（'+(checkStatus.isAll ? '已全选' : '选中了' + data.length + ' 条')+'）<br/><span style="color: #f00">1.注销后将无法恢复！！！<br/>2.将会删除该商户添加的所有支付接口。<br/>3.将会删除该商户产生的所有日志，但不删除交易记录。<br/>4.注销后该商户的收款码将无法进行收款！！！<br/><b>请慎重操作，操作后无法撤销！</b></span>', {
+                        btn: ['确认注销', '算了'] //按钮
+                    }, function () {
+                        layer.close(index1);
+                        var index2 = layer.prompt(
+                            {
+                                title: '请输入（6位）安全密码'
+                                , formType: 1
+                                , maxlength: 6
+                            },
+                            function (aqmm) {
+                                layer.close(index2);
+                                oper("del",uids.join(","),aqmm);
+                            });
+                    });
+                    break;
+                default:
+                    layer.msg("不支持该操作类型");
+            }
+            ;
+        });
+
+        //操作
+        table.on('tool(data_Table)', function (obj) {
+            var data = obj.data;
+            var event = obj.event;
+            switch (event) {
+                case "look_code":
+
+                    //查看收款码
+                    var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+                    $.ajax({
+                        type: "POST",
+                        url: "/adminLoginUser",
+                        data: {"uid": data.uid},
+                        dataType: "json",
+                        success: function (json) { //SUCCESS
+                            var data = $.parseJSON(json);
+                            if (data.code == 0) {
+                                layer.close(Load); //关闭加载
+                                layer.open({
+                                    type: 2,
+                                    scrollbar: false,
+                                    title: "查看商户收款码（UID：" + data.uid + "）",
+                                    shadeClose: true,
+                                    shade: 0.3,
+                                    area: [layerWidth, '90%'],
+                                    content: '/user/qr_code'
+                                });
+                            } else {
+                                layer.close(Load); //关闭加载
+                                var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                                    layer.close(indexa);
+                                    return false;
+                                })
+                            }
+                        },
+                        error: function () { //ERROR
+                            layer.close(Load); //关闭加载
+                            layer.msg('系统繁忙');
+                            return false;
+                        }
+                    });
+                    //查看收款码
+
+                    break;
+                case "state_1":
+                    oper(event, data.uid);
+                    break;
+                case "state_0":
+                    oper(event, data.uid);
+                    break;
+                case "del":
+                    var index1 = layer.confirm('你确定要注销该商户吗？<br/><span style="color: #f00">1.注销后将无法恢复！！！<br/>2.将会删除该商户添加的所有支付接口。<br/>3.将会删除该商户产生的所有日志，但不删除交易记录。<br/>4.注销后该商户的收款码将无法进行收款！！！<br/><b>请慎重操作！</b></span>', {
+                        btn: ['确认注销', '算了'] //按钮
+                    }, function () {
+                        layer.close(index1);
+                        var index2 = layer.prompt(
+                            {
+                                title: '请输入（6位）安全密码'
+                                , formType: 1
+                                , maxlength: 6
+                            },
+                            function (aqmm) {
+                                layer.close(index2);
+                                oper(event, data.uid,aqmm);
+                            });
+                    });
+                    break;
+                case "renew":
+                    renew_uid = data.uid;
+                    layer.open({
+                        type: 1,
+                        scrollbar: false,
+                        title: "续费收款服务能力（UID：" + data.uid + "）",
+                        shadeClose: true,
+                        shade: 0.3,
+                        area: [layerWidth, "150px"],
+                        content: $("#renew").html()
+                    });
+                    break;
+                case "login":
+                    //登录
+                    var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+                    $.ajax({
+                        type: "POST",
+                        url: "/adminLoginUser",
+                        data: {"uid": data.uid},
+                        dataType: "json",
+                        success: function (json) { //SUCCESS
+                            var data = $.parseJSON(json);
+                            if (data.code == 0) {
+                                layer.close(Load); //关闭加载
+                                window.open("/user");
+                            } else {
+                                layer.close(Load); //关闭加载
+                                var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                                    layer.close(indexa);
+                                    return false;
+                                })
+                            }
+                        },
+                        error: function () { //ERROR
+                            layer.close(Load); //关闭加载
+                            layer.msg('系统繁忙');
+                            return false;
+                        }
+                    });
+                    //登录
+                    break;
+                case "info":
+                    layer.open({
+                        type: 2,
+                        scrollbar: false,
+                        title: "编辑商户（UID：" + data.uid + "）",
+                        shadeClose: true,
+                        shade: 0.3,
+                        area: [layerWidth, '90%'],
+                        content: '/admin/userOper/info/?uid=' + data.uid,
+                        end: function () {
+                            //执行重载
+                            table.reload('data_Table', {
+                                page: {
+                                    curr: 1 //从第 1 页开始
+                                }
+                                , method: "POST"
+                                //额外接口参数
+                                , where: {
+                                    mode: "all"
+                                    , value: "all"
+                                }
+                            });
+                        }
+                    });
+                    break;
+                default:
+                    layer.alert("不支持该操作类型")
+            }
+        });
+
+
+        var $ = layui.$, active = {
+            reload: function () {
+                var search_type = $('#search_type').val();  //搜索类型
+                var search_value = $('#search_value').val();  //搜索内容
+                layer.msg('拼命查询中...', {icon: 16, shade: 0.3, time: 1500});
+                //执行重载
+                table.reload('data_Table', {
+                    page: {
+                        curr: 1 //从第 1 页开始
+                    }
+                    , method: "POST"
+                    //额外接口参数
+                    , where: {
+                        mode: search_type
+                        , value: search_value
+                    }
+                });
+            }
+        };
+        $("#btn_search").click(function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        })
+
+        $("#creation_user").click(function () {
+            layer.open({
+                type: 2,
+                scrollbar: false,
+                title: "创建商户",
+                shadeClose: true,
+                shade: 0.3,
+                area: [layerWidth, '90%'],
+                content: '/admin/userOper/creation/',
+                end: function () {
+                    //执行重载
+                    table.reload('data_Table', {
+                        page: {
+                            curr: 1 //从第 1 页开始
+                        }
+                        , method: "POST"
+                        //额外接口参数
+                        , where: {
+                            mode: "all"
+                            , value: "all"
+                        }
+                    });
+                }
+            });
+        })
+
+        function oper(mode, uid,aqmm="") {
+            var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+            $.ajax({
+                type: "POST",
+                url: "/admin/userOper/oper",
+                data: {"mode": mode, "uid": uid,"security_password":aqmm},
+                dataType: "json",
+                success: function (json) { //SUCCESS
+                    var data = $.parseJSON(json);
+                    if (data.code == 0) {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                            layer.close(indexa);
+                            //执行重载
+                            table.reload('data_Table', {
+                                page: {
+                                    curr: 1 //从第 1 页开始
+                                }
+                                , method: "POST"
+                                //额外接口参数
+                                , where: {
+                                    mode: "all"
+                                }
+                            });
+                        });
+                    } else {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                            layer.close(indexa);
+                            return false;
+                        })
+                    }
+                },
+                error: function () { //ERROR
+                    layer.close(Load); //关闭加载
+                    layer.msg('系统繁忙');
+                    return false;
+                }
+            });
+        }
+    });
+
+    function btn_renew() {
+        var type = $("#renew_type").val();
+        var value = $("#renew_value").val();
+        var uid = renew_uid;
+
+        //续费
+        var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+        $.ajax({
+            type: "POST",
+            url: "/admin/userOper/oper",
+            data: {"uid": uid, "type": type, "value": value, "mode": "renew"},
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                if (data.code == 0) {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                        layer.close(indexa);
+                        window.location.reload();
+                    });
+                } else {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                        return false;
+                    })
+                }
+            },
+            error: function () { //ERROR
+                layer.close(Load); //关闭加载
+                layer.msg('系统繁忙');
+                return false;
+            }
+        });
+        //续费
+    }
+</script>
+</body>
+</html>

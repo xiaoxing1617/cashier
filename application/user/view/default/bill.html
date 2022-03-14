@@ -1,0 +1,488 @@
+{include file='default/head' /}
+<link rel="stylesheet" href="__PUBLIC__/Xadmin/lib/layui/css/layui.css" media="all">
+<link href="__PUBLIC__/Xadmin/lib/layui/css/modules/layer/default/layer.css" rel="stylesheet">
+<link href="__PUBLIC__/Xadmin/lib/layui/css/modules/laydate/default/laydate.css" rel="stylesheet">
+
+<!-- Page content -->
+<div class="page-content">
+    <!-- Page title -->
+    <div class="page-title">
+        <div class="row justify-content-between align-items-center">
+            <div class="col-md-6 mb-3 mb-md-0">
+                <h5 class="h3 font-weight-400 mb-0 text-white">{$title}</h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-12 col-md-12 col-lg-12">
+            <div class="card card-fluid">
+                <div class="card-header">
+                    <div class="d-flex align-items-center mt-0">
+                        <span class="h6 mb-0">全部收入</span>
+                        <button type="button" class="btn btn-xs btn-primary btn-icon rounded-pill ml-auto">
+                            数据统计
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+
+                    <div class="p-2">
+                        <div class="row">
+                            <div class="col-6 text-center">
+                                <span class="h5 mb-0">￥{$data['total_income']}</span>
+                                <span class="d-block text-sm">累计总收入</span>
+                            </div>
+                            <div class="col-6 text-center">
+                                <span class="h5 mb-0">￥{$data['today_income']}</span>
+                                <span class="d-block text-sm">今日总收入</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-2 border-top">
+                        <div class="row">
+                            <div class="col-4 text-center">
+                                <span class="h5 mb-0">￥{$data['yesterday_income']}</span>
+                                <span class="d-block text-sm">昨日总收入</span>
+                            </div>
+                            <div class="col-4 text-center">
+                                <span class="h5 mb-0">￥{$data['this_month_income']}</span>
+                                <span class="d-block text-sm">本月总收入</span>
+                            </div>
+                            <div class="col-4 text-center">
+                                <span class="h5 mb-0">￥{$data['last_month_income']}</span>
+                                <span class="d-block text-sm">上月总收入</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+
+        {foreach name="income" item="v" key="key"}
+
+        <div class="col-xl-4 col-md-4 col-lg-4">
+            <div class="card card-fluid">
+                <div class="card-header">
+                    <div class="d-flex align-items-center mt-0">
+                        <span class="h6 mb-0">总收入：￥{$v.total_income}</span>
+                        <button type="button" class="btn btn-xs btn-soft-primary btn-icon rounded-pill ml-auto">
+                            {$v.name}
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+
+                    <div class="p-2">
+                        <div class="row">
+                            <div class="col-6 text-center">
+                                <span class="h5 mb-0">￥{$v.today_income}</span>
+                                <span class="d-block text-sm">今日收入</span>
+                            </div>
+                            <div class="col-6 text-center">
+                                <span class="h5 mb-0">￥{$v.yesterday_income}</span>
+                                <span class="d-block text-sm">昨日收入</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-2 border-top">
+                        <div class="row">
+                            <div class="col-6 text-center">
+                                <span class="h5 mb-0">￥{$v.this_month_income}</span>
+                                <span class="d-block text-sm">本月收入</span>
+                            </div>
+                            <div class="col-6 text-center">
+                                <span class="h5 mb-0">￥{$v.last_month_income}</span>
+                                <span class="d-block text-sm">上月收入</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        {/foreach}
+
+
+    </div>
+
+    <div class="row">
+        <div class="col-xl-12 col-md-12 col-lg-12">
+            <div class="card card-fluid">
+                <div class="card-header">
+                    <h6 class="mb-0">账单记录</h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-xs btn-success btn-icon" id="reset">清空筛选 并 刷新列表</button>
+                    </div>
+                    <label class="form-control-label">支付时间：</label>
+                    <div class="row mb-1">
+                    <div class="col-xl-6 col-md-6 col-lg-6">
+                         <input type="text" id="screen_time_1" class="form-control" placeholder="请填写起始时间...">
+                    </div>
+                    <div class="col-xl-6 col-md-6 col-lg-6">
+                        <input type="text" id="screen_time_2" class="form-control layui-date" placeholder="请填写结束时间...">
+                    </div>
+                    </div>
+                    <label class="form-control-label">筛选条件：</label>
+                    <div class="row mb-1">
+                    <div class="col-xl-6 col-md-6 col-lg-6">
+                        <select class="form-control" id="screen_type">
+                            <option value="all">全部支付方式</option>
+                            {foreach name="pay_list" item="v" key="key"}
+                            <option value="{$v.alias}">{$v.name}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                        <div class="col-xl-6 col-md-6 col-lg-6">
+                            <select class="form-control" id="screen_state">
+                                <option value="all">全部订单状态</option>
+                                {foreach name="state" item="v" key="key"}
+                                <option value="{$key}" {$key=="0"?"disabled":""}>{$v}</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-xl-3 col-md-3 col-lg-3">
+                            <select class="form-control" id="screen_mode">
+                                <option value="out_trade_no">系统订单号</option>
+                                <option value="api_trade_no">接口订单号</option>
+                                <option value="third_trade_no">第三方订单号</option>
+                                <option value="name">订单名称</option>
+                                <option value="pname">接口名称</option>
+                            </select>
+                        </div>
+                        <div class="col-xl-7 col-md-7 col-lg-7" id="screen_div">
+                            <div class='row'>
+                            <div class="col-xl-12 col-md-12 col-lg-12">
+                                <input type="text" id="screen_value" class="form-control" placeholder="请输入查询内容...">
+                            </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-md-2 col-lg-2">
+                            <button type="button" class="btn btn-primary btn-block" id="screen_but">查询</button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table align-items-center">
+                            <thead>
+                            <tr>
+                                <th scope="col">来源/场景/方式</th>
+                                <th scope="col">系统/接口/第三方订单号</th>
+                                <th scope="col">交易名称</th>
+                                <th scope="col">支付金额</th>
+                                <th scope="col">订单状态</th>
+                                <th scope="col">创建时间/支付时间</th>
+                                <th scope="col">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody class="list" id="bill_list"></tbody>
+                        </table>
+                    </div>
+                    <hr/>
+                    <div class="table-responsive">
+                    <div class="btn-toolbar" id="toolbar_ye"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{include file='default/bottom' /}
+
+<script>
+    var laydate;
+    layui.use(['laydate'], function() {
+        laydate = layui.laydate;  //日期
+    });
+    $("#reset").click(function (){
+        $("#screen_mode").val("out_trade_no");  //查询类型
+        $("#screen_value").val("");  //查询内容
+        $("#screen_source").val("all");  //订单来源
+        $("#screen_type").val("all");  //支付方式
+        $("#screen_state").val("all");  //订单状态
+        $("#screen_time_1").val("");  //开始时间
+        $("#screen_time_2").val("");  //结束时间
+        getList("all",1,);
+    });
+    $("#screen_but").click(function (){
+        var screen_data = {
+           "mode": $("#screen_mode").val(),  //查询类型
+            "value":$("#screen_value").val(),  //查询内容
+            "type":$("#screen_type").val(),  //支付方式
+            "state":$("#screen_state").val(),  //订单状态
+            "time_start":$("#screen_time_1").val(),  //开始时间
+            "time_end":$("#screen_time_2").val(),  //结束时间
+        };
+        getList(screen_data.mode,1,screen_data);
+    });
+    getList("all", 1);
+    laydate.render({
+        elem: '#screen_time_1'
+        ,type: 'datetime'
+    });
+    laydate.render({
+        elem: '#screen_time_2'
+        ,type: 'datetime'
+    });
+    var list_data;
+    function getList(mode, page = 1,screen_data = {}) {
+        var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+        screen_data.mode=mode;
+        screen_data.page=page;
+        $.ajax({
+            type: "POST",
+            url: "/user/bill/getBill",
+            data: screen_data,
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                if (data.code == 0) {
+                    layer.close(Load); //关闭加载
+                    list_data = data.list;
+                    //===渲染
+                    var html = "";
+                    for (var i = 0; i < data.list.length; i++) {
+                        var temp = data.list[i];
+                        html += "<tr>" +
+                            "<div class='row'>"+
+                            "<td style=\"font-weight: bolder;text-align: center\">"+temp.source_name+"<br/>【"+temp.trade_type+"】<br/><img style=\"vertical-align:middle\" src=\"__PUBLIC__/icon/" + temp.type_icon + "\" width=\"17\"/> " + temp.type + "</td>"+
+                            "<td>" + temp.out_trade_no + "<br/>" + temp.api_trade_no + "<br/>" + temp.third_trade_no + "</td>" +
+                            "<td>" + temp.name + "</td>" +
+                            "<td style=\"text-align: center\"><b>￥" + temp.money + "</b></td>" +
+                            "<td><span style='color:" + (temp.state == "2" ? '#f00' : '#00f') + "'><b>" + temp.state_name + "</b></span></td>" +
+                            "<td>" + temp.creation_time + "<br/>" + temp.payment_time + "</td>" +
+                            "<td><button type=\"button\" class=\"btn btn-xs btn-primary btn-icon\" onclick=\"details('"+i+"',list_data)\">详情</button>"+(temp.refund_money <= 0?"<button type=\"button\" class=\"btn btn-xs btn-danger btn-icon\" onclick=\"refund('"+temp.out_trade_no+"','"+temp.api_trade_no+"','"+temp.money+"')\">申请退款</button>":"")+(temp.source == "api"?"<button type=\"button\" class=\"btn btn-xs btn-success btn-icon\" onclick=\"notify('"+temp.out_trade_no+"')\">重新通知</button>":"")+"</td>";
+                    }
+                    $("#bill_list").html(html);
+                    //===渲染
+                    //===分页
+                    var ye = "";
+
+                    if (data.total_page > 0) {
+                        if (data.page > 1) {
+                            ye += '<div class="btn-group mr-2"><button class="btn-group btn btn-warning btn-xs" onclick="getList(\'' + mode + '\',1)">第一页</button></div>';
+                        }
+                        ye += '<div class="btn-group mr-2">';
+                        for (var i = 0; i < data.total_page; i++) {
+                            var j = i + 1;
+                            if (data.page == j) {
+                                ye += '<button class="btn-group btn btn-primary btn-xs" disabled>' + j + '</button>';
+                            } else {
+                                ye += '<button class="btn-group btn btn-primary btn-xs"  onclick="getList(\'' + mode + '\',' + j + ')">' + j + '</button>';
+                            }
+                        }
+                        ye += '</div>';
+                        if (data.page < data.total_page) {
+                            ye += '<div class="btn-group mr-2"><button class="btn-group btn btn-warning btn-xs" onclick="getList(\'' + mode + '\',' + data.total_page + ')">尾页</button></div>';
+                        }
+                    }
+                    $("#toolbar_ye").html(ye);
+                    //===分页
+                } else {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                        if (data.url != "" && data.url != null) {
+                            window.location.href = data.url;
+                        }
+                    })
+                }
+            },
+            error: function () { //ERROR
+                layer.close(Load); //关闭加载
+                layer.msg('系统繁忙');
+                return false;
+            }
+        });
+    }
+    //退款申请
+    function refund(out_trade_no,api_trade_no,money){
+        var index1 = layer.confirm('你确定要申请退款吗？（申请后无法撤回）<br/><span style="color: #f00">全 额 退 款：<b>'+money+'元</b><br/>系统订单号：<b>'+out_trade_no+'</b><br/>接口订单号：<b>'+api_trade_no+'</b></span>', {
+            btn: ['确认退款', '算了'] //按钮
+        }, function () {
+            layer.close(index1);
+            var index2 = layer.prompt(
+                {
+                    title: '请输入（6位）安全密码'
+                    , formType: 1
+                    , maxlength: 6
+                },
+                function (aqmm) {
+                    layer.close(index2);
+                    var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+                    $.ajax({
+                        type: "POST",
+                        url: "/refund",
+                        data: {"way":"user","out_trade_no":out_trade_no,"security_password":aqmm},
+                        dataType: "json",
+                        success: function (json) { //SUCCESS
+                            var data = $.parseJSON(json);
+                            if (data.code == 0) {
+                                layer.close(Load); //关闭加载
+                                var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                                    layer.close(indexa);
+                                    getList('all',1);
+                                    return;
+                                });
+                            } else {
+                                layer.close(Load); //关闭加载
+                                var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                                    layer.close(indexa);
+                                    if (data.url != "" && data.url != null) {
+                                        window.location.href = data.url;
+                                    }
+                                })
+                            }
+                        },
+                        error: function () { //ERROR
+                            layer.close(Load); //关闭加载
+                            layer.msg('系统繁忙');
+                            return false;
+                        }
+                    });
+                });
+        });
+    }
+    //重新异步通知
+    function notify(out_trade_no){
+        var Load = layer.msg('等待第三方响应异步通知...', {icon: 16, shade: 0.3}); //开始加载
+        $.ajax({
+            type: "POST",
+            url: "/user/bill/again_notify_single",
+            data: {"out_trade_no":out_trade_no},
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                if (data.code == 0) {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                        layer.close(indexa);
+                    });
+                } else {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                        if (data.url != "" && data.url != null) {
+                            window.location.href = data.url;
+                        }
+                    })
+                }
+            },
+            error: function () { //ERROR
+                layer.close(Load); //关闭加载
+                layer.msg('系统繁忙');
+                return false;
+            }
+        });
+    }
+    function details(i,list_data){
+        var data = list_data[i];
+        layer.open({
+            type: 1,
+            scrollbar: false,
+            title: "订单详情",
+            shadeClose: true,
+            shade: 0.3,
+            area: [layerWidth, "85%"],
+            content: "<div style=\"padding: 10px 8px\">\n" +
+                "                        <blockquote class=\"layui-elem-quote layui-quote-nm\" style=\"padding: 0px 10px\">\n" +
+                "\n" +
+                "                            <table class=\"layui-table\">\n" +
+                "                                <colgroup>\n" +
+                "                                    <col width=\"100\">\n" +
+                "                                    <col>\n" +
+                "                                </colgroup>\n" +
+                "                                <tbody>\n" +
+                "                                <tr>\n" +
+                "                                    <td>ID</td>\n" +
+                "                                    <td>" + data.id + "</td>\n" +
+                "                                </tr>\n" +
+                "                                <tr>\n" +
+                "                                    <td>订单来源</td>\n" +
+                "                                    <td>" + data.source_name + "</td>\n" +
+                "                                </tr>\n" +
+                "                                <tr>\n" +
+                "                                    <td>商户UID</td>\n" +
+                "                                    <td>" + data.uid + "</td>\n" +
+                "                                </tr>\n" +
+                "                                <tr>\n" +
+                "                                    <td>交易名称</td>\n" +
+                "                                    <td>" + data.name + "</td>\n" +
+                "                                </tr>\n" +
+                "                                <tr>\n" +
+                "                                    <td>支付接口</td>\n" +
+                "                                    <td>" + data.pid + "</td>\n" +
+                "                                </tr>\n" +
+                "                                <tr>\n" +
+                "                                    <td>支付方式</td>\n" +
+                "                                    <td><img style=\"vertical-align:middle\" src=\"__PUBLIC__/icon/" + data.type_icon + "\" width=\"15\"> <b>" + data.type + "</b>【" + data.trade_type + "】</td>\n" +
+                "                                </tr>\n" +
+                "                                <tr>\n" +
+                "                                    <td>支付金额</td>\n" +
+                "                                    <td>￥" + data.money + "</td>\n" +
+                "                                </tr>\n" +
+                "                                <tr>\n" +
+                "                                    <td>系统订单号</td>\n" +
+                "                                    <td>" + data.out_trade_no + "</td>\n" +
+                "                                </tr>\n" +
+                "                                <tr>\n" +
+                "                                    <td>接口订单号</td>\n" +
+                "                                    <td>" + data.api_trade_no + "</td>\n" +
+                "                                </tr>\n" +
+                "                                <tr>\n" +
+                "                                    <td>第三方订单号</td>\n" +
+                "                                    <td>" + data.third_trade_no + "</td>\n" +
+                "                                </tr>\n" +
+                "                                <tr>\n" +
+                "                                    <td>创建时间</td>\n" +
+                "                                    <td>" + data.creation_time + "</td>\n" +
+                "                                </tr>\n" +
+                "                                <tr>\n" +
+                "                                    <td>支付时间</td>\n" +
+                "                                    <td>" + data.payment_time + "</td>\n" +
+                "                                </tr>\n" +
+                "                                <tr>\n" +
+                "                                    <td>过期时间</td>\n" +
+                "                                    <td>" + data.expiration_time + "</td>\n" +
+                "                                </tr>\n" +
+                "                                <tr>\n" +
+                "                                    <td>交易关闭时间</td>\n" +
+                "                                    <td>" + data.close_time + "</td>\n" +
+                "                                </tr>\n" +
+                "                                <tr>\n" +
+                "                                    <td>交易状态</td>\n" +
+                "                                    <td>" + data.state_name + "</td>\n" +
+                "                                </tr>\n" +
+                "                                <tr>\n" +
+                "                                    <td>IP地址</td>\n" +
+                "                                    <td>" + data.ip + "</td>\n" +
+                "                                </tr>\n" +
+                "                                <tr>\n" +
+                "                                    <td>买家标识</td>\n" +
+                "                                    <td>" + data.buyer + "</td>\n" +
+                "                                </tr>\n" +
+                "                                <tr>\n" +
+                "                                    <td>交易备注</td>\n" +
+                "                                    <td>" + data.remarks + "</td>\n" +
+                "                                </tr>\n" +
+                "                                </tbody>\n" +
+                "                            </table>\n" +
+                "\n" +
+                "                        </blockquote>\n" +
+                "</div>"
+        });
+    }
+</script>
+</body>
+</html>

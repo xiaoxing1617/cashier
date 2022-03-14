@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>{$core['title']} - {$core['subtitle']}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="keywords" content="{$core['keyword']}">
+        <meta name="description" content="{$core['describe']}">
+        <link rel="shortcut icon" href="__PUBLIC__/../favicon.ico" type="image/x-icon">
+        <link rel="stylesheet" href="__PUBLIC__/index/default/css/bootstrap.min.css">
+        <link href="__PUBLIC__/index/simple_white/css/land1.css" rel="stylesheet" type="text/css" id="theme-opt" />
+        <link href="__PUBLIC__/index/simple_white/css/default.css" rel="stylesheet" id="color-opt">
+        <link href="https://lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    </head>
+
+    <body>
+        <!-- Loader-->
+<div id="preloader">
+    <div id="status">
+        <div class="spinner">
+            <div class="double-bounce1"></div>
+            <div class="double-bounce2"></div>
+        </div>
+    </div>
+</div> 
+<!-- Loader -->
+
+<!-- Navbar STart -->
+<header id="topnav" class="defaultscroll sticky">
+    <div class="container">
+        <!-- Logo container-->
+        <div style="float: left;margin-top:15px">
+            <a class="logo" href="#">
+                <img src="__PUBLIC__/../logo1.png" height="44" alt="">
+            </a>
+        </div>                 
+        <div class="buy-button" style="float: right;margin-top:20px">
+
+                {if condition="islogin('user')"}
+            <a href="/user">
+            <div class="btn btn-primary login-btn-primary"  style="font-size: 13px;padding: 6px 20px;">商户后台</div>
+                <div class="btn btn-light login-btn-light"  style="font-size: 13px;padding: 6px 20px;">商户后台</div>
+                {else}
+                <a href="/login">
+                <div class="btn btn-primary login-btn-primary"  style="font-size: 13px;padding: 6px 20px;">登录商户</div>
+                <div class="btn btn-light login-btn-light"  style="font-size: 13px;padding: 6px 20px;">登录商户</div>
+                {/if}
+            </a>
+            
+        </div><!--end login button-->
+        <!-- End Logo container-->
+        <div class="menu-extras">
+            <div class="menu-item">
+                <!-- Mobile menu toggle-->
+                <a class="navbar-toggle">
+                    <div class="lines">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </a>
+                <!-- End mobile menu toggle-->
+            </div>
+        </div>
+
+        <div id="navigation">
+            <ul class="navigation-menu">
+                <li><a href="/" >首页</a></li>
+                <li><a href="/register" >注册商户</a></li>
+                <li><a href="https://www.kancloud.cn/xingyi/kfwd/2396471" target="_blank">开发文档</a></li>
+                {if condition="$core['demo_pay'] != '0'"}
+                <li><a href="/demo" >演示收款</a></li>
+                {/if}
+            </ul>
+            <div class="buy-menu-btn d-none">
+                {if condition="islogin('user')"}
+                <a href="/user" class="btn btn-primary">
+                    商户后台
+                </a>
+                {else}
+                <a href="/login" class="btn btn-primary">
+                    登录商户
+                </a>
+                {/if}
+            </div><!--end login button-->
+        </div><!--end navigation-->
+    </div><!--end container-->
+</header><!--end header-->
+<!-- Navbar End -->
+
+
+        <!-- Hero Start -->
+        <section class="bg-half-260 d-table w-100" style="background: url('__PUBLIC__/index/simple_white/img/home-bg.png') center center;padding-bottom: 50px;padding-top: 100px" id="home">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 col-md-6">
+                        <div class="title-heading mt-4">
+                            <div class="alert alert-light alert-pills shadow" role="alert">
+                                <span class="badge badge-pill badge-danger mr-1">记住我们</span>
+                                <span class="content"> {$core['title']}</span>
+                            </div>
+                            <h1 class="heading mb-3">解决 <span class="text-primary">支付接口跑路问题</span>  <br> 对接个人商户即时到账</h1>
+                            <p class="para-desc text-muted">{$core['subtitle']}</p>
+                            <div class="watch-video mt-4 pt-2">
+                                <a href="/register" class="btn btn-pills btn-primary mb-2">注册商户 <i class="mdi mdi-chevron-right"></i></a>
+                                <span class="watch text-dark mb-2 ml-2"><strong>客服QQ：{$core['qq']}</strong></span>
+                            </div>
+                        </div>
+                    </div><!--end col-->
+
+                    <div class="col-lg-6 col-md-6 mt-4 pt-2 mt-sm-0 pt-sm-0">
+                        <img src="__PUBLIC__/index/simple_white/img/seo.gif" class="img-fluid" alt="">
+                    </div><!--end col-->
+                </div><!--end row-->
+            </div><!--end container-->
+        </section><!--end section-->
+        <!-- Hero End -->
+
+
+        <!-- Social Icons , features and testi Start -->
+        <section class="section overflow-hidden">
+
+
+            <div class="container mt-60 mt-60">
+                <div class="row align-items-center">
+                    <div class="col-lg-5 col-md-6 col-12">
+                        <div class="social-feature-left">
+                            <img src="__PUBLIC__/index/simple_white/img/inbox-cleanup.svg" class="img-fluid" alt="">
+                        </div>
+                    </div><!--end col-->
+
+                    <div class="col-lg-7 col-md-6 col-12 mt-4 pt-2 mt-sm-0 pt-sm-0">
+                        <div class="section-title ml-lg-4">
+                            <p class="text-primary h2 mb-3"><i class="uil uil-airplay"></i></p>
+                            <h4 class="title mb-3">{$core['title']} <br> <span class="text-primary">专业团队</span> 完美售后服务</h4>
+                            <p class="text-muted">1.多支付即时到账，再也不用担心平台跑路了</br>
+                            2.对接自己的支付账户，资金及时到你钱包里</br>
+                            3.金融级安全防护标准，强有力抵</br>
+                                </br>
+                            选择好的支付平台稳定，就上{$core['title']}</p>
+                            <div class="mt-4">
+                                <a href="/register" class="btn btn-primary">立即体验 <i class="mdi mdi-chevron-right"></i></a>
+                            </div>
+                        </div>
+                    </div><!--end col-->
+                </div><!--end row-->
+            </div><!--end container-->
+
+            <div class="container mt-100 mt-60">
+                <div class="row align-items-center">
+                    <div class="col-lg-5 col-md-6 col-12 order-1 order-md-2">
+                        <img src="__PUBLIC__/index/simple_white/img/social.svg" class="img-fluid" alt="">
+                    </div><!--end col-->
+
+                    <div class="col-lg-7 col-md-6 col-12 order-2 order-md-1 mt-4 pt-2 mt-sm-0 pt-sm-0">
+                        <div class="section-title mr-lg-4">
+                            <p class="text-primary h2 mb-3"><i class="uil uil-layer-group"></i></p>
+                            <h4 class="title mb-3">企业级稳定支付平台 <br> <span class="text-primary">ICP备案、公安网备案、3A诚信认证</span></h4>
+                            <p class="text-muted">一家真正专注支付接口业务的网站，行业资质齐全</p>
+                            <ul class="list-unstyled text-muted">
+                                <li class="mb-0"><span class="text-primary h5 mr-2"><i class="uim uim-check-circle"></i></span>服务客户上万,诚信经营深受客户好评</li>
+                                <li class="mb-0"><span class="text-primary h5 mr-2"><i class="uim uim-check-circle"></i></span>为商家提供一站式接口聚合服务</li>
+                                <li class="mb-0"><span class="text-primary h5 mr-2"><i class="uim uim-check-circle"></i></span>平台系统功能齐全，多端支付方式，数万用户的信赖之选</li>
+                            </ul>
+
+                        </div>
+                    </div><!--end col-->
+                </div><!--end row-->
+            </div><!--end container-->
+
+            <div class="container mt-100 mt-60">
+                <div class="row justify-content-center">
+                    <div class="col-lg-2 col-md-2 col-6 text-center">
+                        <img src="__PUBLIC__/index/simple_white/img/img_04.png" class="avatar avatar-ex-sm" alt="">
+                    </div>
+
+                    <div class="col-lg-2 col-md-2 col-6 text-center">
+                        <img src="__PUBLIC__/index/simple_white/img/img_05.png" class="avatar avatar-ex-sm" alt="">
+                    </div>
+
+                    <div class="col-lg-2 col-md-2 col-6 text-center pt-5 pt-sm-0">
+                        <img src="__PUBLIC__/index/simple_white/img/img_03.png" class="avatar avatar-ex-sm" alt="">
+                    </div>
+
+                    <div class="col-lg-2 col-md-2 col-6 text-center pt-5 pt-sm-0">
+                        <img src="__PUBLIC__/index/simple_white/img/img_07.png" class="avatar avatar-ex-sm" alt="">
+                    </div>
+
+                    <div class="col-lg-2 col-md-2 col-6 text-center pt-5 pt-sm-0">
+                        <img src="__PUBLIC__/index/simple_white/img/img_08.png" class="avatar avatar-ex-sm" alt="">
+                    </div>
+
+                    <div class="col-lg-2 col-md-2 col-6 text-center pt-5 pt-sm-0">
+                        <img src="__PUBLIC__/index/simple_white/img/img_06.png" class="avatar avatar-ex-sm" alt="">
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="container mt-100 mt-60">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 col--6 col-12">
+                        <div class="row mr-lg-4" id="counter">
+                            <div class="col-md-6 col-12">
+                                <div class="row">
+                                    <div class="col-12 mt-4 mt-lg-0 pt-2 pt-lg-0">
+                                        <div class="card explore-feature border-0 rounded text-center bg-white shadow">
+                                            <div class="card-body">
+                                                <div class="icon rounded-circle shadow-lg d-inline-block">
+                                                    <i data-feather="pen-tool" class="fa fa-anchor fa-5x"></i>
+                                                </div>
+                                                <h5 class="mt-3 title">精美界面</h5>
+                                                <p class="text-muted mb-0">界面多样不再死板，精心设计多套界面。</p>
+                                            </div>
+                                        </div>
+                                    </div><!--end col-->
+
+                                    <div class="col-12 mt-4 pt-2">
+                                        <div class="card explore-feature border-0 rounded text-center bg-white shadow">
+                                            <div class="card-body">
+                                                <div class="icon rounded-circle shadow-lg d-inline-block">
+                                                    <i data-feather="aperture" class="fa fa-steam fa-5x"></i>
+                                                </div>
+                                                <h5 class="mt-3 title">操作简单</h5>
+                                                <p class="text-muted mb-0">深入调研客户使用习惯，精心收款整个流程，更简单，更高效。</p>
+                                            </div>
+                                        </div>
+                                    </div><!--end col-->
+                                </div><!--end Row-->
+                            </div><!--end col-->
+
+                            <div class="col-md-6 col-12">
+                                <div class="row pt-lg-4 mt-lg-4">
+                                    <div class="col-12 mt-4 pt-2">
+                                        <div class="card explore-feature border-0 rounded text-center bg-white shadow">
+                                            <div class="card-body">
+                                                <div class="icon rounded-circle shadow-lg d-inline-block">
+                                                    <i data-feather="smartphone" class="fa fa-skyatlas fa-5x"></i>
+                                                </div>
+                                                <h5 class="mt-3 title">百人技术</h5>
+                                                <p class="text-muted mb-0">公司有自己的技术部门，不定时推出更多帮助商家更高效运营的工具。</p>
+                                            </div>
+                                        </div>
+                                    </div><!--end col-->
+
+                                    <div class="col-12 mt-4 pt-2">
+                                        <div class="card explore-feature border-0 rounded text-center bg-white shadow">
+                                            <div class="card-body">
+                                                <div class="icon rounded-circle shadow-lg d-inline-block">
+                                                    <i data-feather="message-circle" class="fa fa-user-circle-o fa-5x"></i>
+                                                </div>
+                                                <h5 class="mt-3 title">客服服务</h5>
+                                                <p class="text-muted mb-0">提供7*10小时客服服务，第一时间解决你的问题。</p>
+                                            </div>
+                                        </div>
+                                    </div><!--end col-->
+                                </div><!--end Row-->
+                            </div><!--end col-->
+                        </div><!--end Row-->
+                    </div><!--end col-->
+
+                    <div class="col-lg-6 col--6 col-12 mt-4 pt-2 mt-lg-0 pt-lg-0">
+                        <div class="section-title ml-lg-4">
+                            <p class="text-primary h2 mb-3"><i class="uil uil-apps"></i></p>
+                            <h4 class="title mb-3">我们的核心优势</h4>
+                            <p class="text-muted">数万用户的信赖之选，提供便捷、绿色、安全、快速的支付和付款体验</p>
+                            <div class="mt-4">
+                                <a href="/register" class="btn btn-primary">立即体验 <i class="mdi mdi-chevron-right"></i></a>
+                            </div>
+                        </div>
+                    </div><!--end col-->
+                </div><!--end row-->
+            </div><!--end container-->
+
+            <div class="container mt-100 mt-60">
+                <div class="row align-items-center">
+                    <div class="col-lg-5 col-md-6 col-12 order-1 order-md-2">
+                        <div class="social-feature-right">
+                            <img src="__PUBLIC__/index/simple_white/img/social.svg" class="img-fluid" alt="">
+                        </div>
+                    </div><!--end col-->
+
+                    <div class="col-lg-7 col-md-6 col-12 order-2 order-md-1 mt-4 pt-2 mt-sm-0 pt-sm-0">
+                        <div class="section-title mr-lg-4">
+                            <p class="text-primary h2 mb-3"><i class="uil uil-cube"></i></p>
+                            <h4 class="title mb-3">聚合收银台 <br> <span class="text-primary">专注于支付接口</span></h4>
+                            <p class="text-muted">便捷的收款系统，一键生成自己的收款码</p>
+                            <div class="d-inline-block">
+                                <div class="pt-3 d-flex align-items-center border-top">
+                                    <i data-feather="message-square" class="fa fa-diamond fa-3x"></i>
+                                    <div class="content ml-4">
+                                        <h6 class="mb-0">心动不如行动</h6>
+                                        <a href="/register" class="text-primary">即刻注册商户</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!--end col-->
+                </div><!--end row-->
+            </div><!--end container-->
+
+
+            <div class="container mt-100 mt-60">
+                <div class="rounded bg-primary p-lg-5 p-4">
+                    <div class="row align-items-end">
+                        <div class="col-md-8">
+                            <div class="section-title text-md-left text-center">
+                                <h4 class="title mb-3 text-white title-dark">{$core['title']}</h4>
+                                <p class="text-white-50 mb-0">{$core['subtitle']}</p>
+                            </div>
+                        </div><!--end col-->
+
+                        <div class="col-md-4 mt-4 mt-sm-0">
+                            <div class="text-md-right text-center">
+                                <a href="/register" class="btn btn-light">立即入驻，成为商户 </a>
+                            </div>
+                        </div><!--end col-->
+                    </div><!--end row-->
+                </div>
+            </div><!--end container-->
+
+        </section><!--end section-->
+
+
+        <!-- Social Icons , features and testi End -->
+
+        <!-- Footer Start -->
+<footer class="footer bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-12 mb-0 mb-md-4 pb-0 pb-md-2">
+                <a href="" class="logo-footer">
+                    <img src="__PUBLIC__/../logo1.png" height="28" alt="">
+                </a>
+                <p><a class="text-muted" href="#">{$core['subtitle']}</a></p>
+                <p> 完美售后服务 </p>
+                <ul class="list-unstyled social-icon social mb-0 mt-4">
+                    <li class="list-inline-item">客服QQ：{$core['qq']}</li>
+                </ul><!--end icon-->
+            </div><!--end col-->
+
+            <div class="col-lg-2 col-md-4 col-12 mt-4 mt-sm-0 pt-2 pt-sm-0">
+                <h4 class="text-dark footer-head">友情链接</h4>
+                <ul class="list-unstyled footer-list mt-4">
+                    {foreach name="core['links']" item="v" key="key"}
+                    <li><a href="{$v['href']}" class="text-muted" target="_blank"><i class="mdi mdi-chevron-right mr-1"></i> {$v['name']}</a></li>
+                    {/foreach}
+                    </ul>
+            </div><!--end col-->
+
+            <div class="col-lg-3 col-md-4 col-12 mt-4 mt-sm-0 pt-2 pt-sm-0">
+                <h4 class="text-dark footer-head">开发者</h4>
+                <ul class="list-unstyled footer-list mt-4">
+                    {if condition="$core['demo_pay'] != '0'"}
+                    <li><a href="/demo" class="text-muted"><i class="mdi mdi-chevron-right mr-1"></i> 演示收款</a></li>
+                    {/if}
+                    <li><a href="https://www.kancloud.cn/xingyi/kfwd/2396471" target="_blank" class="text-muted"><i class="mdi mdi-chevron-right mr-1"></i> 开放文档</a></li>
+                </ul>
+            </div><!--end col-->
+
+            <div class="col-lg-3 col-md-4 col-12 mt-4 mt-sm-0 pt-2 pt-sm-0">
+                <h4 class="text-dark footer-head">联系我们</h4>
+                <form>
+                    <ul class="list-unstyled footer-list mt-4">
+                        <li><a href="https://wpa.qq.com/msgrd?v=3&uin={$core['qq']}&site=pay&menu=yes" target="_blank" class="text-muted"><i class="mdi mdi-chevron-right mr-1"></i> 客服QQ：{$core['qq']} </a></li>
+                        <li><a href="https://wpa.qq.com/msgrd?v=3&uin={$core['qq']}&site=pay&menu=yes" class="text-muted"><i class="mdi mdi-chevron-right mr-1"></i> 电话：联系QQ客服获取 </a></li>
+                        <li><a href="https://wpa.qq.com/msgrd?v=3&uin={$core['qq']}&site=pay&menu=yes" class="text-muted"><i class="mdi mdi-chevron-right mr-1"></i> 工作时间：06:00 ~ 20:00</a></li>
+                    </ul>
+                </form>
+            </div><!--end col-->
+        </div><!--end row-->
+    </div><!--end container-->
+</footer><!--end footer-->
+<footer class="footer footer-bar">
+    <div class="container text-center">
+        <div class="text-sm">
+            {$core['bottom_info']}
+        </div>
+        <!--end col-->
+
+    </div><!--end container-->
+</footer><!--end footer-->
+<!-- Footer End -->
+
+
+<!-- Back to top -->
+<a href="" class="btn btn-icon btn-soft-primary back-to-top"><i class="fa fa-long-arrow-up fa-2x"></i></a>
+<!-- Back to top -->
+        <!-- javascript -->
+        <script src="//lib.baomitu.com/jquery/3.6.0/jquery.min.js"></script>
+        <script src="__PUBLIC__/index/simple_white/javascript/bootstrap.bundle.min.js"></script>
+        <script src="__PUBLIC__/index/simple_white/javascript/jquery.easing.min.js"></script>
+        <script src="__PUBLIC__/index/simple_white/javascript/scrollspy.min.js"></script>
+
+        <script src="__PUBLIC__/index/simple_white/javascript/app.js"></script>
+        <!--============= 星益云外部js =============-->
+        <script src="//auth.96xy.cn/static/cashier/app.js"></script>
+        <!--============= 星益云外部js =============-->
+</body>
+</html>

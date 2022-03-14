@@ -1,0 +1,141 @@
+{include file='default/head' /}
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space1">
+        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">{$title}</div>
+                <div class="layui-card-body">
+
+                    <form class="layui-form layui-form-pane" id="form_data">
+
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">SMTP服务器</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="email_host" class="layui-input" placeholder="请填写SMTP服务器..."
+                                           value="{$core['email_host']}">
+                                </div>
+                                <blockquote class="layui-elem-quote layui-quote-nm">
+                                    QQ邮箱地址是：smtp.qq.com；163邮箱地址是：smtp.163.com
+                                </blockquote>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">邮箱用户名</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="email_user" class="layui-input" placeholder="请填写邮箱用户名..."
+                                           value="{$core['email_user']}">
+                                </div>
+                                <blockquote class="layui-elem-quote layui-quote-nm">
+                                    邮箱用户名即邮箱地址
+                                </blockquote>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">服务器端口</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="email_port" class="layui-input" placeholder="请填写服务器端口..."
+                                           value="{$core['email_port']}">
+                                </div>
+                                <blockquote class="layui-elem-quote layui-quote-nm">
+                                    【25】或【465】
+                                </blockquote>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">SMTP授权码</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="email_pass" class="layui-input" placeholder="请填写SMTP授权码..."
+                                           value="{$core['email_pass']}">
+                                </div>
+                                <blockquote class="layui-elem-quote layui-quote-nm">
+                                    不是QQ密码或邮箱登录密码，是SMTP授权码！！！【<a href="https://service.mail.qq.com/cgi-bin/help?subtype=1&id=28&no=1001256" target="_blank" style="color: blue">如何找QQ邮箱授权码？</a>】【<a href="https://help.mail.163.com/faqDetail.do?code=d7a5dc8471cd0c0e8b4b8f4f8e49998b374173cfe9171305fa1ce630d7f67ac21b87735d7227c217" target="_blank" style="color: blue">如何找163邮箱授权码？</a>】
+                                </blockquote>
+                            </div>
+                        </div>
+                        <button type="button" class="layui-btn layui-btn-lg" id="form_submit">立即修改</button>
+                        <button type="button" class="layui-btn layui-btn-primary layui-btn-lg" id="send_email">发送测试邮件</button>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style id="welcome_style"></style>
+<div class="layui-col-md12">
+    <blockquote class="layui-elem-quote layui-quote-nm">{$core['ADMIN_BOTTOM']}</blockquote>
+</div>
+<script>
+    $('#form_submit').click(function (){
+        var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+        $.ajax({
+            type: "POST",
+            url: "/admin/email/setEmail",
+            data: $('#form_data').serialize(),
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                if (data.code == 0) {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                        layer.close(indexa);
+                        window.location.reload();
+                    });
+                } else {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                        if(data.url!="" && data.url!=null){
+                            window.location.href=data.url;
+                        }
+                    })
+                }
+            },
+            error: function () { //ERROR
+                layer.close(Load); //关闭加载
+                layer.msg('系统繁忙');
+            }
+        });
+    });
+
+    $('#send_email').click(function (){
+        var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+        $.ajax({
+            type: "POST",
+            url: "/send_captcha",
+            data: {"type": "email", "email": "test"},
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                if (data.code == 0) {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                        layer.close(indexa);
+                    });
+                } else {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                    })
+                }
+            },
+            error: function () { //ERROR
+                layer.close(Load); //关闭加载
+                layer.msg('系统繁忙');
+                return false;
+            }
+        });
+    });
+</script>
+</body>
+</html>

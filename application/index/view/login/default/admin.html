@@ -1,0 +1,101 @@
+<!doctype html>
+<html class="x-admin-sm">
+<head>
+    <meta charset="UTF-8">
+    <title>{$title} - {$core['title']}</title>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi"/>
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <link rel="stylesheet" href="__PUBLIC__/Xadmin/css/font.css">
+    <link rel="stylesheet" href="__PUBLIC__/Xadmin/css/login.css">
+    <link rel="stylesheet" href="__PUBLIC__/Xadmin/css/xadmin.css">
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="__PUBLIC__/Xadmin/lib/layui/layui.js" charset="utf-8"></script>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body class="login-bg"
+      style="background: url({$Background_imgurl}) no-repeat center;background-position: center; background-size: cover; background-attachment: fixed; background-repeat: no-repeat;">
+
+<div class="login layui-anim layui-anim-up">
+    <div class="message">{$title}</div>
+    <div id="darkbannerwrap"></div>
+
+
+    <form method="post" class="layui-form">
+        <input name="account" placeholder="请输入后台账号..." type="text" lay-verify="required" class="layui-input">
+        <hr class="hr15">
+        <input name="password" lay-verify="required" placeholder="请输入后台密码..." type="password" class="layui-input">
+        {if condition="$admin_login_switch == 1"}
+        <hr class="hr15">
+        <input name="captcha" lay-verify="required" placeholder="请输入验证码..." type="text" class="layui-input">
+        <div style="float: right;border: #ddd 2px solid;border-radius: 5px;display: inline-block;overflow: hidden">
+        <img title="点击刷新验证码" src="/get_captcha?mode=admin_login" id="code_img"
+                             onClick="this.src='/get_captcha?mode=admin_login';" width="170"/>
+        </div>
+        {/if}
+        <hr class="hr15">
+        <input value="登录" lay-submit lay-filter="login" style="width:100%;" type="submit">
+        <hr class="hr20">
+    </form>
+</div>
+
+<script>
+    {if condition="$admin_login_switch == 1"}
+    var interval;
+    $('#code_img').on('load', function() {
+        clearInterval(interval);
+        interval = setInterval(function () {
+            $("#code_img").trigger("click");
+        }, 120000);  //2分钟自动刷新
+    });
+    {/if}
+    $(function () {
+        layui.use('form', function () {
+            var form = layui.form;
+            form.on('submit(login)', function (form) {
+                var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+                form.field.mode = 'admin';
+                $.ajax({
+                    type: "POST",
+                    url: "/login_handle",
+                    data: form.field,
+                    dataType: "json",
+                    success: function (json) { //SUCCESS
+                        var data = $.parseJSON(json);
+                        if (data.code == 0) {
+                            layer.close(Load); //关闭加载
+                            var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                                layer.close(indexa);
+                                window.location.href = data.url;
+                            });
+                        } else {
+                            {if condition="$admin_login_switch == 1"}
+                            if(data.code==101){
+                                $("#code_img").trigger("click");
+                            }
+                            {/if}
+                            layer.close(Load); //关闭加载
+                            var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                                layer.close(indexa);
+                            })
+                        }
+                    },
+                    error: function () { //ERROR
+                        layer.close(Load); //关闭加载
+                        layer.msg('系统繁忙');
+                        return false;
+                    }
+                });
+                return false;
+            });
+        });
+    })
+</script>
+<!-- 底部结束 -->
+</body>
+</html>

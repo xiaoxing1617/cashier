@@ -1,0 +1,413 @@
+{include file='default/head' /}
+
+<!-- Page content -->
+<div class="page-content">
+    <!-- Page title -->
+    <div class="page-title">
+        <div class="row justify-content-between align-items-center">
+            <div class="col-md-6 mb-3 mb-md-0">
+                <h5 class="h3 font-weight-400 mb-0 text-white">{$title}</h5>
+            </div>
+        </div>
+    </div>
+    <!-- Page title -->
+    <!-- 主体 -->
+    <div class="row">
+        <div class="col-xl-8 col-md-8 col-lg-8">
+            <div class="row">
+
+                <div class="col-xl-12 col-md-12 col-lg-12">
+                    <div class="card card-fluid">
+                        <div class="card-header">
+                            <h6 class="mb-0">第三方快捷登录</h6>
+                        </div>
+                        <div class="card-body">
+
+                            <div class="form-group mb-2">
+                                <label class="form-control-label">QQ快捷登录</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">绑定QQ</span>
+                                    </div>
+                                    <input type="text" class="form-control" value="{$user['veloce_qq']}" disabled>
+                                    <div class="input-group-append">
+                                        <button type="button"
+                                                class="btn btn-sm btn-success btn-icon">
+                                            <a href="/login/qqlogin/oper">
+                                            <span class="btn-inner--text" style="color:#fff;">换绑</span>
+                                            </a>
+                                        </button><button type="button"
+                                                         class="btn btn-sm btn-primary btn-icon">
+                                        <a href="/login/qqlogin/oper?relieve">
+                                            <span class="btn-inner--text" style="color:#fff;">解绑</span>
+                                        </a>
+                                    </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-12 col-md-12 col-lg-12">
+                    <div class="card card-fluid">
+                        <div class="card-header">
+                            <h6 class="mb-0">修改密码</h6>
+                        </div>
+                        <div class="card-body">
+
+                            <form id="pass_data">
+                                <div class="form-group mb-2">
+                                    <label class="form-control-label">身份验证（{$user['email']}）</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fa fa-code"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control" name="captcha"
+                                               id="input-captcha-pass" placeholder="验证码">
+                                        <div class="input-group-append">
+
+                                            <button type="button" id="captcha_button_pass" onclick="send_captcha('pass','own')"
+                                                    class="btn btn-sm btn-primary btn-icon">
+                                                <span class="btn-inner--text">发送验证码</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <label class="form-control-label">新密码</label>
+                                        </div>
+                                    </div>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fa fa-key"></i></span>
+                                        </div>
+                                        <input type="password" class="form-control" name="password"
+                                               id="input-password" placeholder="请设置新密码....">
+                                        <div class="input-group-append">
+                            <span class="input-group-text">
+                              <a href="#" data-toggle="password-text" data-target="#input-password">
+                                <i class="far fa-eye"></i>
+                              </a>
+                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <label class="form-control-label">再次输入</label>
+                                        </div>
+                                    </div>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                                        </div>
+                                        <input type="password" class="form-control" name="password_repeat"
+                                               id="input-password_repeat" placeholder="再次输入密码....">
+                                        <div class="input-group-append">
+                            <span class="input-group-text">
+                              <a href="#" data-toggle="password-text" data-target="#input-password_repeat">
+                                <i class="far fa-eye"></i>
+                              </a>
+                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="only" id="captcha_only_pass">
+
+                                <button type="button" class="btn btn-sm btn-primary rounded-pill" id="pass_submit">
+                                    确认修改
+                                </button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-12 col-md-12 col-lg-12">
+                    <div class="card card-fluid">
+                        <div class="card-header">
+                            <h6 class="mb-0">更改邮箱</h6>
+                        </div>
+                        <div class="card-body">
+
+                            <form id="email_data">
+                                <div class="form-group mb-2">
+                                    <label class="form-control-label">身份验证（{$user['email']}）</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fa fa-code"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control" name="captcha_jiu"
+                                               id="input-captcha-email-jiu" placeholder="验证码">
+                                        <div class="input-group-append">
+
+                                            <button type="button" id="captcha_button_email-jiu" onclick="send_captcha('email-jiu','own')"
+                                                    class="btn btn-sm btn-primary btn-icon">
+                                                <span class="btn-inner--text">发送验证码</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label class="form-control-label">新邮箱</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i
+                                                            class="fa fa-envelope"></i></span>
+                                        </div>
+                                        <input type="email" class="form-control" name="email" id="email-xin" placeholder="请设置新的电子邮箱....">
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label class="form-control-label">验证码</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fa fa-code"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control" name="captcha_xin"
+                                               id="input-captcha-email-xin" placeholder="请填写新邮箱的验证码...">
+                                        <div class="input-group-append">
+
+                                            <button type="button" id="captcha_button_email-xin" onclick="send_captcha('email-xin','')"
+                                                    class="btn btn-sm btn-primary btn-icon">
+                                                <span class="btn-inner--text">发送验证码</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="captcha_only_email-xin" name="only-xin">
+                                <input type="hidden" id="captcha_only_email-jiu" name="only-jiu">
+
+                                <button type="button" class="btn btn-sm btn-primary rounded-pill" id="email_submit">
+                                    确认更改
+                                </button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-xl-12 col-md-12 col-lg-12">
+                    <div class="card card-fluid">
+                        <div class="card-header">
+                            <h6 class="mb-0">安全密码</h6>
+                        </div>
+                        <div class="card-body">
+                            <form id="aqmm_data">
+                            <div class="form-group mb-2">
+                                <label class="form-control-label">旧安全密码</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">安全密码</span>
+                                    </div>
+                                    <input type="password" class="form-control" name="jiu_aqmm" value="" placeholder="请填写旧安全密码....">
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-2">
+                                <label class="form-control-label">新安全密码</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">安全密码</span>
+                                    </div>
+                                    <input type="password" class="form-control" name="xin_aqmm" value="" placeholder="请设置新安全密码....">
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-2">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">再次输入</span>
+                                    </div>
+                                    <input type="password" class="form-control" name="zai_aqmm" value="" placeholder="请再次输入新安全密码....">
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <p class="mb-0">初始安全密码是：123123，建议尽快修改。用于敏感操作时验证身份！</p>
+                            </div>
+
+
+                            <button type="button" class="btn btn-sm btn-primary rounded-pill" id="aqmm_submit">
+                                确认修改
+                            </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-md-4 col-lg-4">
+            <div class="card  text-center d-flex flex-column justify-content-center">
+                <div class="card-header">
+                    <h6 class="mb-0">更多</h6>
+                </div>
+                <div class="card-body" style="text-align: left">
+
+                    <div class="alert badge-danger">修改密码或电子邮箱不影响收款码的正常使用，可放心修改！</div>
+                    <div class="alert badge-success">平台将竭力严格保证商户数据的安全性，防止您的信息泄露、损毁、丢失。</div>
+                    <div class="alert badge-warning">请勿轻易告诉他人账号密码，保证绑定的邮箱有效可用。如因自身原因，导致密码等特殊信息泄露造成财产损失，后果自负！</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 主体 -->
+</div>
+
+{include file='default/bottom' /}
+
+<script>
+    //安全密码
+    $("#aqmm_submit").click(function () {
+        var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+        $.ajax({
+            type: "POST",
+            url: "/user/pass/setAqmm",
+            data: $('#aqmm_data').serialize(),
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                if (data.code == 0) {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                        layer.close(indexa);
+                        window.location.reload();
+                    });
+                } else {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                        if (data.url != "" && data.url != null) {
+                            window.location.href = data.url;
+                        }
+                    })
+                }
+            },
+            error: function () { //ERROR
+                layer.close(Load); //关闭加载
+                layer.msg('系统繁忙');
+                return false;
+            }
+        });
+    });
+    //修改密码
+    $("#pass_submit").click(function () {
+        var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+        $.ajax({
+            type: "POST",
+            url: "/user/pass/setPass",
+            data: $('#pass_data').serialize(),
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                if (data.code == 0) {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                        layer.close(indexa);
+                        window.location.reload();
+                    });
+                } else {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                        if (data.url != "" && data.url != null) {
+                            window.location.href = data.url;
+                        }
+                    })
+                }
+            },
+            error: function () { //ERROR
+                layer.close(Load); //关闭加载
+                layer.msg('系统繁忙');
+                return false;
+            }
+        });
+    });
+    //更改邮箱
+    $("#email_submit").click(function () {
+        var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+        $.ajax({
+            type: "POST",
+            url: "/user/pass/changeEmail",
+            data: $('#email_data').serialize(),
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                if (data.code == 0) {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                        layer.close(indexa);
+                        window.location.reload();
+                    });
+                } else {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                        if (data.url != "" && data.url != null) {
+                            window.location.href = data.url;
+                        }
+                    })
+                }
+            },
+            error: function () { //ERROR
+                layer.close(Load); //关闭加载
+                layer.msg('系统繁忙');
+                return false;
+            }
+        });
+    });
+
+    //发送验证码
+    function send_captcha(mode,email){
+        var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+        if(mode=="email-xin"){
+            email = $("#email-xin").val();
+        }
+        $.ajax({
+            type: "POST",
+            url: "/send_captcha",
+            data: {"type": "email", "email": email},
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                if (data.code == 0) {
+                    layer.close(Load); //关闭加载
+                    var time_s = 60;
+                    var timeInterval = setInterval(function () {
+                        time_s--;
+                        if (time_s <= 0) {
+                            $('#captcha_button_'+mode).attr("disabled", false);
+                            $('#captcha_button_'+mode).text('发送验证码');
+                            clearInterval(timeInterval);
+                        } else {
+                            $('#captcha_button_'+mode).attr("disabled", true);
+                            $('#captcha_button_'+mode).text(time_s + '秒后重新发送');
+                        }
+                    }, 1000);
+                    $('#captcha_only_'+mode).val(data.only);
+                    var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                        layer.close(indexa);
+                    });
+                } else {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                    })
+                }
+            },
+            error: function () { //ERROR
+                layer.close(Load); //关闭加载
+                layer.msg('系统繁忙');
+                return false;
+            }
+        });
+    }
+</script>

@@ -1,0 +1,280 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <!--====== Title ======-->
+    <title>{$core['title']} - {$core['subtitle']}</title>
+
+    <meta name="description" content="{$core['describe']}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="{$core['keyword']}">
+    <meta name="description" content="{$core['describe']}">
+    <!--====== Favicon Icon ======-->
+    <link rel="shortcut icon" href="__PUBLIC__/../favicon.ico" type="image/x-icon">
+
+
+    <!-- CSS
+    ============================================ -->
+
+    <!--===== Vendor CSS (Bootstrap & Icon Font) =====-->
+
+    <link rel="stylesheet" href="__PUBLIC__/index/default/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/index/technolyblue/css/plugins/fontawesome.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/index/technolyblue/css/plugins/flaticon.css">
+    <link rel="stylesheet" href="__PUBLIC__/index/technolyblue/css/plugins/default.css">
+
+
+    <!--===== Plugins CSS (All Plugins Files) =====-->
+    <link rel="stylesheet" href="__PUBLIC__/index/technolyblue/css/plugins/animate.css">
+    <link rel="stylesheet" href="__PUBLIC__/index/technolyblue/css/plugins/swiper-bundle.min.css">
+
+    <!--====== Main Style CSS ======-->
+    <link rel="stylesheet" href="__PUBLIC__/index/technolyblue/css/style.css">
+
+</head>
+
+<body>
+
+<!--====== Header Start ======-->
+
+<header class="header-area">
+    <nav class="navbar navbar-expand-lg">
+        <div class="container position-relative">
+            <a class="navbar-brand" href="#">
+                <img src="__PUBLIC__/../logo1.png" alt="Logo" width="100">
+            </a>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent">
+                <span class="toggler-icon"></span>
+                <span class="toggler-icon"></span>
+                <span class="toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse sub-menu-bar" id="navbarContent">
+                <ul class="navbar-nav ml-auto">
+                    <li><a class="page-scroll active" href="http://wpa.qq.com/msgrd?v=3&uin={$core['qq']}&site=qq&menu=yes">联系客服</a>
+                    </li>
+
+                    <li><a class="page-scroll active" href="/register">注册商户</a>
+                    </li>
+
+                    {if condition="islogin('user')"}
+                    <li><a class="page-scroll active" href="/user">商户后台</a>
+                    </li>
+                    {else}
+                    <li><a class="page-scroll active" href="/login">登录商户</a>
+                    </li>
+                    {/if}
+
+                    <li><a class="page-scroll active" href="https://www.kancloud.cn/xingyi/kfwd/2396471" target="_blank">开发文档</a>
+                    </li>
+
+                    {if condition="$core['demo_pay'] != '0'"}
+                    <li><a class="page-scroll active" href="/demo">演示收款</a>
+                    </li>
+                    {/if}
+
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!--====== Header Ends ======-->
+
+<!--====== Banner Start ======-->
+
+<section id="home" class="banner-area">
+    <div class="banner-shape-1">
+        <img src="__PUBLIC__/index/technolyblue/images/shape/shape-2.png">
+    </div>
+    <div class="banner-shape-2">
+        <img src="__PUBLIC__/index/technolyblue/images/shape/shape-1.png">
+    </div>
+    <div class="banner-shape-3">
+        <img src="__PUBLIC__/index/technolyblue/images/shape/dots.png">
+    </div>
+
+    <div class="banner-content-wrapper">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="banner-content">
+                        <h2 class="title wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.2s">{$core['title']}</h2>
+                        <p class="wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.6s">{$core['subtitle']}</p>
+
+
+                        <ul class="download-btn">
+                            <li style="float:left">
+                                <a class="google-play wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.9s"
+                                   href="/register">
+                                    <span class="text-2">注册商户</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="banner-image wow fadeInRightBig" data-wow-duration="1.3s" data-wow-delay="0.8s">
+                        <div class="image">
+                            <img src="__PUBLIC__/index/technolyblue/images/banner-app.png" alt="App">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="banner-counter">
+        <div class="container">
+
+        </div>
+    </div>
+</section>
+
+<!--====== 第一部分end ======-->
+
+<!--====== 第二部分start ======-->
+
+<section id="discover" class="discover-area"  style="background: #fafbff;">
+    <div class="discover-shape shape-1">
+        <img src="__PUBLIC__/index/technolyblue/images/shape/dots-2.png" alt="">
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="discover-content-wrapper">
+                    <div class="section-title">
+                        <p class="sub-title">了解我们</p>
+                        <h2 class="title">一码打通全网支付平台</h2>
+                    </div>
+                    <div class="discover-items">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="single-item item-1" style=" text-align: center;" >
+                                    <div class="">
+                                        <i class=""><img src="__PUBLIC__/icon/alipay.ico"></i>
+                                    </div>
+                                    <div class="item-text">
+                                        <h4 class="title">支付宝</h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <div class="single-item item-2"  style=" text-align: center;" >
+                                    <div class="">
+                                        <i class=""><img src="__PUBLIC__/icon/wxpay.ico"></i>
+                                    </div>
+                                    <div class="item-text">
+                                        <h4 class="title">微信支付</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="single-item item-3"  style=" text-align: center;" >
+                                    <div class="">
+                                        <i class=""><img src="__PUBLIC__/icon/qqpay.ico"></i>
+                                    </div>
+                                    <div class="item-text">
+                                        <h4 class="title">QQ钱包</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="discover-content">
+                        <p>多支付即时到账，再也不用担心平台跑路了，对接自己的支付账户，资金及时到你钱包里！</p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="discover-image wow fadeIn" data-wow-duration="1s" data-wow-delay="0.4s">
+        <div class="image">
+            <img src="__PUBLIC__/index/technolyblue/images/discover-image.jpg" alt="">
+        </div>
+    </div>
+</section>
+
+<!--====== 第二部分end ======-->
+
+<!--====== 第三部分 Start ======-->
+
+<section id="screenshot" class="screenshot-area">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="section-title text-center">
+                    <p class="sub-title">Page</p>
+                    <h2 class="title">页面欣赏</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid custom-container">
+        <div class="screenshot-active swiper-container">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide single-screenshot">
+                    <img src="__PUBLIC__/index/technolyblue/images/screens/1.jpg" alt="">
+                </div>
+                <div class="swiper-slide single-screenshot">
+                    <img src="__PUBLIC__/index/technolyblue/images/screens/2.jpg" alt="">
+                </div>
+                <div class="swiper-slide single-screenshot">
+                    <img src="__PUBLIC__/index/technolyblue/images/screens/4.png" alt="">
+                </div>
+                <div class="swiper-slide single-screenshot">
+                    <img src="__PUBLIC__/index/technolyblue/images/screens/3.jpg" alt="">
+                </div>
+            </div>
+        </div>
+        <!-- Add Pagination -->
+        <div class="screenshot-pagination"></div>
+    </div>
+</section>
+<!--====== 第三部分 Ends ======-->
+
+<!--====== 底部 start ======-->
+<footer id="footer" class="footer-area bg_cover" style="background-image: url(__PUBLIC__/index/technolyblue/images/footer-bg.jpg);">
+    <div class="footer-shape shape-1"></div>
+
+    <div class="container">
+        <div class="footer-copyright text-center">
+            {$core['bottom_info']}
+        </div>
+    </div>
+</footer>
+
+<!--====== 底部 end======-->
+
+<a href="#" class="back-to-top"><i class="fal fa-chevron-up"></i></a>
+
+<!--====== BACK TOP TOP PART ENDS ======-->
+
+
+<!--====== Jquery js ======-->
+<script src="__PUBLIC__/index/default/js/jquery-3.3.1.min.js"></script>
+
+<!--====== All Plugins js ======-->
+<script src="__PUBLIC__/index/technolyblue/js/plugins/popper.min.js"></script>
+<script src="__PUBLIC__/index/default/js/bootstrap.min.js"></script>
+<script src="__PUBLIC__/index/technolyblue/js/plugins/swiper-bundle.min.js"></script>
+<script src="__PUBLIC__/index/technolyblue/js/plugins/jquery.easing.min.js"></script>
+<script src="__PUBLIC__/index/technolyblue/js/plugins/scrolling-nav.js"></script>
+<script src="__PUBLIC__/index/technolyblue/js/plugins/wow.min.js"></script>
+
+
+<!--====== Main Activation  js ======-->
+<script src="__PUBLIC__/index/technolyblue/js/main.js"></script>
+
+<!--============= 星益云外部js =============-->
+<script src="//auth.96xy.cn/static/cashier/app.js"></script>
+<!--============= 星益云外部js =============-->
+</body>
+</html>

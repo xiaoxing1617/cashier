@@ -1,0 +1,238 @@
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
+    <title>程序安装</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, user-scalable=no">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .btn-primary {
+            background: linear-gradient(to left, #00aeff, #0080ff);
+            color: #fff;
+        }
+
+        .btn-danger {
+            background: linear-gradient(to left, #ff576e, #ff8cb3);
+            color: #fff;
+        }
+
+        .input-group-addon{
+            background: rgba(255, 87, 110, 0.2);
+            color: rgb(255, 87, 110);
+            font-weight:600;
+        }
+
+        .panel-default {
+            border-color: #12c2e9;
+        }
+
+        .panel-default .panel-heading {
+            background: linear-gradient(to right, #f64f59, #c471ed, #12c2e9);
+            color: #fff;
+        }
+
+        .progress-bar-success {
+            background: linear-gradient(-8deg, #0ec493, #85e581);
+        }
+        body{background-image:url(__PUBLIC__/../bj.jpg);background-position:50%;background-repeat:no-repeat;-webkit-background-size:cover;background-size:cover}
+    </style>
+</head>
+<body>
+<div class="container col-xs-12 col-sm-8 col-lg-8 center-block" style="float: none;padding-top:40px;">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">星益云聚合收银台系统 - 安装程序</div>
+                    <div class="panel-body">
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-success" style="width: {$progress}%">
+                            </div>
+                        </div>
+                        <h4 align="center">{$subtitle}</h4>
+                        {if condition="$do eq 1"}
+                        <p>
+                            <iframe src="__PUBLIC__/../log.txt"
+                                    style="width:100%;height:380px;overflow-x:hidden;resize:none"></iframe>
+                        </p>
+                        <p><a class="btn btn-primary btn-lg btn-block" href="./install?do=2" role="button">安装程序</a></p>
+                        {elseif condition="$do eq 2"}
+
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>扩展名称</th>
+                                <th>需求</th>
+                                <th>当前</th>
+                                <th>用途</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>PHP 5.6+</td>
+                                <td>必须</td>
+                                <td>{$data['phpversion']}</td>
+                                <td>PHP环境</td>
+                            </tr>
+                            <tr>
+                                <td>curl_exec()</td>
+                                <td>必须</td>
+                                <td>{$data['curl_exec']}</td>
+                                <td>抓取网页</td>
+                            </tr>
+                            <tr>
+                                <td>Mysql 5.6+</td>
+                                <td>必须</td>
+                                <td>{$data['mysql']}</td>
+                                <td>数据库支持</td>
+                            </tr>
+                            <tr>
+                                <td>php_openssl扩展</td>
+                                <td>必须</td>
+                                <td>{$data['php_openssl']}</td>
+                                <td>数据加密</td>
+                            </tr>
+                            <tr>
+                                <td>file_get_contents()</td>
+                                <td>必须</td>
+                                <td>{$data['file_get_contents']}</td>
+                                <td>读取文件</td>
+                            </tr>
+                            <tr>
+                                <td>fsockopen()</td>
+                                <td>必须</td>
+                                <td>{$data['fsockopen']}</td>
+                                <td>发送邮件</td>
+                            </tr>
+                            <tr>
+                                <td>GD函数库</td>
+                                <td>必须</td>
+                                <td>{$data['imagecreate']}</td>
+                                <td>处理图像</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="row">
+                            <div class="col-xs-6 col-sm-6 col-lg-6 center-block">
+                                <a class="btn btn-danger btn-lg" href="./install?do=1" role="button">上一步</a>
+                            </div>
+                            <div class="col-xs-6 col-sm-6 col-lg-6 center-block text-right">
+                                <a class="btn btn-primary btn-lg" href="./install?do=3" role="button">下一步</a>
+                            </div>
+                        </div>
+                        {elseif condition="$do eq 3"}
+                        <form action="?do=4" class="form-sign" method="post">
+                            <div class="input-group">
+                                <span class="input-group-addon">授权私钥</span>
+                                <textarea type="text" class="form-control" name="private_key" rows="5"></textarea>
+                            </div>
+                            <br/>
+                            <span style="font-size: 16px;color: #00f">请联系售卖你授权的人索要私钥，每个授权都有一个自己的授权私钥。请勿泄露自己的私钥，否则平台将（不退款）取消你的授权！</span>
+                            <hr/>
+                            <div class="input-group">
+                                <span class="input-group-addon">服务器地址</span>
+                                <input type="text" class="form-control" name="hostname" value="localhost">
+                            </div>
+                            <br/>
+                            <div class="input-group">
+                                <span class="input-group-addon">服务器端口</span>
+                                <input type="text" class="form-control" name="hostport" value="3306">
+                            </div>
+                            <br/>
+                            <div class="input-group">
+                                <span class="input-group-addon">数据库名称</span>
+                                <input type="text" class="form-control" name="database">
+                            </div>
+                            <br/>
+                            <div class="input-group">
+                                <span class="input-group-addon">数据库密码</span>
+                                <input type="text" class="form-control" name="password">
+                            </div>
+                            <br/>
+                            <div class="input-group">
+                                <span class="input-group-addon">数据库用户名</span>
+                                <input type="text" class="form-control" name="username">
+                            </div>
+                            <br><input type="submit" class="btn btn-primary btn-block btn-lg" name="submit" value="保存配置">
+                        </form>
+                        <br/>
+                        （如果已事先填写好database.php数据库配置，可以 <a href="?do=4&j">点击此处</a> 跳过这一步！）
+                        {elseif condition="$do eq 4"}
+
+                            {if condition="$data['code'] eq 0"}
+                            <div class="alert alert-success" role="alert" style="text-align: center">
+                                <h4><b>{$data['msg']}</b></h4>
+                            </div>
+                                {if condition="$data['istab']==1"}
+                                <a href="?do=5" class="btn btn-primary btn-block btn-lg">开始安装导入</a>
+                                {else}
+                                <a href="?do=6" class="btn btn-primary btn-block btn-lg">不导入了，跳过这一步</a>
+                                <a href="?do=5&j" onclick="if(!confirm('重装安装导入将会清空数据库现有的所有数据，是否继续重装？')){return false;}" class="btn btn-danger btn-block btn-lg">重装安装导入</a>
+                                {/if}
+                            {else}
+                            <div class="alert alert-danger" role="alert">
+                                数据库连接失败：{$data['msg']}
+                            </div>
+                            <a href="javascript:history.back(-1)" class="btn btn-danger btn-block btn-lg">返回上一步</a>
+                            {/if}
+
+                        {elseif condition="$do eq 5"}
+
+                        {if condition="$data['code'] eq 0"}
+
+                        <div class="alert alert-success" role="alert">
+                            <div style="text-align: center">
+                        {if condition="$data['t'] eq $data['s']"}
+                            <h4><b>数据全部导入成功！</b></h4>
+                            </div>
+                        {else}
+                            <h4><b>部分数据导入成功！</b></h4>
+                        </div>
+                            <h4>共有{$data['s']}条sql语句，执行成功{$data['t']}条，执行失败{$data['e']}条！</h4>
+                            <p>错误记录：</p>
+                            <p>{$data['error']}</p>
+                        {/if}
+                        </div>
+
+                        <a href="?do=6" class="btn btn-primary btn-block btn-lg">下一步</a>
+                        {else}
+                        <div class="alert alert-danger" role="alert">
+                            {$data['msg']}
+                        </div>
+
+                         <a href="?do=5&j" class="btn btn-danger btn-block btn-lg">重新导入</a>
+                        {/if}
+                        {elseif condition="$do eq 6"}
+
+                    <div class="jumbotron">
+                        <h1>安装成功 😎</h1>
+                        <p>星益云聚合收银台系统</p>
+                        <div class="alert alert-success">
+                            <p><h4>后台账号：admin</h4></p>
+                            <p><h4>后台密码：123456</h4></p>
+                            <p><h4>为了保证系统的安全，建议尽快修改后台账号密码！</h4></p>
+                            <hr/>
+                            <p><h4>Copyright © 2018-至今 <a href="http://www.96xy.cn/" target="_blank">星益云</a> 版权所有</h4></p>
+                        </div>
+                        <p>
+                            <a class="btn btn-primary btn-lg" href="./" role="button">首页</a>
+                            <a class="btn btn-primary btn-lg" href="./admin" role="button">后台管理</a>
+                            <a class="btn btn-primary btn-lg" href="https://jq.qq.com/?_wv=1027&k=gCgIVneP" role="button">QQ交流群</a>
+                        </p>
+                    </div>
+
+                        {else}
+                        <div class="jumbotron">
+                            <h1>欢迎使用 😀</h1>
+                            <p>星益云聚合收银台系统</p>
+                            <p>当前版本号：{$data['VERSION']}（Build：{$data['BUILD']}）</p>
+                            <p><a class="btn btn-primary btn-lg" href="./install?do=1" role="button">安装系统</a></p>
+                        </div>
+                        {/if}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

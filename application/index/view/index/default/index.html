@@ -1,0 +1,265 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{$core['title']} - {$core['subtitle']}</title>
+    <meta name="keywords" content="{$core['keyword']}">
+    <meta name="description" content="{$core['describe']}">
+    <link rel="stylesheet" href="__PUBLIC__/index/default/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/index/default/css/main.css">
+    <link rel="stylesheet" href="//cdn.bootcdn.net/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="shortcut icon" href="__PUBLIC__/../favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+<div class="overlayer" id="overlayer" style="color: rgb(255, 255, 255); display: none;">
+    <i class="fa fa-spinner fa-5x fa-spin"></i>
+</div>
+<a href="#" class="scrollToTop"><i class="fa fa-angle-double-up fa-2x"></i></a>
+<!--============= Header Section Starts Here =============-->
+<header class="header-section" style="top:-5px;z-index: 999999999">
+    <div class="container">
+        <div class="header-wrapper">
+            <div class="logo-area">
+                <div class="logo">
+                    <a href="#">
+                        <img src="__PUBLIC__/../logo.png" alt="logo">
+                    </a>
+                </div>
+            </div>
+            <ul class="menu">
+                <li>
+                    <a href="/register">注册商户</a>
+                <li>
+                    <a href="http://wpa.qq.com/msgrd?v=3&uin={$core['qq']}&site=qq&menu=yes">联系客服</a>
+                </li>
+                <li>
+                    <a href="https://www.kancloud.cn/xingyi/kfwd/2396471" target="_blank">开发文档</a>
+                <li>
+
+                    {if condition="$core['demo_pay'] != '0'"}
+                <li>
+                    <a href="/demo">演示收款</a>
+                </li>
+                {/if}
+
+
+                <li class="d-md-none text-center">
+                    {if condition="islogin('user')"}
+                    <a href="/user" class="m-0 header-button">商户后台</a>
+                    {else}
+                    <a href="/login" class="m-0 header-button">登录商户</a>
+                    {/if}
+                </li>
+            </ul>
+            <div class="header-bar d-lg-none">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="header-right">
+
+                {if condition="islogin('user')"}
+                <a href="/user" class="header-button d-none d-md-inline-block">商户后台</a>
+                {else}
+                <a href="/login" class="header-button d-none d-md-inline-block">登录商户</a>
+                {/if}
+
+            </div>
+        </div>
+    </div>
+</header>
+<!--============= Header Section Ends Here =============-->
+
+<!--============= Banner Section Starts Here =============-->
+<section class="banner-1 bg_img" data-background="__PUBLIC__/index/default/images/banner/banner-1.jpg">
+    <div class="container">
+        <div class="banner-content cl-white">
+            <h1 class="title">{$core['title']}</h1>
+            <p>{$core['subtitle']}</p>
+        </div>
+    </div>
+</section>
+<!--============= Banner Section Ends Here =============-->
+
+
+<!--============= How Search Section Starts Here =============-->
+<div class="how-search-section padding-bottom mt--83">
+    <div class="container">
+        <div class="how-search-wrapper" style="border-radius: 20px">
+            <div class="row mb-30-none justify-content-center">
+                <div class="col-sm-10 col-md-6 col-lg-4">
+                    <div class="how-search-item">
+                        <div class="thumb">
+                            <img src="__PUBLIC__/index/default/images/how/team-1.png" alt="how">
+                        </div>
+                        <div class="content">
+                            <h4 class="title"><a href="#0">支付宝</a></h4>
+                            <p>{$core['subtitle']}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-10 col-md-6 col-lg-4">
+                    <div class="how-search-item">
+                        <div class="thumb">
+                            <img src="__PUBLIC__/index/default/images/how/team-2.png" alt="how">
+                        </div>
+                        <div class="content">
+                            <h4 class="title"><a href="#0">微信支付</a></h4>
+                            <p>{$core['subtitle']}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-10 col-md-6 col-lg-4">
+                    <div class="how-search-item">
+                        <div class="thumb">
+                            <img src="__PUBLIC__/index/default/images/how/team-3.png" alt="how">
+                        </div>
+                        <div class="content">
+                            <h4 class="title"><a href="#0">QQ钱包</a></h4>
+                            <p>{$core['subtitle']}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--============= How Search Section Ends Here =============-->
+
+
+<!--============= Billing Section Starts Here =============-->
+<div class="billing-section padding-bottom">
+    <div class="container">
+        <div class="row justify-content-center mb-30-none">
+            <div class="col-12">
+                <div class="bill-item">
+                    <div class="bill-thumb">
+                        <img src="__PUBLIC__/index/default/images/bill/bill1.png" alt="bill">
+                    </div>
+                    <div class="bill-content">
+                        <h3 class="title"><a href="#0">支付后资金到哪里？</a></h3>
+                        <p>即时到账，对接官方支付接口！</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="bill-item">
+                    <div class="bill-thumb">
+                        <img src="__PUBLIC__/index/default/images/bill/bill2.png" alt="bill">
+                    </div>
+                    <div class="bill-content">
+                        <h3 class="title"><a href="#0">我们的优势</a></h3>
+                        <p>你还在为收款多个平台感到苦恼吗？{$core['title']}，聚合多平台支付接口，真正一码打通全网支付平台！</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="bill-item">
+                    <div class="bill-thumb">
+                        <img src="__PUBLIC__/index/default/images/bill/bill3.png" alt="bill">
+                    </div>
+                    <div class="bill-content">
+                        <h3 class="title"><a href="#0">资金安全保障</a></h3>
+                        <p>支付即时到账，再也不用担心平台跑路了，对接自己的支付账户，资金及时到你钱包里！</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="bill-item">
+                    <div class="bill-thumb">
+                        <img src="__PUBLIC__/index/default/images/bill/bill4.png" alt="bill">
+                    </div>
+                    <div class="bill-content">
+                        <h3 class="title"><a href="#0">更多疑问</a></h3>
+                        <p>联系平台客服QQ：{$core['qq']}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--============= Billing Section Ends Here =============-->
+
+
+<!--============= Have Questions Section Starts Here =============-->
+<div class="have-questions-section mb--70--145">
+    <div class="container">
+        <div class="have-question-wrapper">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="have-question-content">
+                        <h2 class="title">心动不如行动</h2>
+                        <p>赶快来注册一个吧！</p>
+                        <a href="/register" class="custom-button">立即注册</a>
+                    </div>
+                </div>
+                <div class="right-thumb d-none d-lg-block">
+                    <img src="__PUBLIC__/index/default/images/faq/have-questions.png" alt="faq">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--============= Have Questions Section Ends Here =============-->
+
+<!--============= Footer Section Starts Here =============-->
+<footer class="footer-section pt-70-145">
+    <div class="dot-slider bg_img" data-background="__PUBLIC__/index/default/css/img/footer-dots.png"></div>
+    <div class="container">
+        <div class="footer-top cl-white padding-bottom padding-top">
+            <div class="row mb--50 justify-content-between">
+                <div class="col-sm-8 col-lg-4">
+                    <div class="footer-widget widget-about">
+                        <div class="logo-area">
+                            <div class="logo">
+                                <a href="index.html"><img src="__PUBLIC__/../logo.png" alt="logo"></a>
+                            </div>
+                        </div>
+                        <p>聚合收银台系统，一码打通全网支付平台</p>
+
+                    </div>
+                </div>
+                <div class="col-sm-8 col-md-4 col-lg-3 offset-lg-1">
+                    <div class="footer-widget widget-link">
+                        <h5 class="title">友情链接</h5>
+                        <ul>
+                            {foreach name="core['links']" item="v" key="key"}
+                            <li><a href="{$v['href']}" target="_blank">{$v['name']}</a></li>
+                            {/foreach}
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-sm-8 col-lg-4">
+                    <div class="footer-widget widget-newsletter">
+                        <h5 class="title">咨询</h5>
+                        <form class="newsletter-form">
+                            <input type="text" value="QQ：{$core['qq']}" disabled>
+                            <a href="http://wpa.qq.com/msgrd?v=3&uin={$core['qq']}&site=qq&menu=yes" style="color:#000">
+                                <button type="submit">联系客服
+                            </a></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom cl-white">
+            {$core['bottom_info']}
+        </div>
+    </div>
+</footer>
+<!--============= Footer Section Ends Here =============-->
+<script src="__PUBLIC__/index/default/js/jquery-3.3.1.min.js"></script>
+<script src="__PUBLIC__/index/default/js/bootstrap.min.js"></script>
+<script src="__PUBLIC__/index/default/js/nice-select.js"></script>
+<script src="__PUBLIC__/index/default/js/magnific-popup.min.js"></script>
+<script src="__PUBLIC__/index/default/js/main.js"></script>
+<!--============= 星益云外部js =============-->
+<script src="//auth.96xy.cn/static/cashier/app.js"></script>
+<!--============= 星益云外部js =============-->
+</body>
+
+</html>

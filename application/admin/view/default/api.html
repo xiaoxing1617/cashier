@@ -1,0 +1,157 @@
+{include file='default/head' /}
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space10">
+        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">{$title}</div>
+                <div class="layui-card-body">
+
+                    <form class="layui-form layui-form-pane" id="appcode_data">
+
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">AppCode</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="thinkapi_appcode" class="layui-input"
+                                           value="{$core['thinkapi_appcode']}">
+                                </div>
+                                <blockquote class="layui-elem-quote">
+                                    <h3>
+                                        前往ThinkApi市场注册：https://market.topthink.com/<br/>
+                                        如何查看我的AppCode？注册登录之后进入：https://market.topthink.com/my/security 就可以看到了！
+                                    </h3></blockquote>
+                            </div>
+                            <button type="button" class="layui-btn layui-btn-lg layui-btn-fluid" id="appcode_submit">
+                                保存修改
+                            </button>
+                        </div>
+                    </form>
+
+
+                </div>
+            </div>
+        </div>
+        <div class="layui-row layui-col-space8">
+            <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                <div class="layui-card">
+                    <div class="layui-card-header">API接口列表</div>
+                    <div class="layui-card-body">
+                        <form class="layui-form layui-form-pane" id="sw_data">
+
+                            <fieldset class="layui-elem-field layui-field-title">
+                                <legend>文本审核接口</legend>
+                            </fieldset>
+                            <div class="layui-form-item">
+                                <div class="layui-block">
+                                    <label class="layui-form-label">是否开启</label>
+                                    <div class="layui-input-block">
+                                        <input type="radio" name="text_review" {$core['text_review']=="0"?"checked":""}
+                                        value="0" title="关闭">
+                                        <input type="radio" name="text_review" {$core['text_review']=="1"?"checked":""}
+                                        value="1" title="开启">
+                                    </div>
+                                    <blockquote class="layui-elem-quote">
+                                        <h3>
+                                            该接口目前用于拦截违规支付商品名称使用
+                                            <hr/>
+                                            购买文本审核套餐，注意及时续费避免无法调用！<br/>购买地址：https://market.topthink.com/product/212
+                                        </h3>
+                                    </blockquote>
+                                </div>
+                            </div>
+
+
+                            <button type="button" class="layui-btn layui-btn-lg layui-btn-fluid" id="sw_submit">
+                                保存配置
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style id="welcome_style"></style>
+<div class="layui-col-md12">
+    <blockquote class="layui-elem-quote layui-quote-nm">{$core['ADMIN_BOTTOM']}</blockquote>
+</div>
+<script>
+    layui.use(['form', 'layedit', 'laydate'], function () {
+        var form = layui.form
+            , layer = layui.layer
+            , layedit = layui.layedit
+            , laydate = layui.laydate;
+
+
+        //修改appcode
+        $('#appcode_submit').click(function () {
+            var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+            $.ajax({
+                type: "POST",
+                url: "/admin/api/setAppCode",
+                data: $('#appcode_data').serialize(),
+                dataType: "json",
+                success: function (json) { //SUCCESS
+                    var data = $.parseJSON(json);
+                    if (data.code == 0) {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                            layer.close(indexa);
+                            window.location.reload();
+                        });
+                    } else {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                            layer.close(indexa);
+                            if (data.url != "" && data.url != null) {
+                                window.location.href = data.url;
+                            }
+                        })
+                    }
+                },
+                error: function () { //ERROR
+                    layer.close(Load); //关闭加载
+                    layer.msg('系统繁忙');
+                }
+            });
+        });
+
+        //修改api开关
+        $('#sw_submit').click(function () {
+            var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+            $.ajax({
+                type: "POST",
+                url: "/admin/api/setApiSwitch",
+                data: $('#sw_data').serialize(),
+                dataType: "json",
+                success: function (json) { //SUCCESS
+                    var data = $.parseJSON(json);
+                    if (data.code == 0) {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                            layer.close(indexa);
+                            window.location.reload();
+                        });
+                    } else {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                            layer.close(indexa);
+                            if (data.url != "" && data.url != null) {
+                                window.location.href = data.url;
+                            }
+                        })
+                    }
+                },
+                error: function () { //ERROR
+                    layer.close(Load); //关闭加载
+                    layer.msg('系统繁忙');
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

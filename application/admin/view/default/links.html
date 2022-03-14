@@ -1,0 +1,160 @@
+{include file='default/head' /}
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space1">
+        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">{$title}</div>
+                <div class="layui-card-body">
+
+
+                    <form class="layui-form" id="edit_data">
+                        <input type="hidden" name="sum" value="{$count}">
+                        <div class="layui-table-box" style="overflow: auto">
+                            <table class="layui-table">
+                                <colgroup>
+                                    <col width="80">
+                                    <col width="500">
+                                    <col width="1000">
+                                    <col>
+                                </colgroup>
+                                <thead>
+                                <tr>
+                                    <th>排序</th>
+                                    <th>网站名称</th>
+                                    <th>网站链接</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {foreach name="core['links']" item="v" key="key"}
+                                <tr>
+                                    <td>
+                                        <input class="layui-input" placeholder="排序" value="{$key+1}" name="px_{$key+1}">
+                                    </td>
+                                    <td>
+                                        <input class="layui-input" placeholder="网站名称" name="name_{$key+1}" value="{$v['name']}">
+                                    </td>
+                                    <td>
+                                        <input class="layui-input" placeholder="网站链接" name="href_{$key+1}" value="{$v['href']}">
+                                    </td>
+                                </tr>
+                                {/foreach}
+                                </tbody>
+                            </table>
+                        </div>
+                        <br/>
+                        <button type="button" class="layui-btn layui-btn-lg" id="edit_submit">确认保存</button>
+                    </form>
+
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+                        <legend>添加友情链接</legend>
+                    </fieldset>
+                    <form class="layui-form" id="add_data">
+                    <div class="layui-form-item">
+                        <div class="layui-block">
+                            <label class="layui-form-label">网站名称</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="name" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-block">
+                            <label class="layui-form-label">网站链接</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="href" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <br/>
+                    <button type="button" class="layui-btn layui-btn-lg" id="add_submit">确认添加</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style id="welcome_style"></style>
+<div class="layui-col-md12">
+    <blockquote class="layui-elem-quote layui-quote-nm">{$core['ADMIN_BOTTOM']}</blockquote>
+</div>
+<script>
+    layui.use(['form', 'layedit', 'laydate'], function () {
+        var form = layui.form
+            , layer = layui.layer
+            , layedit = layui.layedit
+            , laydate = layui.laydate;
+
+
+        //修改
+        $('#edit_submit').click(function () {
+            var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+            $.ajax({
+                type: "POST",
+                url: "/admin/links/edit",
+                data:  $('#edit_data').serialize(),
+                dataType: "json",
+                success: function (json) { //SUCCESS
+                    var data = $.parseJSON(json);
+                    if (data.code == 0) {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                            layer.close(indexa);
+                            window.location.reload();
+                        });
+                    } else {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                            layer.close(indexa);
+                            if (data.url != "" && data.url != null) {
+                                window.location.href = data.url;
+                            }
+                        })
+                    }
+                },
+                error: function () { //ERROR
+                    layer.close(Load); //关闭加载
+                    layer.msg('系统繁忙');
+                }
+            });
+        });
+
+        //添加
+        $('#add_submit').click(function () {
+            var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+            $.ajax({
+                type: "POST",
+                url: "/admin/links/add",
+                data:  $('#add_data').serialize(),
+                dataType: "json",
+                success: function (json) { //SUCCESS
+                    var data = $.parseJSON(json);
+                    if (data.code == 0) {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                            layer.close(indexa);
+                            window.location.reload();
+                        });
+                    } else {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                            layer.close(indexa);
+                            if (data.url != "" && data.url != null) {
+                                window.location.href = data.url;
+                            }
+                        })
+                    }
+                },
+                error: function () { //ERROR
+                    layer.close(Load); //关闭加载
+                    layer.msg('系统繁忙');
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

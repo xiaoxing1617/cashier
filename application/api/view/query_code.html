@@ -1,0 +1,135 @@
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
+    <title>{$title}</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, user-scalable=no">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .btn-primary {
+            background: linear-gradient(to left, #00aeff, #0080ff);
+            color: #fff;
+        }
+
+        .btn-danger {
+            background: linear-gradient(to left, #ff576e, #ff8cb3);
+            color: #fff;
+        }
+
+        .input-group-addon {
+            background: rgba(255, 87, 110, 0.2);
+            color: rgb(255, 87, 110);
+            font-weight: 600;
+        }
+
+        .panel-default {
+            border-color: #12c2e9;
+        }
+
+        .panel-default .panel-heading {
+            background: linear-gradient(to right, #f64f59, #c471ed, #12c2e9);
+            color: #fff;
+        }
+
+        .progress-bar-success {
+            background: linear-gradient(-8deg, #0ec493, #85e581);
+        }
+
+        /*body{background-image:url(__PUBLIC__/../bj.jpg);background-position:50%;background-repeat:no-repeat;-webkit-background-size:cover;background-size:cover}*/
+    </style>
+</head>
+<body>
+<div class="container col-xs-12 col-sm-12 col-lg-12 center-block" style="float: none;padding-top:10px;">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading" id="data">{$title}</div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12">
+
+                                <div class="form-group mb-2">
+                                    <label class="form-control-label">您可以复制分享链接到{$pay_names}等社交平台点击链接进入付款，或复制链接到浏览器打开</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">收银台链接</span>
+                                        <input type="text" class="form-control" value="{$url}" id="code_url" disabled>
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-primary btn-icon"><span
+                                                    class="btn-inner--text" id="copy_url">复制</span>
+                                            </button>
+                                      </span>
+                                    </div>
+                                </div>
+
+                                <div class="thumbnail">
+                                    <img id="code-img"/>
+                                    <canvas id="canvas" style="width: 100%"></canvas>
+                                    <div class="caption">
+                                        <button class="btn btn-danger btn-block btn-lg" id="save">下载保存
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="//lib.baomitu.com/jquery/3.6.0/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/layer/3.0.1/layer.min.js"></script>
+<script src="__PUBLIC__/qr-js/jquery.qrcode.min.js"></script>
+<script src="__PUBLIC__/qr-js/llqrcode.js"></script>
+<script src="__PUBLIC__/qr-js/qrfun.js"></script>
+<script src="__PUBLIC__/clipboard/clipboard.js"></script>
+<script>
+    var clipboard = new ClipboardJS("#copy_url",{
+        text: function() {
+            return $("#code_url").val();
+        }
+    });
+    clipboard.on("success", function () {
+        layer.msg("复制成功", {offset: 't',time: 900});
+    });
+    clipboard.on("error", function () {
+        layer.msg("复制失败", {offset: 't',time: 900});
+    });
+
+    var other_data = {
+        "qq": "{$user['qq']}"
+    };
+    var circular_portrait = '{$code["circular_portrait"]}';
+    preview();
+
+    function preview(download = false) {
+        var Load = layer.msg((download) ? '下载中...' : '生成中...', {icon: 16, shade: 0.3}); //开始加载
+        makeDiyBg(
+            "#code-img",
+            {$code['qrWidth']},
+            {$code['qrHeight']},
+            "{$url}",
+            "{$code['foreground']}",
+            "{$code['background']}",
+            "__PUBLIC__/qr-bg/{$code['imgName']}",
+            {$code['imgWidth']},
+            {$code['imgHeight']},
+            "{$code['font']}",
+            "{$code['fontColor']}",
+            "{$name}",
+            {$code['recNameLeft']},
+            {$code['recNameTop']},
+            {$code['qrLeft']},
+            {$code['qrTop']},
+            download,
+            other_data,
+            $.parseJSON(circular_portrait)
+        );
+        return layer.close(Load); //关闭加载
+    }
+</script>
+
+</body>
+</html>

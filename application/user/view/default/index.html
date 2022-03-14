@@ -1,0 +1,297 @@
+{include file='default/head' /}
+
+<!-- Page content -->
+<div class="page-content">
+    <!-- Page title -->
+    <div class="page-title">
+        <div class="row justify-content-between align-items-center">
+            <div class="col-md-6 mb-3 mb-md-0">
+                <h5 class="h3 font-weight-400 mb-0 text-white">欢迎回来</h5>
+                <span class="text-sm text-white opacity-8">{$core['title']}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-12 col-md-12 col-lg-12">
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-xl-9 col-md-9 col-lg-9 mb-0 mb-sm-0">
+                            <span class="d-block h4 mb-0">收款服务能力</span>
+                            <a href="#" class="text-sm h5">{$user['expiration_time']}</a>
+                        </div>
+                        <div class="col-xl-3 col-md-3 col-lg-3 text-sm-right">
+                            <!-- Add to cart -->
+                            <a href="/user/renew">
+                                <button type="button" class="btn btn-primary btn-block">续费服务</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-8 col-md-8 col-lg-8">
+            <div class="card card-fluid">
+                <div class="card-header">
+                    <h6 class="mb-0">商户信息</h6>
+                </div>
+                <div class="card-body">
+
+                    <!-- Product title -->
+                    <h5 class="h4">{$user['nickname']}</h5>
+                    <!-- Rating -->
+                    <div class="row align-items-center">
+                        <div class="col-sm-6">
+                    <span class="static-rating static-rating-sm d-block"><i class="star far fa-star voted"></i>
+                      <i class="star far fa-star voted"></i>
+                      <i class="star far fa-star voted"></i>
+                      <i class="star far fa-star voted"></i>
+                      <i class="star far fa-star"></i></span>
+                        </div>
+                        <div class="col-sm-6 text-sm-right">
+                            <ul class="list-inline mb-0">
+                                <li class="list-inline-item">
+                                    <span class="badge badge-pill badge-soft-info">UID：{$user['uid']}</span>
+                                </li>
+                                <li class="list-inline-item">
+                                    <span class="badge badge-pill badge-soft-{$user['state']==1?'success':'danger'}">状态：{$user->getStateName()}</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Description -->
+                    <div class="py-4 my-4 border-top border-bottom">
+                        <h6 class="text-sm">API接口信息</h6>
+                        <dl class="row">
+                            <!-- list -->
+                            <dt class="col-sm-3"><span class="h6 text-sm mb-0">商户UID</span></dt>
+                            <dd class="col-sm-9"><span class="text-sm">{$user['uid']}</span></dd>
+
+                            <!-- list -->
+                            <dt class="col-sm-3"><span class="h6 text-sm mb-0">商户密钥</span></dt>
+                            <dd class="col-sm-9"><span class="text-sm">******平台不予提供密钥查看******&nbsp;&nbsp;<a href="/user/info#api"
+                                                                                                            class="text-sm">重置</a></span></dd>
+                            </dd>
+
+                        </dl>
+                    </div>
+
+                    <div class="py-4 my-4 border-top border-bottom">
+                        <h6 class="text-sm">上次登录记录</h6>
+                        <dl class="row">
+                            <!-- list -->
+                            <dt class="col-sm-3"><span class="h6 text-sm mb-0">时间</span></dt>
+                            <dd class="col-sm-9"><span class="text-sm">{$login['time']}</span></dd>
+
+                            <!-- list -->
+                            <dt class="col-sm-3"><span class="h6 text-sm mb-0">设备</span></dt>
+                            <dd class="col-sm-9"><span class="text-sm">{$login['mode']}</span></dd>
+
+                            <!-- list -->
+                            <dt class="col-sm-3"><span class="h6 text-sm mb-0">IP</dt>
+                            <dd class="col-sm-9"><span class="text-sm">{$login['ip']}</span>
+                            </dd>
+
+                        </dl>
+                    </div>
+                    <dl class="row">
+                        <!-- list -->
+                        <dt class="col-sm-3"><span class="h6 text-sm mb-0">商户账号</span></dt>
+                        <dd class="col-sm-9"><span class="text-sm">{$user['account']}</span></dd>
+
+                        <!-- list -->
+                        <dt class="col-sm-3"><span class="h6 text-sm mb-0">商户QQ</span></dt>
+                        <dd class="col-sm-9"><span class="text-sm">{$user['qq']}</span></dd>
+
+                        <!-- list -->
+                        <dt class="col-sm-3"><span class="h6 text-sm mb-0">电子邮箱</dt>
+                        <dd class="col-sm-9"><span class="text-sm">{$user['email']}&nbsp;&nbsp;<a href="/user/pass"
+                                                                                                  class="text-sm">修改</a></span>
+                        </dd>
+
+                        <!-- list -->
+                        <dt class="col-sm-3"><span class="h6 text-sm mb-0">收银台模板</span></dt>
+                        <dd class="col-sm-9"><span class="text-sm">{$user->getCashierTemplateName()}&nbsp;&nbsp;<a
+                                href="/user/cashier_set" class="text-sm">设置</a></span></dd>
+
+                        <!-- list -->
+                        <dt class="col-sm-3"><span class="h6 text-sm mb-0">商户收款码</span></dt>
+                        <dd class="col-sm-9"><span class="text-sm"><a href="/user/qr_code"
+                                                                      class="btn btn-xs btn-primary">
+                                                <span class="btn-inner--text">立即查看</span>
+                                            </a></span></dd>
+
+
+                    </dl>
+                    <div class="pt-4 mt-4 border-top">
+                        {foreach name="$data['pay']" item="v" key="key"}
+                        <!-- 接口列表 -->
+                        <h6>{$v.name}</h6>
+                        <div class="btn-group-toggle btn-group-options row mx-0 mt-3 mb-3" data-toggle="buttons">
+                            <label class="btn btn-lg btn-neutral col-12 mb-2 mr-0 text-left text-sm">
+                                <input type="radio">{$v.txt}</label>
+                        </div>
+                        {/foreach}
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-md-4 col-lg-4">
+            <div class="row">
+                <div class="col-xl-12 col-md-12">
+
+                    <div class="card">
+                        <div class="card-body text-center d-flex flex-column justify-content-center">
+                            <h5 class="mb-4">今日收入</h5>
+                            <div class="col-xl-12 col-md-12">
+
+                                {foreach name="$data['pay']" item="v" key="key"}
+                                <!-- 块 -->
+                                <div class="card card-progress draggable-item border shadow-none">
+                                    <div class="card-body">
+                                        <div class="row align-items-center mb-2">
+                                            <div class="col-12">
+                                                <span class="badge badge-pill badge-xs badge-primary">&nbsp;{$v.name}&nbsp;</span>
+                                            </div>
+                                        </div>
+                                        <a class="h5" href="#">￥{$v.today_income}</a>
+                                        <div class="row align-items-center">
+                                            <div class="col-12">
+                                                <div class="actions d-inline-block">
+                                                    <div class="action-item mr-0 md-2">
+                                                        <i class="fa fa-paperclip mr-2"></i>{$v.count}个接口
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/foreach}
+
+                            </div>
+                            <a href="/user/bill" class="btn btn-block btn-secondary mt-auto">查看账单</a>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-xl-12 col-md-12">
+                    <div class="card">
+                        <div class="card-body text-center d-flex flex-column justify-content-center">
+                            <h5 class="mb-4">商户公告</h5>
+                            <div class="col-xl-12 col-md-12">
+
+                                {foreach name="$data['notice']" item="v" key="key"}
+                                <!-- 块 -->
+                                <div class="card mb-12 border shadow-none" style="text-align: left">
+                                    <div class="px-1 py-2">
+                                        <div class="col-auto">
+                                            <h6 class="text-sm mb-0">
+                                                <a href="#">{$v['title']}</a>
+                                            </h6>
+                                            <p class="card-text small text-muted">{$v['release_time']}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {/foreach}
+
+                                {if condition="count($data['notice'])<=0"}
+                                <div class="card mb-12 border shadow-none" style="text-align: left">
+                                    <div class="px-1 py-2">
+                                        <div class="col-auto">
+                                            <p class="card-text small text-muted">暂无公告</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {/if}
+                            </div>
+                            <a href="/user/notice_page" class="btn btn-block btn-secondary mt-auto">更多公告</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+{include file='default/bottom' /}
+
+<script>
+    {if condition = "$confirm_count>0"}
+    $(function () {
+        layer.msg('您有{$confirm_count}个公告待确认', {
+            offset: 't',
+            anim: 6
+            , shade: [0.4, '#000']
+            , icon: 0
+        });
+        layer.tips('商户公告', '.fa.fa-bullhorn', {
+            tips: [1, '#ff0000'] //还可配置颜色
+        });
+    })
+    {/if}
+
+
+        $.ajax({
+            type: "GET",
+            url: "/user/index/getNoticePopup",
+            data: {},
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                if (data.code == 0) {
+                    var notice = data.data;
+
+                    //公告层
+                    layer.open({
+                        type: 1
+                        ,
+                        title: false //不显示标题栏
+                        ,
+                        closeBtn: false
+                        ,
+                        area: layerWidth
+                        ,
+                        shade: 0.8
+                        ,
+                        id: 'xyy' //设定一个id，防止重复弹出
+                        ,
+                        resize: false
+                        ,
+                        btn: ['前往' + (notice.confirm ? "确认" : "查看"), '关闭']
+                        ,
+                        btnAlign: 'c'
+                        ,
+                        moveType: 1 //拖拽模式，0或者1
+                        ,
+                        content: '<div style="padding: 20px 25px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;"><div style="font-weight: bolder;font-size: 17px;text-align: center" id="notice_title"><b>' + notice.title + '</b><br/><br/></div><div style="overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 9;-webkit-box-orient: vertical;"><article id="notice_content">' + notice.content + '</article></div><br/><br/><div style="font-size: 14px;text-align: right">' + notice.release_time + '</div></div>'
+                        ,
+                        success: function (layero) {
+                            var btn = layero.find('.layui-layer-btn');
+                            btn.find('.layui-layer-btn0').attr({
+                                href: '/user/notice_page?mod=see&id=' + notice.id
+                            });
+                        }
+                    });
+
+                }
+            },
+            error: function () { //ERROR
+                layer.msg('系统繁忙');
+                return false;
+            }
+        });
+</script>
+</body>
+</html>

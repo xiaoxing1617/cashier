@@ -1,0 +1,345 @@
+{include file='default/head' /}
+
+<!-- Page content -->
+<div class="page-content">
+    <!-- Page title -->
+    <div class="page-title">
+        <div class="row justify-content-between align-items-center">
+            <div class="col-md-6 mb-3 mb-md-0">
+                <h5 class="h3 font-weight-400 mb-0 text-white">{$title}</h5>
+            </div>
+        </div>
+    </div>
+    <!-- Page title -->
+    <!-- 主体 -->
+    <div class="row">
+
+        <div class="col-xl-12 col-md-12 col-lg-12">
+            <div class="row">
+
+                {foreach name="pay_list" item="v" key="key"}
+                <div class="col-xl-12 col-md-12 col-lg-12">
+                    <div class="card card-fluid">
+                        <div class="card-header actions-toolbar border-0">
+                            <!--搜索-->
+                            <div class="actions-search" id="actions-search-{$v.alias}">
+                                <div class="input-group input-group-merge input-group-flush">
+                                    <div class="input-group-prepend">
+                                        <a href="#" class="input-group-text bg-transparent" data-action="search-close"
+                                           data-target="#actions-search-{$v.alias}"
+                                           onclick="search_close('{$v.alias}')"><i class="fa fa-times"></i></a>
+                                    </div>
+                                    <input type="text" class="form-control form-control-flush"
+                                           placeholder="输入要查询的名称（留空重载）" id="search-name-{$v.alias}">
+                                    <div class="input-group-append">
+                                        <button type="button"
+                                                class="btn btn-sm btn-white btn-icon-only rounded-circle ml-4"
+                                                onclick="getList('{$v.alias}',1)"><span
+                                                class="btn-inner--icon"><i class="fa fa-search"></i></span></button>&nbsp;
+                                    </div>
+                                </div>
+                            </div>
+                            <!--搜索-->
+
+                            <div class="row justify-content-between align-items-center">
+                                <div class="col">
+                                    <h6 class="mb-0"><img style="vertical-align:middle" src="__PUBLIC__/icon/{$v.icon}"
+                                                          width="17"/>&nbsp;{$v.name}（{$v.alias}）</h6>
+                                </div>
+                                <div class="col text-right">
+                                    <a href="#" class="action-item mr-3" data-action="search-open"
+                                       data-target="#actions-search-{$v.alias}"><i class="fa fa-search"></i></a>
+                                    <button type="button" class="btn btn-xs rounded-pill btn-primary"
+                                            onclick="open_url('{$v.alias}','add',0,'{$v.name}（{$v.alias}）')">添加
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center">
+                                {$data['pay'][$v.alias]['switch']!=1?'
+                                <button type="button" value="1" class="btn btn-sm btn-danger" id="switch_'.$v.alias.'">
+                                    【'.$v.name.'】支付 - 已关闭
+                                </button>
+                                ':'
+                                <button type="button" value="0" class="btn btn-sm btn-success" id="switch_'.$v.alias.'">
+                                    【'.$v.name.'】支付 - 已开启
+                                </button>
+                                '}
+                            </div>
+                            <label class="btn btn-lg btn-neutral col-12 mb-4 mr-0 text-left text-sm">
+                                {$data['pay'][$v.alias]['txt']}
+                            </label>
+                            <!-- 列表 -->
+                            <div class="table-responsive">
+                                <table class="table align-items-center">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">名称</th>
+                                        <th scope="col">支付插件</th>
+                                        <th scope="col">金额限制</th>
+                                        <th scope="col">创建时间</th>
+                                        <th scope="col">状态</th>
+                                        <th scope="col">操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="list" id="list_{$v.alias}"></tbody>
+                                </table>
+                            </div>
+                            <hr/>
+                            <div class="row">
+                                <div class="col-xl-10 col-md-10 col-lg-10">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">轮循方式</span>
+                                            </div>
+                                            <select class="form-control" id="use_order_val_{$v.alias}">
+                                                {foreach name="use_order" item="u" key="key"}
+                                                <option value="{$key}"
+                                                        {$key==$data['pay'][$v.alias]['use_order']?"selected":""}>{$u}
+                                                </option>
+                                                {/foreach}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-2 col-md-2 col-lg-2">
+                                    <button type="button" class="btn btn-primary btn-block"
+                                            id="use_order_but_{$v.alias}">更改
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="btn-toolbar" id="toolbar_{$v.alias}"></div>
+
+                        </div>
+                    </div>
+                </div>
+                {/foreach}
+
+
+            </div>
+        </div>
+
+    </div>
+    <!-- 主体 -->
+</div>
+
+{include file='default/bottom' /}
+{foreach name="pay_list" item="v" key="key"}
+<script>$(function () {
+    getList("{$v.alias}", 1);
+    var t = $("#switch_{$v.alias}").val();
+    $("#switch_{$v.alias}").click(function () {
+        open_static("switch_" + t, 0, "{$v.alias}");
+    });
+    $("#use_order_but_{$v.alias}").click(function () {
+        var u = $("#use_order_val_{$v.alias}").val();
+        open_static("use_order", u, "{$v.alias}");
+    });
+})</script>
+{/foreach}
+<script>
+    function search_close(type) {
+        var name = $("#search-name-" + type).val("");
+    }
+
+    function getList(type, page = 1) {
+        var name = $("#search-name-" + type).val();
+
+        var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+        $.ajax({
+            type: "POST",
+            url: "/user/pay_inter/getInterList",
+            data: {"type": type, "page": page, "name": name},
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                if (data.code == 0) {
+                    layer.close(Load); //关闭加载
+
+                    //===渲染
+                    var html = "";
+                    for (var i = 0; i < data.list.length; i++) {
+                        var temp = data.list[i];
+                        html += "<tr>" +
+                            "<td>" + temp.id + "</td>" +
+                            "<td>" + temp.name + "</td>" +
+                            "<td>" + temp.plug_in + "</td>" +
+                            "<td>" + temp.min_money + "~" + temp.max_money + "元</td>" +
+                            "<td>" + temp.creation_time + "</td>" +
+                            "<td>" + (temp.state == 0 ? "<button type=\"button\" class=\"btn btn-xs btn-danger\" onclick=\"open_static('state_1'," + temp.id + ",'" + type + "')\">已关闭</button>" : "<button type=\"button\" class=\"btn btn-xs btn-success\" onclick=\"open_static('state_0'," + temp.id + ",'" + type + "')\">已开启</button>") + "</td>" +
+                            '<td className="text-right"><div class="actions ml-3">' +
+                            '<button type="button" class="btn btn-xs btn-success rounded-pill" onclick="open_url(\'' + type + '\',\'con\',' + temp.id + ')">配置</button>' +
+                            '<button type="button" class="btn btn-xs btn-warning rounded-pill" onclick="open_url(\'' + type + '\',\'edit\',' + temp.id + ')">编辑</button>' +
+                            '<button type="button" class="btn btn-xs btn-danger rounded-pill" onclick="open_static(\'del\',' + temp.id + ',\'' + type + '\')">删除</button>' +
+                            "</div></td></tr>"
+                    }
+                    $("#list_" + type).html(html);
+                    //===渲染
+                    //===分页
+                    var ye = "";
+
+                    if (data.total_page > 0) {
+                        if (data.page > 1) {
+                            ye += '<div class="btn-group mr-2"><button class="btn-group btn btn-warning btn-xs" onclick="getList(\'' + type + '\',1)">第一页</button></div>';
+                        }
+                        ye += '<div class="btn-group mr-2">';
+                        for (var i = 0; i < data.total_page; i++) {
+                            var j = i + 1;
+                            if (data.page == j) {
+                                ye += '<button class="btn-group btn btn-primary btn-xs" disabled>' + j + '</button>';
+                            } else {
+                                ye += '<button class="btn-group btn btn-primary btn-xs"  onclick="getList(\'' + type + '\',' + j + ')">' + j + '</button>';
+                            }
+                        }
+                        ye += '</div>';
+                        if (data.page < data.total_page) {
+                            ye += '<div class="btn-group mr-2"><button class="btn-group btn btn-warning btn-xs" onclick="getList(\'' + type + '\',' + data.total_page + ')">尾页</button></div>';
+                        }
+                    }
+                    $("#toolbar_" + type).html(ye);
+                    //===分页
+                } else {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                        if (data.url != "" && data.url != null) {
+                            window.location.href = data.url;
+                        }
+                    })
+                }
+            },
+            error: function () { //ERROR
+                layer.close(Load); //关闭加载
+                layer.msg('系统繁忙');
+                return false;
+            }
+        });
+    }
+
+    function open_url(type, mode, id, name = null) {
+        var title;
+        switch (mode) {
+            case "add":
+                title = "添加接口";
+                break;
+            case "edit":
+                title = "编辑接口";
+                break;
+            case "con":
+                title = "配置信息";
+                break;
+            default:
+                layer.msg('不存在此操作项');
+                return;
+        }
+        if (name != null) {
+            name = " - " + name;
+        } else {
+            name = "";
+        }
+        if (mode == "con") {
+            if({$is_admin}==1){
+                open(title, name, type, mode, id);
+                layer.msg("管理员身份，无需验证商户安全密码");
+            }else {
+                var index = layer.prompt(
+                    {
+                        title: '请输入（6位）安全密码'
+                        , formType: 1
+                        , maxlength: 6
+                    },
+                    function (aqmm) {
+                        layer.close(index);
+                        open(title, name, type, mode, id, aqmm);
+                        return;
+                    });
+            }
+        } else {
+            open(title, name, type, mode, id);
+        }
+    }
+
+    function open(title, name, type, mode, id, aqmm = "") {
+        layer.open({
+            type: 2,
+            scrollbar: false,
+            title: title + name,
+            shadeClose: true,
+            shade: 0.3,
+            shadeClose: false,
+            area: [layerWidth, '90%'],
+            content: '/user/pay_inter/oper?type=' + type + '&mode=' + mode + '&id=' + id + '&security_password=' + aqmm
+            , end: function () {
+                getList(type, 1);
+            }
+        });
+    }
+
+    function open_static(mode, id, type) {
+        if (mode == "del") {
+            var index1 = layer.confirm('你确定要删除该接口吗？<br/><span style="color: #f00">（删除后无法恢复）</span>', {
+                btn: ['确认删除', '算了'] //按钮
+            }, function () {
+                layer.close(index1);
+                if({$is_admin}==1) {
+                    layer.msg("管理员身份，安全密码可任意输入",{zIndex:99999999999});
+                }
+                var index2 = layer.prompt(
+                    {
+                        title: '请输入（6位）安全密码'
+                        , formType: 1
+                        , maxlength: 6
+                    },
+                    function (aqmm) {
+                        layer.close(index2);
+                        open_ajax(mode, id, type, aqmm);
+                    });
+            });
+        } else {
+            open_ajax(mode, id, type);
+        }
+    }
+
+    function open_ajax(mode, id, type, aqmm = "") {
+        var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+        $.ajax({
+            type: "POST",
+            url: "/user/pay_inter/open_static",
+            data: {"mode": mode, "id": id, "type": type, "security_password": aqmm},
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                if (data.code == 0) {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                        layer.close(indexa);
+                        if (mode == "switch_1" || mode == "switch_0") {
+                            window.location.reload();
+                            return;
+                        }
+                        getList(type, 1);
+                    });
+                } else {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                        if (data.url != "" && data.url != null) {
+                            window.location.href = data.url;
+                        }
+                    })
+                }
+            },
+            error: function () { //ERROR
+                layer.close(Load); //关闭加载
+                layer.msg('系统繁忙');
+                return false;
+            }
+        });
+    }
+</script>
+</body>
+</html>

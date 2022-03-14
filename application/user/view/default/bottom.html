@@ -1,0 +1,45 @@
+{if condition="isset($ad['user_manage_bottom']) && $ad['user_manage_bottom']['state']=='1'"}
+<div class="row">
+    <div class="col-xl-12 col-md-12 col-lg-12">
+        <div class="card-body" style="text-align: center">
+            <div class="row" style="text-align: center;border-radius: 10px;border: 2px #eee solid;overflow: hidden;padding: 0;margin: 0;display: inline-block;">
+                <a href="{$ad['user_manage_bottom']['data']['url']}" target="_blank">
+                    <img src="__PUBLIC__/ad-img/{$ad['user_manage_bottom']['data']['name']}" style="width: 100%;">
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{/if}
+<!-- Footer -->
+<div class="footer pt-5 pb-4 footer-light" id="footer-main">
+    <div class="row text-center text-sm-left align-items-sm-center">
+        <div class="col-sm-6">
+            <p class="text-sm mb-0">&copy; 2021 <a href="/" class="h6 text-sm" target="_blank">{$core['title']}</a>.
+                All rights reserved.</p>
+        </div>
+        <div class="col-sm-6 mb-md-0">
+            <ul class="nav justify-content-center justify-content-md-end">
+                <li class="nav-item">
+                    <a class="nav-link" href="http://www.96xy.cn/" target="_blank">星益云</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link pr-0" href="https://open.alipay.com/" target="_blank">支付宝开放平台</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- Scripts -->
+<script type="text/javascript" src="//lib.baomitu.com/jquery/3.6.0/jquery.min.js"></script>
+<script src="__PUBLIC__/uikit/js/purpose.js"></script>
+<script src="__PUBLIC__/Xadmin/lib/layui/layui.js"></script>
+<script src="__PUBLIC__/Xadmin/lib/layui/layui.all.js"></script>
+<script src="__PUBLIC__/Xadmin/lib/layui/lay/modules/laydate.js"></script>
+<script>
+    if(window.innerWidth>600){
+        var layerWidth = "46%";
+    }else{
+        var layerWidth = "87%";
+    }
+</script>

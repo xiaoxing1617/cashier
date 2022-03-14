@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta name="renderer" content="webkit">
+    <title>{$title}</title>
+    <link href="__PUBLIC__/common/css/qrpay.css" rel="stylesheet" media="screen">
+    <style>
+        .ico-wechat{
+            background:url("__PUBLIC__/common/img/{$pay_info['alias']}-pay.png") 0 -113px no-repeat;
+        }
+        .ico-arrow{
+            background:url("__PUBLIC__/common/img/{$pay_info['alias']}-pay.png") -25px -100px no-repeat;
+        }
+        .ico-arrow{
+            background:url("__PUBLIC__/common/img/{$pay_info['alias']}-pay.png") 0 -100px no-repeat;
+        }
+        .ico-scan{
+            background:url("__PUBLIC__/common/img/{$pay_info['alias']}-pay.png") 0 0 no-repeat;
+        }
+        .dec{
+            background:url("__PUBLIC__/common/img/{$pay_info['alias']}-pay.png") 0 -55px no-repeat;
+        }
+        .mod-ct{
+            background:#fff url("__PUBLIC__/common/img/wave.png") top center repeat-x;
+        }
+    </style>
+</head>
+<body>
+<div class="body">
+    <h1 class="mod-title">
+        <span class="ico-wechat"></span><span class="text">{$title}</span>
+    </h1>
+    <div class="mod-ct">
+        <div class="order">
+        </div>
+        <div class="amount">￥{$money}</div>
+        <div class="qr-image" id="qrcode">
+        </div>
+        <div class="open_app">
+            <a href="javascript:window.history.go(-1);" class="btn-check">返回一页</a>
+        </div>
+        <div class="detail" id="orderDetail">
+            <dl class="detail-ct" style="display: none;">
+                <dt>支付名称</dt>
+                <dd id="productName">{$name}</dd>
+                <dt>系统订单号</dt>
+                <dd id="billId">{$out_trade_no}</dd>
+                <dt>创建时间</dt>
+                <dd id="createTime">{$date}</dd>
+            </dl>
+            <br/>
+            <a href="javascript:void(0)" class="arrow"><i class="ico-arrow"></i></a>
+        </div>
+        <div class="tip">
+            <span class="dec dec-left"></span>
+            <span class="dec dec-right"></span>
+            <div class="ico-scan"></div>
+            <div class="tip-text">
+                <p>请使用{$pay_info['name']}扫一扫</p>
+                <p>扫描二维码完成支付</p>
+            </div>
+        </div>
+        <div class="tip-text">
+        </div>
+    </div>
+    <script src="//lib.baomitu.com/jquery/1.12.4/jquery.min.js"></script>
+    <script src="//lib.baomitu.com/layer/3.1.1/layer.min.js"></script>
+    <script src="//cdn.bootcdn.net/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+    <script>
+        var code_url = '{$qrurl}';
+        $('#qrcode').qrcode({
+            text: code_url,
+            width: 230,
+            height: 230,
+            foreground: "#000000",
+            background: "#ffffff",
+            typeNumber: -1
+        });
+        // 订单详情
+        $('#orderDetail .arrow').click(function (event) {
+            if ($('#orderDetail').hasClass('detail-open')) {
+                $('#orderDetail .detail-ct').slideUp(500, function () {
+                    $('#orderDetail').removeClass('detail-open');
+                });
+            } else {
+                $('#orderDetail .detail-ct').slideDown(500, function () {
+                    $('#orderDetail').addClass('detail-open');
+                });
+            }
+        });
+        // 检查是否支付完成
+        function loadmsg() {
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: "/is_order/",
+                timeout: 10000, //ajax请求超时时间10s
+                data: {out_trade_no: "{$out_trade_no}"}, //post数据
+                success: function (json) {
+                    var data = $.parseJSON(json);
+                    //从服务器得到数据，显示数据并继续查询
+                    if (data.code == 1) {
+                        layer.msg('支付成功，正在跳转中...', {icon: 16,shade: 0.1,time: 15000});
+                        setTimeout(window.location.href='{$return_url}', 800);
+                    }else{
+                        setTimeout("loadmsg()", 3000);
+                    }
+                },
+                //Ajax请求超时，继续查询
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    if (textStatus == "timeout") {
+                        setTimeout("loadmsg()", 1000);
+                    } else { //异常
+                        setTimeout("loadmsg()", 4000);
+                    }
+                }
+            });
+        }
+        setTimeout("loadmsg()", 2000);
+    </script>
+</body>
+</html>

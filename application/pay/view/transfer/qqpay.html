@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>等待支付</title>
+    <link href="//res.wx.qq.com/open/libs/weui/2.4.2/weui.min.css" rel="stylesheet">
+    <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <script type="text/javascript" src="//lib.baomitu.com/jquery/3.6.0/jquery.min.js"></script>
+    <script type="text/javascript" src="//lib.baomitu.com/layer/3.1.1/layer.min.js"></script>
+</head>
+<body>
+<div class="weui-msg">
+    <div class="weui-msg__icon-area">
+        <i class="weui-icon-waiting weui-icon_msg"></i>
+    </div>
+    <div class="weui-msg__text-area">
+        <h3 class="">等待支付</h3>
+        <div class="ui-ellpisis weui-msg__desc">
+            <div class="ui-ellpisis-content">
+                <div style="-webkit-line-clamp: 1;">
+                    <p></p>
+                </div>
+                <div class="ui-ellpisis-placeholder" style="position: absolute; display: block;"></div>
+            </div>
+            <!---->
+        </div>
+    </div>
+    <div class="weui-msg__opr-area">
+        <p class="weui-btn-area">
+            <button type="button" class="weui-btn weui-btn_default" onclick="openQqpay()">打开手机QQ</button>
+        </p>
+    </div>
+    <div class="weui-msg__extra-area">
+        <div class="weui-footer"><p class="weui-footer__links"></p></div>
+    </div>
+</div>
+<script>
+    function openQqpay(){
+        window.location.href = 'mqqapi://forward/url?src_type=web&style=default&=1&version=1&url_prefix='+window.btoa('{$data}');
+        layer.msg('正在为您打开手机QQ...', {shade: 0,time: 2000});
+        loadmsg();
+    }
+    openQqpay();
+
+    // 检查是否支付完成
+    function loadmsg() {
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "/is_order/",
+            timeout: 10000, //ajax请求超时时间10s
+            data: {"out_trade_no": "{$out_trade_no}"}, //post数据
+            success: function (json) {
+                var data = $.parseJSON(json);
+                //从服务器得到数据，显示数据并继续查询
+                if (data.code == 1) {
+                    layer.msg('支付成功', {icon: 16, shade: 0.01, time: 15000});
+                    window.location.href = '{$redirect_url}';
+                } else {
+                    setTimeout("loadmsg()", 2000);
+                }
+            }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+                if (textStatus == "timeout") {
+                    setTimeout("loadmsg()", 1000);
+                } else { //异常
+                    setTimeout("loadmsg()", 4000);
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

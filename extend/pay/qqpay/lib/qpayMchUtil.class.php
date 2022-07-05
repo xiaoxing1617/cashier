@@ -130,6 +130,9 @@ class QpayMchUtil {
             $s = QpayMchConf::MCH_ID."_".md5(createTradeNo());
             $apiclient_cert_path = PAY_PATH . "qqpay/cert/".$s."_apiclient_cert.pem";
             $apiclient_key_path = PAY_PATH . "qqpay/cert/".$s."_apiclient_key.pem";;
+            if(!is_dir(PAY_PATH . "qqpay/cert/")){
+                mkdir(PAY_PATH . "qqpay/cert/",0777);
+            }
 
             if(($file1=fopen ($apiclient_cert_path,"w+")) === FALSE){
                 if($fun=="refund"){

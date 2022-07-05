@@ -4,7 +4,7 @@ require_once "WxPay.Config.Interface.php";
 require_once "WxPay.Data.php";
 
 /**
- * 
+ *
  * 接口访问类，包含所有微信支付API列表的封装，类中方法为static方法，
  * 每个接口有默认超时时间（除提交被扫支付为10s，上报超时时间为1s外，其他均为6s）
  * @author widyhu
@@ -19,7 +19,7 @@ class WxPayApi
 	public static $VERSION = "3.0.10";
 
 	/**
-	 * 
+	 *
 	 * 统一下单，WxPayUnifiedOrder中out_trade_no、body、total_fee、trade_type必填
 	 * appid、mchid、spbill_create_ip、nonce_str不需要填入
 	 * @param WxPayConfigInterface $config  配置对象
@@ -41,7 +41,7 @@ class WxPayApi
 		}else if(!$inputObj->IsTrade_typeSet()) {
 			throw new WxPayException("缺少统一支付接口必填参数trade_type！");
 		}
-		
+
 		//关联参数
 		if($inputObj->GetTrade_type() == "JSAPI" && !$inputObj->IsOpenidSet()){
 			throw new WxPayException("统一支付接口中，缺少必填参数openid！trade_type为JSAPI时，openid为必填参数！");
@@ -49,31 +49,31 @@ class WxPayApi
 		if($inputObj->GetTrade_type() == "NATIVE" && !$inputObj->IsProduct_idSet()){
 			throw new WxPayException("统一支付接口中，缺少必填参数product_id！trade_type为JSAPI时，product_id为必填参数！");
 		}
-		
+
 		//异步通知url未设置，则使用配置文件中的url
 		if(!$inputObj->IsNotify_urlSet() && $config->GetNotifyUrl() != ""){
 			$inputObj->SetNotify_url($config->GetNotifyUrl());//异步通知url
 		}
-		
+
 		$inputObj->SetAppid($config->GetAppId());//公众账号ID
 		$inputObj->SetMch_id($config->GetMerchantId());//商户号
-		$inputObj->SetSpbill_create_ip($_SERVER['REMOTE_ADDR']);//终端ip	   	    
+		$inputObj->SetSpbill_create_ip($_SERVER['REMOTE_ADDR']);//终端ip
 		$inputObj->SetNonce_str(self::getNonceStr());//随机字符串
-		
+
 		//签名
 		$inputObj->SetSign($config);
 		$xml = $inputObj->ToXml();
-		
+
 		$startTimeStamp = self::getMillisecond();//请求开始时间
 		$response = self::postXmlCurl($config, $xml, $url, false, $timeOut);
 		$result = WxPayResults::Init($config, $response);
 		self::reportCostTime($config, $url, $startTimeStamp, $result);//上报请求花费时间
-		
+
 		return $result;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * 查询订单，WxPayOrderQuery中out_trade_no、transaction_id至少填一个
 	 * appid、mchid、spbill_create_ip、nonce_str不需要填入
 	 * @param WxPayConfigInterface $config  配置对象
@@ -92,20 +92,20 @@ class WxPayApi
 		$inputObj->SetAppid($config->GetAppId());//公众账号ID
 		$inputObj->SetMch_id($config->GetMerchantId());//商户号
 		$inputObj->SetNonce_str(self::getNonceStr());//随机字符串
-		
+
 		$inputObj->SetSign($config);//签名
 		$xml = $inputObj->ToXml();
-		
+
 		$startTimeStamp = self::getMillisecond();//请求开始时间
 		$response = self::postXmlCurl($config, $xml, $url, false, $timeOut);
 		$result = WxPayResults::Init($config, $response);
 		self::reportCostTime($config, $url, $startTimeStamp, $result);//上报请求花费时间
-		
+
 		return $result;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * 关闭订单，WxPayCloseOrder中out_trade_no必填
 	 * appid、mchid、spbill_create_ip、nonce_str不需要填入
 	 * @param WxPayConfigInterface $config  配置对象
@@ -124,20 +124,20 @@ class WxPayApi
 		$inputObj->SetAppid($config->GetAppId());//公众账号ID
 		$inputObj->SetMch_id($config->GetMerchantId());//商户号
 		$inputObj->SetNonce_str(self::getNonceStr());//随机字符串
-		
+
 		$inputObj->SetSign($config);//签名
 		$xml = $inputObj->ToXml();
-		
+
 		$startTimeStamp = self::getMillisecond();//请求开始时间
 		$response = self::postXmlCurl($config, $xml, $url, false, $timeOut);
 		$result = WxPayResults::Init($config, $response);
 		self::reportCostTime($config, $url, $startTimeStamp, $result);//上报请求花费时间
-		
+
 		return $result;
 	}
 
 	/**
-	 * 
+	 *
 	 * 申请退款，WxPayRefund中out_trade_no、transaction_id至少填一个且
 	 * out_refund_no、total_fee、refund_fee、op_user_id为必填参数
 	 * appid、mchid、spbill_create_ip、nonce_str不需要填入
@@ -165,7 +165,7 @@ class WxPayApi
 		$inputObj->SetAppid($config->GetAppId());//公众账号ID
 		$inputObj->SetMch_id($config->GetMerchantId());//商户号
 		$inputObj->SetNonce_str(self::getNonceStr());//随机字符串
-		
+
 		$inputObj->SetSign($config);//签名
 		$xml = $inputObj->ToXml();
 		$startTimeStamp = self::getMillisecond();//请求开始时间
@@ -175,12 +175,12 @@ class WxPayApi
         }
 		$result = WxPayResults::Init($config, $response['data']);
 		self::reportCostTime($config, $url, $startTimeStamp, $result);//上报请求花费时间
-		
+
 		return $result;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * 查询退款
 	 * 提交退款申请后，通过调用该接口查询退款状态。退款有一定延时，
 	 * 用零钱支付的退款20分钟内到账，银行卡支付的退款3个工作日后重新查询退款状态。
@@ -205,18 +205,18 @@ class WxPayApi
 		$inputObj->SetAppid($config->GetAppId());//公众账号ID
 		$inputObj->SetMch_id($config->GetMerchantId());//商户号
 		$inputObj->SetNonce_str(self::getNonceStr());//随机字符串
-		
+
 		$inputObj->SetSign($config);//签名
 		$xml = $inputObj->ToXml();
-		
+
 		$startTimeStamp = self::getMillisecond();//请求开始时间
 		$response = self::postXmlCurl($config, $xml, $url, false, $timeOut);
 		$result = WxPayResults::Init($config, $response);
 		self::reportCostTime($config, $url, $startTimeStamp, $result);//上报请求花费时间
-		
+
 		return $result;
 	}
-	
+
 	/**
 	 * 下载对账单，WxPayDownloadBill中bill_date为必填参数
 	 * appid、mchid、spbill_create_ip、nonce_str不需要填入
@@ -236,17 +236,17 @@ class WxPayApi
 		$inputObj->SetAppid($config->GetAppId());//公众账号ID
 		$inputObj->SetMch_id($config->GetMerchantId());//商户号
 		$inputObj->SetNonce_str(self::getNonceStr());//随机字符串
-		
+
 		$inputObj->SetSign($config);//签名
 		$xml = $inputObj->ToXml();
-		
+
 		$response = self::postXmlCurl($config, $xml, $url, false, $timeOut);
 		if(substr($response, 0 , 5) == "<xml>"){
 			return "";
 		}
 		return $response;
 	}
-	
+
 	/**
 	 * 提交被扫支付API
 	 * 收银员使用扫码设备读取微信用户刷卡授权码以后，二维码或条码信息传送至商户收银台，
@@ -270,25 +270,25 @@ class WxPayApi
 		} else if(!$inputObj->IsAuth_codeSet()) {
 			throw new WxPayException("提交被扫支付API接口中，缺少必填参数auth_code！");
 		}
-		
+
 		$inputObj->SetSpbill_create_ip($_SERVER['REMOTE_ADDR']);//终端ip
 		$inputObj->SetAppid($config->GetAppId());//公众账号ID
 		$inputObj->SetMch_id($config->GetMerchantId());//商户号
 		$inputObj->SetNonce_str(self::getNonceStr());//随机字符串
-		
+
 		$inputObj->SetSign($config);//签名
 		$xml = $inputObj->ToXml();
-		
+
 		$startTimeStamp = self::getMillisecond();//请求开始时间
 		$response = self::postXmlCurl($config, $xml, $url, false, $timeOut);
 		$result = WxPayResults::Init($config, $response);
 		self::reportCostTime($config, $url, $startTimeStamp, $result);//上报请求花费时间
-		
+
 		return $result;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * 撤销订单API接口，WxPayReverse中参数out_trade_no和transaction_id必须填写一个
 	 * appid、mchid、spbill_create_ip、nonce_str不需要填入
 	 * @param WxPayConfigInterface $config  配置对象
@@ -303,24 +303,24 @@ class WxPayApi
 		if(!$inputObj->IsOut_trade_noSet() && !$inputObj->IsTransaction_idSet()) {
 			throw new WxPayException("撤销订单API接口中，参数out_trade_no和transaction_id必须填写一个！");
 		}
-		
+
 		$inputObj->SetAppid($config->GetAppId());//公众账号ID
 		$inputObj->SetMch_id($config->GetMerchantId());//商户号
 		$inputObj->SetNonce_str(self::getNonceStr());//随机字符串
-		
+
 		$inputObj->SetSign($config);//签名
 		$xml = $inputObj->ToXml();
-		
+
 		$startTimeStamp = self::getMillisecond();//请求开始时间
 		$response = self::postXmlCurl($config, $xml, $url, true, $timeOut);
 		$result = WxPayResults::Init($config, $response);
 		self::reportCostTime($config, $url, $startTimeStamp, $result);//上报请求花费时间
-		
+
 		return $result;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * 测速上报，该方法内部封装在report中，使用时请注意异常流程
 	 * WxPayReport中interface_url、return_code、result_code、user_ip、execute_time_必填
 	 * appid、mchid、spbill_create_ip、nonce_str不需要填入
@@ -348,19 +348,19 @@ class WxPayApi
 		$inputObj->SetAppid($config->GetAppId());//公众账号ID
 		$inputObj->SetMch_id($config->GetMerchantId());//商户号
 		$inputObj->SetUser_ip($_SERVER['REMOTE_ADDR']);//终端ip
-		$inputObj->SetTime(date("YmdHis"));//商户上报时间	 
+		$inputObj->SetTime(date("YmdHis"));//商户上报时间
 		$inputObj->SetNonce_str(self::getNonceStr());//随机字符串
-		
+
 		$inputObj->SetSign($config);//签名
 		$xml = $inputObj->ToXml();
-		
+
 		$startTimeStamp = self::getMillisecond();//请求开始时间
 		$response = self::postXmlCurl($config, $xml, $url, false, $timeOut);
 		return $response;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * 生成二维码规则,模式一生成支付二维码
 	 * appid、mchid、spbill_create_ip、nonce_str不需要填入
 	 * @param WxPayConfigInterface $config  配置对象
@@ -377,16 +377,16 @@ class WxPayApi
 
 		$inputObj->SetAppid($config->GetAppId());//公众账号ID
 		$inputObj->SetMch_id($config->GetMerchantId());//商户号
-		$inputObj->SetTime_stamp(time());//时间戳	 
+		$inputObj->SetTime_stamp(time());//时间戳
 		$inputObj->SetNonce_str(self::getNonceStr());//随机字符串
-		
+
 		$inputObj->SetSign($config);//签名
-		
+
 		return $inputObj->GetValues();
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * 转换短链接
 	 * 该接口主要用于扫码原生支付模式一中的二维码链接转成短链接(weixin://wxpay/s/XXXXXX)，
 	 * 减小二维码数据量，提升扫描速度和精确度。
@@ -407,20 +407,20 @@ class WxPayApi
 		$inputObj->SetAppid($config->GetAppId());//公众账号ID
 		$inputObj->SetMch_id($config->GetMerchantId());//商户号
 		$inputObj->SetNonce_str(self::getNonceStr());//随机字符串
-		
+
 		$inputObj->SetSign($config);//签名
 		$xml = $inputObj->ToXml();
-		
+
 		$startTimeStamp = self::getMillisecond();//请求开始时间
 		$response = self::postXmlCurl($config, $xml, $url, false, $timeOut);
 		$result = WxPayResults::Init($config, $response);
 		self::reportCostTime($config, $url, $startTimeStamp, $result);//上报请求花费时间
-		
+
 		return $result;
 	}
-	
+
  	/**
- 	 * 
+ 	 *
  	 * 支付结果通用通知
  	 * @param function $callback
  	 * 直接回调函数使用方法: notify(you_function);
@@ -443,26 +443,26 @@ class WxPayApi
 			$msg = $e->errorMessage();
 			return false;
 		}
-		
+
 		return call_user_func($callback, $result);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * 产生随机字符串，不长于32位
 	 * @param int $length
 	 * @return 产生的随机字符串
 	 */
-	public static function getNonceStr($length = 32) 
+	public static function getNonceStr($length = 32)
 	{
-		$chars = "abcdefghijklmnopqrstuvwxyz0123456789";  
+		$chars = "abcdefghijklmnopqrstuvwxyz0123456789";
 		$str ="";
-		for ( $i = 0; $i < $length; $i++ )  {  
-			$str .= substr($chars, mt_rand(0, strlen($chars)-1), 1);  
-		} 
+		for ( $i = 0; $i < $length; $i++ )  {
+			$str .= substr($chars, mt_rand(0, strlen($chars)-1), 1);
+		}
 		return $str;
 	}
-	
+
 	/**
 	 * 直接输出xml
 	 * @param string $xml
@@ -471,9 +471,9 @@ class WxPayApi
 	{
 		echo $xml;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * 上报数据， 上报的时候将屏蔽所有异常流程
 	 * @param WxPayConfigInterface $config  配置对象
 	 * @param string $usrl
@@ -486,7 +486,7 @@ class WxPayApi
 		$reportLevenl = $config->GetReportLevenl();
 		if($reportLevenl == 0){
 			return;
-		} 
+		}
 		//如果仅失败上报
 		if($reportLevenl == 1 &&
 			 array_key_exists("return_code", $data) &&
@@ -496,7 +496,7 @@ class WxPayApi
 		 {
 		 	return;
 		 }
-		 
+
 		//上报逻辑
 		$endTimeStamp = self::getMillisecond();
 		$objInput = new WxPayReport();
@@ -530,7 +530,7 @@ class WxPayApi
 		if(array_key_exists("device_info", $data)){
 			$objInput->SetDevice_info($data["device_info"]);
 		}
-		
+
 		try{
 			self::report($config, $objInput);
 		} catch (WxPayException $e){
@@ -540,7 +540,7 @@ class WxPayApi
 
 	/**
 	 * 以post方式提交xml到对应的接口url
-	 * 
+	 *
 	 * @param WxPayConfigInterface $config  配置对象
 	 * @param string $xml  需要post的xml数据
 	 * @param string $url  url
@@ -549,7 +549,7 @@ class WxPayApi
 	 * @throws WxPayException
 	 */
 	private static function postXmlCurl($config, $xml, $url, $useCert = false, $second = 30,$fun="")
-	{		
+	{
 		$ch = curl_init();
 		$curlVersion = curl_version();
 		$ua = "WXPaySDK/".self::$VERSION." (".PHP_OS.") PHP/".PHP_VERSION." CURL/".$curlVersion['version']." "
@@ -577,12 +577,12 @@ class WxPayApi
             curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,2);//严格校验
         }
 
-		curl_setopt($ch,CURLOPT_USERAGENT, $ua); 
+		curl_setopt($ch,CURLOPT_USERAGENT, $ua);
 		//设置header
 		curl_setopt($ch, CURLOPT_HEADER, FALSE);
 		//要求结果为字符串且输出到屏幕上
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-	
+
 		if($useCert == true){
             $sslCert = "";
             $sslKey = "";
@@ -591,6 +591,9 @@ class WxPayApi
 		    $s = $config->GetMerchantId()."_".md5(createTradeNo());
             $apiclient_cert_path = PAY_PATH . "wxpay/cert/".$s."_apiclient_cert.pem";
             $apiclient_key_path = PAY_PATH . "wxpay/cert/".$s."_apiclient_key.pem";
+            if(!is_dir(PAY_PATH . "wxpay/cert/")){
+                mkdir(PAY_PATH . "wxpay/cert/",0777);
+            }
 
             if(($file1=fopen ($apiclient_cert_path,"w+")) === FALSE){
                 if($fun=="refund"){
@@ -641,7 +644,7 @@ class WxPayApi
 			    $json=$data;
             }
 			return $json;
-		} else { 
+		} else {
 			$error = curl_errno($ch);
 			curl_close($ch);
             if($fun == "refund"){
@@ -651,7 +654,7 @@ class WxPayApi
             }
 		}
 	}
-	
+
 	/**
 	 * 获取毫秒级别的时间戳
 	 */

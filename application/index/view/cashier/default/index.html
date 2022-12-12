@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="__PUBLIC__/cashier/default/css/style.min.css" type="text/css">
     <link rel="stylesheet" href="__PUBLIC__/cashier/default/css/base.min.css">
     <link href="__PUBLIC__/Xadmin/lib/layui/css/modules/layer/default/layer.css" rel="stylesheet">
-
+    <style>{$core['head_style']}</style>
 </head>
 
 <body onselectstart="return true;" ondragstart="return false;" style="user-select: none;">
@@ -62,6 +62,23 @@
     .preselection-money div.bghide:active{
         opacity: 1;
     }
+    .pay-tips-title{
+        color: #aaa;
+        text-align: center;
+        background: #fff;
+        margin-top: -0.27rem;
+        margin-bottom: 0.07rem;
+        padding-bottom: 0.05rem;
+    }
+    .pay-tips{
+        color: #aaa;
+        text-align: left;
+        padding: 0.08rem 0.05rem;
+    }
+    #pay-time{
+        text-align: center;
+        margin-top: 0.05rem;
+    }
 </style>
 
 
@@ -80,13 +97,25 @@
             <label class="pay-money-desc" for="">金额</label>
             <span class="js-input-hint no-pay-amount hide">￥0.00</span>
             <span class="js-input-amount has-pay-amount">
-                        <em>￥</em>
-                        <em id="mainMoney"></em>
-                        <em class="pay-money-cursor"></em>
-                    </span>
+                {if condition="$data['is_fixed_amount']"}
+                <em id="mainMoney" hidden>{:intval($data['fixed_amount']['money'])/100}</em>
+                <em>￥{:intval($data['fixed_amount']['money'])/100}</em>
+                {else}
+                <em>￥</em><em id="mainMoney"></em><em class="pay-money-cursor"></em>
+                {/if}
+            </span>
         </div>
     </div>
-    {if condition="$data['preselection_switch']"}
+
+    <!--固码备注提示 部分 start-->
+    {if condition="$data['is_fixed_amount']"}
+    <div class="pay-tips-title">
+        商家设置的固定金额，请及时完成付款
+    </div>
+    {/if}
+    <!--固码备注提示 部分 end-->
+
+    {if condition="$data['preselection_switch'] && !$data['is_fixed_amount']"}
 
         {for start="0" end="6"}
 
@@ -132,11 +161,21 @@
     </div>
     <!--备注 部分 end-->
 
+    <!--固码备注提示 部分 start-->
+    {if condition="$data['is_fixed_amount'] && !empty($data['fixed_amount']['tips'])"}
+    <div class="pay-tips">
+        注意事项：{$data['fixed_amount']['tips']}
+    </div>
+    {/if}
+    <!--固码备注提示 部分 end-->
+
     <!--按钮 部分 start-->
     <div class="s-pay-btn" id="s-pay-btn" style="background:{$data['color']}">确认支付</div>
     <!--按钮 部分 end-->
+    <div id="pay-time"></div>
 </section>
 
+{if condition="!$data['is_fixed_amount']"}
 <!-- 自定义键盘 start 加上x-mask-show显示-->
 <div id="keyBoard" class="x-mask-box x-mask-show" data-id="mainMoney"
      style="z-index:9;background-color: rgba(0,0,0,0);height:auto;" v-cloak="">
@@ -178,15 +217,47 @@
     </div>
 </div>
 <!-- 自定义键盘 end -->
-<form id="pay_form" action="/submit" method="post">
+{/if}
+{if condition="$data['is_fixed_amount']"}
+<form id="pay_form" action="/submit?mod=fixed_amount" method="post">
+    {else}
+    <form id="pay_form" action="/submit" method="post">
+        {/if}
     <input type="hidden" id="pay_type" name="type">
     <input type="hidden" id="pay_money" name="money">
     <input type="hidden" id="pay_code" value="{$data['info']['code']}" name="code" placeholder="不要试图修改这个，否则造成财产损失后果自负！">
     <input type="hidden" id="pay_token" value="{$Request.token}" name="__token__"/>
     <input type="hidden" id="pay_remarks" name="remarks">
+    <input type="hidden" id="code" value="{$code}" name="code"/>
 </form>
 <script type="text/javascript" src="//lib.baomitu.com/jquery/3.6.0/jquery.min.js"></script>
 <script src="__PUBLIC__/Xadmin/lib/layui/lay/modules/layer.js"></script>
 <script type="text/javascript" src="__PUBLIC__/cashier/default/js/payOrderSimpfilied.min.js"></script>
+{if condition="$data['is_fixed_amount'] && !empty($data['fixed_amount']['end_time'])"}
+<script>
+    var setTime = +new Date("{$data['fixed_amount']['end_time']}");
+
+    countDown();
+    setInterval(countDown, 1000);
+    function countDown() {
+        var date = 0;
+        var now = +new Date();
+        var times = (setTime - now) / 1000;
+        var d = parseInt(times / 60 / 60 / 24); //天
+        date = d<=0?"":(d < 10 ? '0' + d : d)+"天";
+
+        var h = parseInt(times / 60 / 60 % 24); //时
+        date += h<=0?"":(h < 10 ? '0' + h : h)+"小时";
+
+        var m = parseInt(times / 60 % 60); //分
+        date += m<=0?"":(m < 10 ? '0' + m : m)+"分钟";
+
+        var s = parseInt(times % 60); //秒
+        date += s<=0?"":(s < 10 ? '0' + s : s)+"秒";
+
+        document.getElementById("pay-time").innerHTML = "剩余时间："+(date<=0?"已过期":date);
+    }
+</script>
+{/if}
 </body>
 </html>

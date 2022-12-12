@@ -1,6 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-
+{php}
+$user_theme_data_arr = json_decode($core['user_theme_data'],1)?:[];
+$page_grey = explode("|",$core['page_grey']);
+if(in_array("user_manage",$page_grey)){
+//置灰
+$core['head_style'] = '
+html{
+-webkit-filter: grayscale(100%) !important;
+-moz-filter: grayscale(100%) !important;
+-ms-filter: grayscale(100%) !important;
+-o-filter: grayscale(100%) !important;
+filter: grayscale(100%) !important;
+filter: gray !important;
+}
+';
+}
+{/php}
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -13,16 +29,68 @@
     <link rel="stylesheet" href="//cdn.bootcdn.net/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <!-- Purpose CSS -->
     <link rel="stylesheet" href="__PUBLIC__/uikit/css/purpose.css" id="stylesheet">
-
+    <style>{$core['head_style']}</style>
 <style>
     .layui-layer-btn0{
         color: #ffffff !important;
+    }
+    :root {
+        /*背景色*/
+        --custom-bg-color: {$user_theme_data_arr['list'][$user_theme_data_arr['use']]['bg']};
+        /*浅背景色*/
+        --custom-bg-shallow-color:{$user_theme_data_arr['list'][$user_theme_data_arr['use']]['bgs']};
+        /*文字颜色*/
+        --custom-t-color:{$user_theme_data_arr['list'][$user_theme_data_arr['use']]['t']};
+        /*--custom-color: #6e00ff;*/
+    }
+    .application-offset .container-application:before{
+        background-color:  var(--custom-bg-color) !important;
+    }
+    .bg-primary {
+        background-color: var(--custom-bg-color) !important;
+    }
+    .btn-primary:hover,.btn-primary {
+        color: var(--custom-t-color) !important;
+        background-color: var(--custom-bg-color) !important;
+        border-color: var(--custom-bg-color) !important;
+    }
+    .btn-primary{
+        background-color:  var(--custom-bg-color) !important;
+        color: var(--custom-t-color) !important;
+    }
+    .nav-application>.btn.active {
+        background-color:  var(--custom-bg-color) !important;
+        color: var(--custom-t-color) !important;
+    }
+    .btn-square:hover {
+        color:  var(--custom-bg-color) !important;
+    }
+    .badge-primary{
+        background-color:  var(--custom-bg-color) !important;
+        color: var(--custom-t-color) !important;
+    }
+    a{
+        color: var(--custom-bg-color);
+    }
+    a:hover {
+        color: var(--custom-bg-color);
+        opacity: 0.88;
+    }
+    .btn-soft-primary {
+        color:var(--custom-bg-color) !important;
+        background-color: var(--custom-bg-shallow-color) !important;
+        border-color:var(--custom-bg-shallow-color) !important;
+    }
+    .nav-link.active, .nav-link:hover{
+        color: var(--custom-bg-color);
+    }
+    .application .sidenav.show:before {
+        background-color: var(--custom-bg-color) !important;
     }
 </style>
 </head>
 <body class="application application-offset sidenav-pinned">
 <!-- Chat modal -->
-
 <!-- 应用程序容器 -->
 <div class="container-fluid container-application">
     <!-- Sidenav -->
@@ -118,6 +186,7 @@
                 <a href="/user/notice_page" class="btn btn-sm btn-block btn-white rounded-pill">商户公告</a>
                 <a href="/agreement" class="btn btn-sm btn-block btn-white rounded-pill" target="_blank">服务协议</a>
                 <a href="https://www.kancloud.cn/xingyi/kfwd/2396471" class="btn btn-sm btn-block btn-white rounded-pill" target="_blank">开发文档</a>
+                <a href="https://github.com/xiaoxing1617/cashier"  class="btn btn-sm btn-block btn-white rounded-pill" target="_blank">GitHub开源地址</a>
             </div>
         </div>
     </div>
@@ -133,6 +202,11 @@
                 <!-- User's navbar -->
                 <div class="navbar-user d-lg-none ml-auto">
                     <ul class="navbar-nav flex-row align-items-center">
+                        <li class="nav-item" style="border-radius: 10px;font-size: 20px;background: linear-gradient(to right, #f64f59, #36b37e);font-weight: 900;padding: 0px 10px;text-align: center;display: inline-block;margin: 0">
+                            <a class="nav-link pl-lg-0" onclick="github_tips()" style="color: #fff;" target="_blank">
+                                GitHub开源地址
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link nav-link-icon" data-action="omnisearch-open"
                                data-target="#omnisearch"><i class="fa fa-search"></i></a>
@@ -152,9 +226,14 @@
                 <div class="collapse navbar-collapse navbar-collapse-fade" id="navbar-main-collapse">
                     <ul class="navbar-nav align-items-lg-center">
                         <li class="border-top opacity-2 my-2"></li>
-                        <li class="nav-item ">
+                        <li class="nav-item active">
                             <a class="nav-link pl-lg-0" href="#">
                                 商户后台
+                            </a>
+                        </li>
+                        <li class="nav-item" style="border-radius: 10px;font-size: 20px;background: linear-gradient(to right, #f64f59, #36b37e);font-weight: 900;padding: 0px 10px;padding-left:26px;text-align: center;display: inline-block;margin: 0">
+                            <a class="nav-link pl-lg-0" onclick="github_tips()" style="color: #fff;" target="_blank">
+                                GitHub开源地址
                             </a>
                         </li>
 
@@ -197,25 +276,19 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text"><i class="fa fa-search"></i></span>
                             </div>
-                            <input type="text" class="form-control" placeholder="请输入要查询订单号...">
+                            <input type="text" class="form-control" placeholder="https://github.com/xiaoxing1617/cashier">
                         </div>
                     </div>
                 </form>
                 <div class="omnisearch-suggestions">
-                    <h6 class="heading">最近</h6>
+                    <h6 class="heading">历史</h6>
                     <div class="row">
                         <div class="col-sm-6">
                             <ul class="list-unstyled mb-0">
                                 <li>
                                     <a class="list-link" href="#">
                                         <i class="fa fa-search"></i>
-                                        <span>星益云www.96xy.cn</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="list-link" href="#">
-                                        <i class="fa fa-search"></i>
-                                        <span>敬请期待</span>
+                                        <span>[此处功能有待扩展开发，敬请期待]</span>
                                     </a>
                                 </li>
                             </ul>
@@ -238,3 +311,14 @@
             </div>
         </div>
         {/if}
+        <script>
+            function github_tips(){
+                //询问框
+                layer.confirm('当前系统已免费开源到GitHub平台，您可以免费下载搭建使用。<br/>什么是GitHub？是一个开源项目平台，开发者可以将自己的项目开源代码上传到这个平台，以供大家免费下载使用', {
+                    title:"系统提示",
+                    btn: ['立即前往','关闭'] //按钮
+                }, function(){
+                    window.location.open("https://github.com/xiaoxing1617/cashier");
+                });
+            }
+        </script>

@@ -132,7 +132,7 @@
                     </div>
                     <label class="form-control-label">筛选条件：</label>
                     <div class="row mb-1">
-                    <div class="col-xl-6 col-md-6 col-lg-6">
+                    <div class="col-xl-4 col-md-4 col-lg-4">
                         <select class="form-control" id="screen_type">
                             <option value="all">全部支付方式</option>
                             {foreach name="pay_list" item="v" key="key"}
@@ -140,38 +140,52 @@
                             {/foreach}
                         </select>
                     </div>
-                        <div class="col-xl-6 col-md-6 col-lg-6">
+                        <div class="col-xl-4 col-md-4 col-lg-4">
                             <select class="form-control" id="screen_state">
                                 <option value="all">全部订单状态</option>
                                 {foreach name="state" item="v" key="key"}
-                                <option value="{$key}" {$key=="0"?"disabled":""}>{$v}</option>
+                                {if $key !="0"}
+                                <option value="{$key}">{$v}</option>
+                                {/if}
                                 {/foreach}
                             </select>
                         </div>
-                    </div>
 
+                        <div class="col-xl-4 col-md-4 col-lg-4">
+                            <select class="form-control" id="screen_source">
+                                <option value="all">全部订单来源</option>
+                                {foreach name="source" item="v" key="key"}
+                                <option value="{$key}">{$v}</option>
+                                {/foreach}
+                            </select>
+                        </div>
+
+                    </div>
+                    <label class="form-control-label">检索内容：</label>
                     <div class="row mb-3">
-                        <div class="col-xl-3 col-md-3 col-lg-3">
-                            <select class="form-control" id="screen_mode">
+                        <div class="col-xl-4 col-md-4 col-lg-4">
+                            <select class="form-control" id="screen_mode" onchange="screen_mode_change(this)">
+                                <option value="all">不检索指定项</option>
                                 <option value="out_trade_no">系统订单号</option>
                                 <option value="api_trade_no">接口订单号</option>
                                 <option value="third_trade_no">第三方订单号</option>
                                 <option value="name">订单名称</option>
                                 <option value="pname">接口名称</option>
+                                <option value="fixed_amount_id">固额码ID</option>
                             </select>
                         </div>
-                        <div class="col-xl-7 col-md-7 col-lg-7" id="screen_div">
-                            <div class='row'>
-                            <div class="col-xl-12 col-md-12 col-lg-12">
+                        <div class="col-xl-6 col-md-6 col-lg-6" id="screen_value_div" style="display: none">
+                            <div>
                                 <input type="text" id="screen_value" class="form-control" placeholder="请输入查询内容...">
                             </div>
-                            </div>
                         </div>
-                        <div class="col-xl-2 col-md-2 col-lg-2">
+                        <br/>
+                        <div class="col-xl-8 col-md-8 col-lg-8" id="screen_but_div">
                             <button type="button" class="btn btn-primary btn-block" id="screen_but">查询</button>
                         </div>
                     </div>
                     <div class="table-responsive">
+                        <div>当前共计 <span id="count">0</span> 条订单</div>
                         <table class="table align-items-center">
                             <thead>
                             <tr>
@@ -201,18 +215,31 @@
 {include file='default/bottom' /}
 
 <script>
+    function screen_mode_change(){
+        const val = $("#screen_mode option:selected").val();
+        const text = $("#screen_mode option:selected").text();
+        if(val=="all"){
+            $("#screen_value_div").css("display", "none");
+            $("#screen_but_div").attr("class", "col-xl-8 col-md-8 col-lg-8");
+        }else{
+            $("#screen_value").attr("placeholder", "请输入"+text+"....");
+            $("#screen_value_div").css("display", "block");
+            $("#screen_but_div").attr("class", "col-xl-2 col-md-2 col-lg-2");
+        }
+    }
     var laydate;
     layui.use(['laydate'], function() {
         laydate = layui.laydate;  //日期
     });
     $("#reset").click(function (){
-        $("#screen_mode").val("out_trade_no");  //查询类型
+        $("#screen_mode").val("all");  //查询类型
         $("#screen_value").val("");  //查询内容
         $("#screen_source").val("all");  //订单来源
         $("#screen_type").val("all");  //支付方式
         $("#screen_state").val("all");  //订单状态
         $("#screen_time_1").val("");  //开始时间
         $("#screen_time_2").val("");  //结束时间
+        screen_mode_change();
         getList("all",1,);
     });
     $("#screen_but").click(function (){
@@ -223,6 +250,7 @@
             "state":$("#screen_state").val(),  //订单状态
             "time_start":$("#screen_time_1").val(),  //开始时间
             "time_end":$("#screen_time_2").val(),  //结束时间
+            "source":$("#screen_source").val(),  //订单来源
         };
         getList(screen_data.mode,1,screen_data);
     });
@@ -250,13 +278,14 @@
                 if (data.code == 0) {
                     layer.close(Load); //关闭加载
                     list_data = data.list;
+                    $("#count").html(data.count);
                     //===渲染
                     var html = "";
                     for (var i = 0; i < data.list.length; i++) {
                         var temp = data.list[i];
                         html += "<tr>" +
                             "<div class='row'>"+
-                            "<td style=\"font-weight: bolder;text-align: center\">"+temp.source_name+"<br/>【"+temp.trade_type+"】<br/><img style=\"vertical-align:middle\" src=\"__PUBLIC__/icon/" + temp.type_icon + "\" width=\"17\"/> " + temp.type + "</td>"+
+                            "<td style=\"font-weight: bolder;text-align: center;color:"+temp.type_color+"\">"+temp.source_name+(temp.source==='fixed_amount'?'<button type="button" class="btn btn-xs btn-info btn-icon" style="margin-left: 5px;padding: 0.5px 4px;" onclick="query_code_fixed_amount('+temp.faid+')">查看</button>':'')+"<br/>【"+temp.trade_type+"】<br/><img style=\"vertical-align:middle\" src=\"__PUBLIC__/icon/" + temp.type_icon + "\" width=\"17\"/> " + temp.type + "</td>"+
                             "<td>" + temp.out_trade_no + "<br/>" + temp.api_trade_no + "<br/>" + temp.third_trade_no + "</td>" +
                             "<td>" + temp.name + "</td>" +
                             "<td style=\"text-align: center\"><b>￥" + temp.money + "</b></td>" +
@@ -481,6 +510,19 @@
                 "\n" +
                 "                        </blockquote>\n" +
                 "</div>"
+        });
+    }
+    //查看固额码
+    function query_code_fixed_amount(id){
+        layer.open({
+            type: 2,
+            scrollbar: false,
+            title: "查看固额码",
+            shadeClose: true,
+            shade: 0.3,
+            shadeClose: false,
+            area: [layerWidth, '90%'],
+            content: '/api/query_code?mode=fixed_amount&template=bill_stereoscopic&id='+id
         });
     }
 </script>

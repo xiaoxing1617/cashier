@@ -72,7 +72,7 @@ class Renew extends Controller
                 $pay_interface_array = $s_user->getPayInterfaceArray();
                 $pay_interface_id = $s_user->getPreUsePayInterfaceId($pay_interface_array, $client_arr['alias']);
                 if ($pay_interface_id == 0 or $pay_interface_id == '') {
-                    weuiMsg('info', '平台管理员商户未开启【' . $client_arr['client_name'] . '】续费支付方式，请使用其他支付方式续费！', '抱歉');
+                    weuiMsg('info', '平台管理员商户未开启【' . $client_arr['client_name'] . '】续费支付方式，请使用其他支付方式续费！', '不支持'.$client_arr['client_name'].'付款');
                     return;
                 }
                 $this->assign('msg', '您当前在【'.$client_arr['client_name'].'】客户端打开了页面，将使用<span style="color:'.$client_arr['color'].'">'.$client_arr['name'].'</span>发起支付。如需使用其他支付方式，请切换至其他支付平台或在浏览器打开此页！');  //支付信息

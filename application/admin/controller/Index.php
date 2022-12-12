@@ -52,6 +52,11 @@ class Index extends Controller
         }
         $core = $loginCheck['data'];
         //======验证登录======
+        $data = [
+            'VERSION'=>VERSION,
+            'BUILD' =>BUILD,
+        ];
+        $this->assign('data', $data);
 
         $this->assign('title', "后台首页");  //标题
         $this->assign('core', $core);  //系统配置
@@ -136,7 +141,7 @@ class Index extends Controller
         $list = array(
             [
                 'id'=>0,
-                'title'=>"欢迎使用【星云聚合收银台系统】",
+                'title'=>"欢迎使用【星益云聚合收银台系统】",
                 'url'=>"https://jq.qq.com/?_wv=1027&k=XRJStQ3p",
                 'release_time'=>"2021-10-31 00:00:00"
             ],
@@ -154,16 +159,16 @@ class Index extends Controller
             ],
             [
                 'id'=>3,
-                'title'=>"当前为1.45完全开源版（无加密免授权）",
-                'url'=>"https://jq.qq.com/?_wv=1027&k=XRJStQ3p",
-                'release_time'=>"2021-10-31 00:00:00"
+                'title'=>"系统已免费开源至GitHub【点击跳转】",
+                'url'=>"https://github.com/xiaoxing1617/cashier",
+                'release_time'=>"2022-07-01 00:00:00"
             ],
             [
                 'id'=>4,
                 'title'=>"星益云www.96xy.cn",
                 'url'=>"https://jq.qq.com/?_wv=1027&k=XRJStQ3p",
                 'release_time'=>"2021-10-31 00:00:00"
-            ]
+            ],
         );
         $data['news']['empty'] = false;
         $data['news']['list'] = $list;

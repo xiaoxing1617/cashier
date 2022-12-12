@@ -89,7 +89,8 @@ class Install extends Controller
                         "database" => config('database.database'),
                         "username" => config('database.username'),
                         "password" => config('database.password'),
-                        "hostport" => config('database.hostport')
+                        "hostport" => config('database.hostport'),
+                        "private_key" => config('database.private_key')
                     ];
                 }
                 $validate = new Validate([
@@ -104,6 +105,17 @@ class Install extends Controller
                     $data = [
                         "code" => 1,
                         "msg" => $validate->getError()
+                    ];
+                    $this->assign('data', $data);  //输出变量
+                    $this->assign('subtitle', $subtitle);  //输出变量
+                    $this->assign('progress', $progress);  //输出变量
+                    $this->assign('do', $do);  //输出变量
+                    return $this->fetch('index/index');  //进入模板
+                }
+                if($array['private_key']!="[QQ:1450839008]https://github.com/xiaoxing1617/cashier"){
+                    $data = [
+                        "code" => 1,
+                        "msg" => "授权私钥不正确，请检查后重试！"
                     ];
                     $this->assign('data', $data);  //输出变量
                     $this->assign('subtitle', $subtitle);  //输出变量
@@ -236,5 +248,56 @@ class Install extends Controller
         return $this->fetch('index/index');  //进入模板
 
         //================页面载入================
+    }
+    /**
+     * 更新
+     */
+    public function update(Request $request)
+    {
+        $get = $request->get();
+        //================页面载入================
+        if (!checkUpdate()) {
+            weuiMsg('info', '已是最新版本v'.VERSION.'('.BUILD.')','无更新',true,["url"=>"https://github.com/xiaoxing1617/cashier","title"=>"GitHub开源地址"]);
+            exit();
+        }
+        $array = [
+            "hostname" => config('database.hostname'),
+            "database" => config('database.database'),
+            "username" => config('database.username'),
+            "password" => config('database.password'),
+            "hostport" => config('database.hostport')
+        ];
+        $link = mysqli_connect($array['hostname'], $array['username'], $array['password'], $array['database'], $array['hostport']);
+        if(!$link){
+            weuiMsg('warn-primary',  "数据库连接失败：".mysqli_connect_error(),'更新失败',true,["url"=>"https://github.com/xiaoxing1617/cashier","title"=>"GitHub开源地址"]);
+            exit();
+        }
+        //---------------------------
+        $msg = "";
+        $path = APP_PATH . "install/update_sql/".BUILD.".sql";
+        if(!file_exists($path)){
+            weuiMsg('warn-primary',  "更新数据包不存在或已被删除，请自行前往github下载<b> ".BUILD.".sql </b>。并将文件放置在源码<b> /application/install/update_sql </b>文件夹里，重新刷新此页面即可！",'更新失败',true,["url"=>"https://github.com/xiaoxing1617/cashier/tree/master/application/install/update_sql","title"=>"GitHub数据包"]);
+            exit();
+        }
+        //---------------------------
+        $sql_data = sqlImplement($path,$array);
+        if($sql_data['code']!=0){
+            $bl = true;
+        }else{
+            if($sql_data['t'] == $sql_data['s']){
+                $bl = true;
+            }else{
+                $msg = "共有{$sql_data['s']}条sql语句，执行成功{$sql_data['t']}条，执行失败{$sql_data['e']}条！<br/>错误信息：".$sql_data['error'];
+                $bl = false;
+            }
+        }
+        //---------------------------
+        if($bl){
+            weuiMsg('success', '系统已自动完成更新，无需您的操作，感谢使用系统！'.$msg,'更新完成',true,["url"=>"https://github.com/xiaoxing1617/cashier","title"=>"GitHub开源地址"]);
+            exit();
+        }else{
+            weuiMsg('warn-primary', '抱歉，系统在更新当中出现了问题<hr/>'.$msg,'更新失败',true,["url"=>"https://github.com/xiaoxing1617/cashier","title"=>"GitHub开源地址"]);
+            exit();
+        }
     }
 }

@@ -1,6 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-
+{php}
+$user_theme_data_arr = json_decode($core['user_theme_data'],1)?:[];
+$page_grey = explode("|",$core['page_grey']);
+if(in_array("user_manage",$page_grey)){
+//置灰
+$core['head_style'] = '
+html{
+-webkit-filter: grayscale(100%) !important;
+-moz-filter: grayscale(100%) !important;
+-ms-filter: grayscale(100%) !important;
+-o-filter: grayscale(100%) !important;
+filter: grayscale(100%) !important;
+filter: gray !important;
+}
+';
+}
+{/php}
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -16,9 +32,65 @@
 
     <link href="__PUBLIC__/Xadmin/lib/layui/css/modules/layer/default/layer.css" rel="stylesheet">
     <script type="text/javascript" src="//lib.baomitu.com/jquery/3.6.0/jquery.min.js"></script>
+    <style>{$core['head_style']}</style>
     <style>
         .layui-layer-btn0 {
             color: #ffffff !important;
+        }
+    </style>
+    <style>
+        :root {
+            /*背景色*/
+            --custom-bg-color: {$user_theme_data_arr['list'][$user_theme_data_arr['use']]['bg']};
+            /*浅背景色*/
+            --custom-bg-shallow-color:{$user_theme_data_arr['list'][$user_theme_data_arr['use']]['bgs']};
+            /*文字颜色*/
+            --custom-t-color:{$user_theme_data_arr['list'][$user_theme_data_arr['use']]['t']};
+            /*--custom-color: #6e00ff;*/
+        }
+        .application-offset .container-application:before{
+            background-color:  var(--custom-bg-color) !important;
+        }
+        .bg-primary {
+            background-color: var(--custom-bg-color) !important;
+        }
+        .btn-primary:hover,.btn-primary {
+            color: var(--custom-t-color) !important;
+            background-color: var(--custom-bg-color) !important;
+            border-color: var(--custom-bg-color) !important;
+        }
+        .btn-primary{
+            background-color:  var(--custom-bg-color) !important;
+            color: var(--custom-t-color) !important;
+        }
+        .nav-application>.btn.active {
+            background-color:  var(--custom-bg-color) !important;
+            color: var(--custom-t-color) !important;
+        }
+        .btn-square:hover {
+            color:  var(--custom-bg-color) !important;
+        }
+        .badge-primary{
+            background-color:  var(--custom-bg-color) !important;
+            color: var(--custom-t-color) !important;
+        }
+        a{
+            color: var(--custom-bg-color);
+        }
+        a:hover {
+            color: var(--custom-bg-color);
+            opacity: 0.88;
+        }
+        .btn-soft-primary {
+            color:var(--custom-bg-color) !important;
+            background-color: var(--custom-bg-shallow-color) !important;
+            border-color:var(--custom-bg-shallow-color) !important;
+        }
+        .nav-link.active, .nav-link:hover{
+            color: var(--custom-bg-color);
+        }
+        .application .sidenav.show:before {
+            background-color: var(--custom-bg-color) !important;
         }
     </style>
 </head>

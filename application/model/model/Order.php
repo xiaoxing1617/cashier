@@ -25,63 +25,45 @@ class Order extends Model
         }
     }
 
-    public function getTradeTypeName($type = null)
+    public function getTradeTypeName($type = null,$sw=false)
     {
+        $arr = [
+            "FACE"=>"当面付",
+            "WapPay"=>"手机网站",
+            "PagePay"=>"电脑网站",
+            "JSAPI"=>"JSAPI",
+            "MWEB"=>"H5支付",
+            "H5"=>"H5支付",
+            "NATIVE"=>"扫码支付",
+            "EPAY"=>"易支付",
+            "CASHIER"=>"聚合收银台",
+        ];
+        if($sw){
+            return $arr;
+        }
         if ($type == null) {
             $type = $this->trade_type;
         }
-        switch ($type) {
-            case "FACE":
-                $type = "当面付";
-                break;
-            case "WapPay":
-                $type = "手机网站";
-                break;
-            case "PagePay":
-                $type = "电脑网站";
-                break;
-            case "JSAPI":
-                $type = "JSAPI";
-                break;
-            case "MWEB":
-                $type = "H5支付";
-                break;
-            case "H5":
-                $type = "H5支付";
-                break;
-            case "NATIVE":
-                $type = "扫码支付";
-                break;
-            case "EPAY":
-                $type = "易支付";
-                break;
-            case "CASHIER":
-                $type = "聚合收银台";
-                break;
-            default:
-                $type = "未知";
+        if (!array_key_exists($type, $arr)) {
+            return "未知";
+        } else {
+            return $arr[$type];
         }
-        return $type;
     }
 
-    public function getSourceName($type = null)
+    public function getSourceName($type = null,$sw=false)
     {
+        $arr = ["cashier" => "收银台", "service" => "续费充值", "api" => "API请求", "fixed_amount" => "固额码"];
+        if($sw){
+            return $arr;
+        }
         if ($type == null) {
             $type = $this->source;
         }
-        switch ($type) {
-            case "cashier":
-                $type = "收银台";
-                break;
-            case "service":
-                $type = "续费充值";
-                break;
-            case "api":
-                $type = "API请求";
-                break;
-            default:
-                $type = "未知";
+        if (!array_key_exists($type, $arr)) {
+            return "未知";
+        } else {
+            return $arr[$type];
         }
-        return $type;
     }
 }

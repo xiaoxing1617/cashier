@@ -2,7 +2,8 @@
 
 
 namespace app\api\controller;
-
+//引入FixedAmount模型
+use app\model\model\FixedAmount as FixedAmountModel;
 use think\Request;
 use think\Controller;
 use think\Db;
@@ -112,6 +113,7 @@ class Api extends Controller
         if (array_key_exists('template', $paraArray)) {
             $template = $paraArray['template'];
         }
+        $url = "";
         if ($paraArray['mode'] == "third_web") {
             //========第三方获取
             if (array_key_exists('uid', $paraArray)) {
@@ -122,6 +124,7 @@ class Api extends Controller
                     weuiMsg('info', $check['msg'], "code:" . $check['code']);
                     return;
                 }
+                $url = $request->domain() . '/cashier/' . $user['code'];
             } else {
                 weuiMsg('info', "商户UID或密钥错误", "code:1001");
                 return;
@@ -137,12 +140,13 @@ class Api extends Controller
                 return;
             }
             $template = $core['demo_pay'];
+            $url = $request->domain() . '/cashier/' . $user['code'];
         } elseif ($paraArray['mode'] == "this_web") {
             //========当前登录的商户
             $controller = new \app\user\controller\Index;
             $loginCheck = $controller->loginCheck();
             if ($loginCheck['code'] == -1) {
-                weuiMsg('info', "请登录", "code:1");
+                weuiMsg('info', "请先登录账号", "code:1");
                 return;
             }
             if ($loginCheck['code'] != 0) {
@@ -150,15 +154,46 @@ class Api extends Controller
                 return;
             }
             $user = $loginCheck['data'];  //获取商户信息
+            $url = $request->domain() . '/cashier/' . $user['code'];
+        }elseif($paraArray['mode'] == "fixed_amount"){
+            //========当前登录的商户
+            $controller = new \app\user\controller\Index;
+            $loginCheck = $controller->loginCheck();
+            if ($loginCheck['code'] == -1) {
+                weuiMsg('info', "请先登录账号", "code:1");
+                return;
+            }
+            if ($loginCheck['code'] != 0) {
+                weuiMsg('info', $loginCheck['msg'], "code:1");
+                return;
+            }
+            $user = $loginCheck['data'];  //获取商户信息
+            $fixed_amount_id = intval($paraArray['id']);
+            if($fixed_amount_id<=0){
+                weuiMsg('info', "请传入固额码的ID", "code:1");
+                return;
+            }
+            $fixed_amount_data = FixedAmountModel::where("id",$fixed_amount_id)->where("uid",$user['uid'])->find();
+            if(!$fixed_amount_data){
+                weuiMsg('info', "当前固额码不存在或已被删除", "code:1");
+                return;
+            }
+            $url = $request->domain() . '/cashier/' . $fixed_amount_data['code'];
+            $pay_arr = getPayList();
+            $tmp_pay_type = $fixed_amount_data['pay_type'];
+            $types = explode("|",$fixed_amount_data['pay_type']);
+            $fixed_amount_data['pay_type'] = "";
+            foreach ($types as $type){
+                $fixed_amount_data['pay_type'] .= $pay_arr[$type]?$pay_arr[$type]['name']." | ":'未知 | ';
+            }
+            $fixed_amount_data['pay_type'] = rtrim($fixed_amount_data['pay_type'], "| ");
+            $this->assign('fixed_amount_data', $fixed_amount_data);  //固额码数据
+            $fixed_amount_data['pay_type'] = $tmp_pay_type;
         } else {
             weuiMsg('info', '不支持该获取模式', "code:1", false);
             return;
         }
-        //==========开始
-        $type = 'ordinary';  //默认
-        if (array_key_exists('type', $paraArray)) {
-            $type = $paraArray['type'];
-        }
+        //==========模板校验并获取模板数据
         $payment_code_list = getPaymentCodeList();
         foreach ($payment_code_list as $value) {
             $payment_code_array[] = $value['alias'];
@@ -168,21 +203,9 @@ class Api extends Controller
             return;
         }
         $code = getPaymentCodeList($template, 'alias');
-        $name = mb_substr($user['nickname'], 0, $code['recNameNum']);
-        if (mb_strlen($user['nickname']) > mb_strlen($name) && $code['recNameNum'] > 0) {
-            $name .= "...";
-        }
-        $url = $request->domain() . '/cashier/' . $user['code'];
-        switch ($type) {
-            case "ordinary":
-                //普通
+        //==========模板上的名称设置
+        $code['texts'] = $this->textsFilter($code,$paraArray['mode'],$user,$fixed_amount_data);
 
-
-                break;
-            default:
-                weuiMsg('info', '不支持该收款码类型', "code:1");
-                return;
-        }
         $pay_list = getPayList();
         $pay_names = "";
         foreach ($pay_list as $value) {
@@ -192,14 +215,89 @@ class Api extends Controller
         }
         $pay_names = substr($pay_names, 0, -3);
 
+        $this->assign('url', $url);  //地址
+        $this->assign('mode', $paraArray['mode']);  //模式
         $this->assign('pay_names', $pay_names);  //客户端
         $code['circular_portrait'] = json_encode($code['circular_portrait']);
         $this->assign('user', $user);  //商户信息
-        $this->assign('name', $name);  //商户名称
+        $this->assign('name', $user['nickname']);  //商户名称
         $this->assign('code', $code);  //收款码配置
-        $this->assign('title', '收款码 - ' . $code['name']);  //标题
+        $this->assign('title',  $code['name']);  //标题
         $this->assign('core', $core);  //系统配置
-        $this->assign('url', $request->domain() . '/cashier/' . $user['code']);  //输出变量
         return $this->fetch('/query_code');  //进入模板
+    }
+    /**
+     * 处理收款码的文本组
+     */
+    private function textsFilter($code,$mode,$user,$fixed_amount_data){
+        if(!$code['texts']){
+            //兼容老版本数据格式
+            $UserName = mb_substr($user['nickname'], 0, intval($code['recNameNum']));
+            if (mb_strlen($user['nickname']) > mb_strlen($UserName) && intval($code['recNameNum']) > 0) {
+                $UserName .= "...";
+            }
+            $data[] = [
+                "left"=>$code['recNameLeft'],
+                "top"=>$code['recNameTop'],
+                "color"=>$code['fontColor'],
+                "font"=>$code['font'],
+                "num"=>$code['recNameNum'],
+                "txt"=>$UserName
+            ];
+            return json_encode($data);
+        }
+
+        $data = [];
+        $pay_arr = getPayList();
+        if($mode== "fixed_amount"){
+            $FixedAmountMoney = "￥" . number_format(round(($fixed_amount_data['money'] / 100), 2), 2, ".", "")." ";
+            $FixedAmountEndTime = $fixed_amount_data['end_time'];
+            $types = explode("|",$fixed_amount_data['pay_type']);
+            $PayTypeText = "";
+            foreach ($types as $type){
+                $PayTypeText .= $pay_arr[$type]?$pay_arr[$type]['name']." ":'';
+            }
+            $PayTypeText = trim($PayTypeText);
+        }else{
+            $FixedAmountEndTime = "";
+            $FixedAmountMoney = "";
+            $PayTypeText = "";
+            foreach ($pay_arr as $item){
+                $PayTypeText .= $item['name']." ";
+            }
+            $PayTypeText = trim($PayTypeText);
+        }
+        foreach ($code['texts'] as $item){
+            if(isset($item['only_mode']) && !in_array($mode,$item['only_mode'])) {
+                continue;
+            }else if(isset($item['rule_out_mode']) && in_array($mode,$item['rule_out_mode'])){
+                continue;
+            }
+            $txt = $item['txt'];
+            $UserName = $user['nickname'];
+            if(!isset($item['txt']) || empty($item['txt'])){
+                $txt = $UserName;
+            }
+
+            //商户名称
+            $txt = str_replace("__UserName__",$UserName,$txt);
+            //固额码金额
+            $txt = str_replace("__FixedAmountMoney__",$FixedAmountMoney,$txt);
+            //固额码截止日期
+            $txt = str_replace("__FixedAmountEndTime__",$FixedAmountEndTime,$txt);
+            //支持的支付方式文本
+            $txt = str_replace("__PayTypeText__",$PayTypeText,$txt);
+
+
+
+            $tmp_txt = mb_substr($txt, 0, intval($item['num']));
+            if (mb_strlen($txt) > mb_strlen($tmp_txt) && intval($item['num']) > 0) {
+                $txt = $tmp_txt."...";
+            }
+
+            $item['txt'] = $txt;
+            $data[] = $item;
+        }
+        return json_encode($data);
     }
 }

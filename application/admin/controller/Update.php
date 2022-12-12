@@ -49,6 +49,11 @@ class Update extends Controller
         $core = $loginCheck['data'];
         //======验证登录======
 
+        $data = [
+            'VERSION'=>VERSION,
+            'BUILD' =>BUILD,
+        ];
+        $this->assign('data', $data);
         $this->assign('title', "检查更新");  //标题
         $this->assign('core', $core);  //系统配置
         return $this->fetch('default/update');  //进入模板

@@ -136,10 +136,13 @@ class Bill extends Controller
         $this->assign('income', $data);  //支付方式收入
 
         $state = Order::getStateName(null, true);
+        $source = Order::getSourceName(null, true);
         $pay_list = getPayList();
 
         $this->assign('state', $state);  //支付状态
         $this->assign('pay_list', $pay_list);  //支付状态
+
+        $this->assign('source', $source);  //订单来源
 
         $user['qq_nickname'] = getQQnickname($user['qq']);
         $this->assign('title', "我的账单");  //标题
@@ -175,7 +178,10 @@ class Bill extends Controller
             return json_encode(['code' => 1, 'msg' => $validate->getError()]);
         }
 
-        $num = 10;  //每次显示数量
+        $num = intval($postArray['num']);  //每次显示数量
+        if($num<=0 || $num>24){
+            $num = 10;
+        }
         $page = $postArray['page'];
         if ($page <= 0) {
             $page = 1;
@@ -188,6 +194,8 @@ class Bill extends Controller
         }else{
             $value = $postArray['value'];
         }
+        $pay_list = getPayList();
+        $pay_type_count = [];
         switch ($postArray['mode']) {
             case "all":
                 //全部
@@ -221,6 +229,19 @@ class Bill extends Controller
                     ->where("name", 'like', "%" . $value . "%");
                 $sql_count = Order::where("uid", $user['uid'])
                     ->where("name", 'like', "%" . $value . "%");
+                break;
+            case "fixed_amount_id":
+                //固额码ID
+                $sql_data = Order::where("uid", $user['uid'])
+                    ->where("faid", $value);
+                $sql_count = Order::where("uid", $user['uid'])
+                    ->where("faid", $value);
+                    //支付方式
+                    foreach ($pay_list as $v){
+                        $pay_type_count[$v['alias']] = Order::where("uid", $user['uid'])
+                            ->where("faid", $value)->where("state", "<>", "0")->where("type",$v['alias'])->count()?:0;
+                    }
+
                 break;
             case "pname":
                 $pay = Pay::where("uid", $user['uid'])
@@ -276,12 +297,11 @@ class Bill extends Controller
         if(array_key_exists('type',$postArray)){
             $type = $postArray['type'];
             if (trim($type) != "all") {
-                $pay_list = getPayList();
                 foreach ($pay_list as $v) {
                     $pay_array[] = $v['alias'];
                 }
                 if (!in_array($type, $pay_array)) {
-                    return exit(json_encode(['code' => 1, 'msg' => '不存在此支付方式']));
+                    return json_encode(['code' => 1, 'msg' => '不存在此支付方式']);
                 }
                 $sql_count->where('type', $type);
                 $sql_data->where('type', $type);
@@ -293,14 +313,27 @@ class Bill extends Controller
                 $state_arr = Order::getStateName(null, true);
                 $state = $postArray['state'];
                 if (!isset($state_arr[$state]) && $state != "all") {
-                    return exit(json_encode(['code' => 1, 'msg' => '不存在此订单状态']));
+                    return json_encode(['code' => 1, 'msg' => '不存在此订单状态']);
                 }
                 $sql_count->where('state', $state);
                 $sql_data->where('state', $state);
             }
         }
+        //订单来源
+        if(array_key_exists('source',$postArray)) {
+            if (trim($postArray['source']) != "all") {
+                $source_arr = Order::getSourceName(null, true);
+                $source = $postArray['source'];
+                if (!isset($source_arr[$source]) && $source != "all") {
+                    return json_encode(['code' => 1, 'msg' => '不存在此订单来源']);
+                }
+                $sql_count->where('source', $source);
+                $sql_data->where('source', $source);
+            }
+        }
+        $count = $sql_count->where("state", "<>", "0")->count()?:0;
 
-        $count = $sql_count->where("state", "<>", "0")->count();;
+
         $list = $sql_data->where("state", "<>", "0")->order('id desc')->page($page, $num)->select();
         foreach ($list as $v) {
             $v['state_name'] = $v->getStateName();
@@ -328,7 +361,7 @@ class Bill extends Controller
         }
 
         $total_page = ceil($count / $num);
-        return json_encode(['code' => 0, 'msg' => "成功", "list" => $list, "page" => $page, "total_page" => $total_page, "count" => count($list)]);
+        return json_encode(['code' => 0, 'msg' => "成功", "list" => $list, "page" => $page, "total_page" => $total_page, "count" =>$count ,"current_page_count"=>count($list),"pay_type_count"=>$pay_type_count]);
     }
 
     //重新异步请求（单个）

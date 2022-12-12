@@ -126,6 +126,9 @@
                     {{#  if(d.source=='api' && d.state!='0'){ }}
                     <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="notify">通知</a>
                     {{#  } }}
+                        {{#  if(d.source=='fixed_amount'){ }}
+                        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="query_code_fixed_amount">查看</a>
+                        {{#  } }}
                     </script>
 
                 </div>
@@ -482,6 +485,45 @@
                             }
                         });
                         break;
+                    case "query_code_fixed_amount":
+                        const faid = data.faid;
+                        //查看固额码
+                        var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+                        $.ajax({
+                            type: "POST",
+                            url: "/adminLoginUser",
+                            data: {"fixed_amount_id": faid},
+                            dataType: "json",
+                            success: function (json) { //SUCCESS
+                                var data = $.parseJSON(json);
+                                if (data.code == 0) {
+                                    layer.close(Load); //关闭加载
+                                    layer.open({
+                                        type: 2,
+                                        scrollbar: false,
+                                        title: "查看固额码【创建商户UID："+data.uid+"】",
+                                        shadeClose: true,
+                                        shade: 0.3,
+                                        shadeClose: false,
+                                        area: [layerWidth, '90%'],
+                                        content: '/api/query_code?mode=fixed_amount&template=bill_stereoscopic&id='+faid
+                                    });
+                                } else {
+                                    layer.close(Load); //关闭加载
+                                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                                        layer.close(indexa);
+                                        return false;
+                                    })
+                                }
+                            },
+                            error: function () { //ERROR
+                                layer.close(Load); //关闭加载
+                                layer.msg('系统繁忙');
+                                return false;
+                            }
+                        });
+                        //查看固额码
+                            break;
                     default:
                         layer.alert("不支持该操作类型")
                 }

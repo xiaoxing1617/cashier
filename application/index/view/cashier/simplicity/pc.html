@@ -13,6 +13,7 @@
             href="__PUBLIC__/cashier/simplicity/css/argon.min.css"
             rel="stylesheet"
     />
+    <style>{$core['head_style']}</style>
     <style>
         /*从左滑到右*/
         @keyframes fadeleftIn {
@@ -83,6 +84,10 @@
         .btn-soft-danger{
             border: #8898aa 1px solid;
         }
+        #pay-time{
+            text-align: center;
+            margin-top: 3px;
+        }
     </style>
 </head>
 
@@ -146,20 +151,37 @@
                         </div>
                     </div>
                     <div class="hr mt-2"></div>
-                    <form id="pay_form" action="/submit" method="post">
-                        <input type="hidden" id="pay_code" value="{$data['info']['code']}" name="code"
+                    {if condition="$data['is_fixed_amount']"}
+                    <form id="pay_form" action="/submit?mod=fixed_amount" method="post">
+                        {else}
+                        <form id="pay_form" action="/submit" method="post">
+                            {/if}
+                        <input type="hidden" id="pay_code" value="{$code}" name="code"
                                placeholder="不要试图修改这个，否则造成财产损失后果自负！">
                         <input type="hidden" id="pay_token" value="{$Request.token}" name="__token__"/>
                         <input type="hidden" id="pay_type" name="type">
                         <div class="form-group row">
                             <span class="col-sm-1 col-form-label text-right">付款<br/>金额</span>
                             <div class="col-sm-10">
+                                {if condition="$data['is_fixed_amount']"}
+                                <input type="text" style="height: 100px;font-size: 32px"
+                                       class="form-control" name="money" id="pay_money" value="{:intval($data['fixed_amount']['money'])/100}" disabled>
+                                {else}
                                 <input type="text" style="height: 100px;font-size: 32px"
                                        class="form-control" name="money" id="pay_money" placeholder="0.00">
+                                {/if}
                             </div>
                         </div>
+                            {if condition="$data['is_fixed_amount']"}
+                            <div class="form-group row">
+                                <span class="col-sm-1 col-form-label text-right"></span>
+                                <div class="col-sm-10">
+                            商家设置的固定金额，请及时完成付款
+                                </div>
+                            </div>
+                            {/if}
 
-                        {if condition="$data['preselection_switch']"}
+                            {if condition="$data['preselection_switch'] && !$data['is_fixed_amount']"}
                         <div class="form-group row">
                             <span class="col-sm-1 col-form-label text-right"></span>
                             <div class="col-sm-10">
@@ -193,6 +215,16 @@
                                        placeholder="备注信息" style="height: 35px;font-size: 15px">
                             </div>
                         </div>
+                            <!--固码备注提示 部分 start-->
+                            {if condition="$data['is_fixed_amount'] && !empty($data['fixed_amount']['tips'])"}
+                            <div class="form-group row">
+                                <span class="col-sm-1 col-form-label text-right">注意<br/>事项</span>
+                                <div class="col-sm-10" style="margin-top: 10px">
+                                    {$data['fixed_amount']['tips']}
+                                </div>
+                            </div>
+                            {/if}
+                            <!--固码备注提示 部分 end-->
                     </form>
 
                     <div class="mt-4 py-4 text-center">
@@ -200,6 +232,7 @@
                                 <button id="form_but" class="dou btn btn-primary btn-round btn-block"
                                 >立即支付</button>
                             </div>
+                        <div id="pay-time"></div>
                     </div>
                 </div>
             </div>
@@ -263,6 +296,31 @@
         return true
     }
 </script>
+{if condition="$data['is_fixed_amount'] && !empty($data['fixed_amount']['end_time'])"}
+<script>
+    var setTime = +new Date("{$data['fixed_amount']['end_time']}");
 
+    countDown();
+    setInterval(countDown, 1000);
+    function countDown() {
+        var date = 0;
+        var now = +new Date();
+        var times = (setTime - now) / 1000;
+        var d = parseInt(times / 60 / 60 / 24); //天
+        date = d<=0?"":(d < 10 ? '0' + d : d)+"天";
+
+        var h = parseInt(times / 60 / 60 % 24); //时
+        date += h<=0?"":(h < 10 ? '0' + h : h)+"小时";
+
+        var m = parseInt(times / 60 % 60); //分
+        date += m<=0?"":(m < 10 ? '0' + m : m)+"分钟";
+
+        var s = parseInt(times % 60); //秒
+        date += s<=0?"":(s < 10 ? '0' + s : s)+"秒";
+
+        document.getElementById("pay-time").innerHTML = "剩余时间："+(date<=0?"已过期":date);
+    }
+</script>
+{/if}
 </body>
 </html>

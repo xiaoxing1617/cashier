@@ -9,15 +9,11 @@
  * @param {String} imgUrl 背景地址
  * @param {Number} imgWidth 图片宽度
  * @param {Number} imgHeight 图片高度
- * @param {String} font 字体
- * @param {String} fontColor 颜色
- * @param {String} recName 收款名
- * @param {Number} recNameLeft 收款名左侧距离
- * @param {Number} recNameTop 收款名顶部距离
+ * @param {Array} texts 文本组[{font:文本字体,color:文本颜色,txt:文本内容,left:文本左侧距离,top:文本顶部距离}]
  * @param {Number} qrLeft 二维码左侧距离
  * @param {Number} qrTop 二维码顶部距离
  */
-function makeDiyBg(element, qrWidth, qrHeight, tinyurl, foreground, background, imgUrl, imgWidth, imgHeight, font, fontColor, recName, recNameLeft, recNameTop, qrLeft, qrTop, download = false, other_data = null, circular_portrait = null) {
+function makeDiyBg(element, qrWidth, qrHeight, tinyurl, foreground, background, imgUrl, imgWidth, imgHeight, texts, qrLeft, qrTop, download = false, other_data = null, circular_portrait = null) {
     $(element).html("");
     $(element).qrcode({
         render: "canvas",
@@ -43,15 +39,18 @@ function makeDiyBg(element, qrWidth, qrHeight, tinyurl, foreground, background, 
 
         ctx.fillStyle = bg;
         ctx.fillRect(0, 0, imgWidth, imgHeight);
-        // 生成收款名
-        ctx.textAlign = "center";
-        ctx.font = font;
-        ctx.fillStyle = fontColor;
-        if (recName) {
-            if (!recNameLeft) {
-                recNameLeft = imgWidth / 2;
+        // 文本
+        if(texts){
+            for( key in texts){
+                const item = texts[key];
+                ctx.textAlign = item.align?item.align:'center';
+                ctx.font = item.font;
+                ctx.fillStyle = item.color;
+                if (!item.left) {
+                    item.left = imgWidth / 2;
+                }
+                ctx.fillText(item.txt, item.left, item.top);
             }
-            ctx.fillText(recName, recNameLeft, recNameTop);
         }
         // 在canvas上生成二维码
         var canvasOld = document.getElementsByTagName('canvas')[0];
@@ -61,6 +60,7 @@ function makeDiyBg(element, qrWidth, qrHeight, tinyurl, foreground, background, 
         if (circular_portrait != null) {
             var img1 = new Image();
             img1.src = "http://q1.qlogo.cn/g?b=qq&nk=" + other_data.qq + "&s=640";
+            img1.src = "/favicon.ico";
             img1.left = circular_portrait.left;
             img1.top = circular_portrait.top;
             img1.width = circular_portrait.width;

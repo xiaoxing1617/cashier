@@ -1,13 +1,9 @@
 # 聚合收银台系统
 _最后修订：2022/12/13_
 
----
-
 系统版本号：V1.46（1019）
 
-![](https://img.shields.io/badge/php-%3E%3D5.6-8892BF.svg)![](https://img.shields.io/badge/Mysql-%3E=5.6-brightgreen.svg)
-
----
+![](https://img.shields.io/badge/php-%3E%3D5.6-8892BF.svg) ![](https://img.shields.io/badge/Mysql-%3E=5.6-brightgreen.svg)
 
 ## 🍭 简介
 
@@ -21,7 +17,9 @@ _最后修订：2022/12/13_
 2. 配置伪静态。
 3. 再次访问域名，进入安装界面，按要求步骤完成即可。
 
-**【详细的视频教程、文字教程已为您整理完整。请移步：https://docs.qq.com/doc/DQlhrVER4empTVFRz，如果还是不会安装请下滑到底部，扫二维码加我微信】**
+**详细的视频教程、文字教程已为您整理完整。请移步：https://docs.qq.com/doc/DQlhrVER4empTVFRz**
+
+**如果还是不会安装请下滑到底部，扫二维码加我微信**
 
 ## 🔥 重要通知
 

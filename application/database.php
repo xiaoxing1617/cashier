@@ -1,7 +1,7 @@
 <?php
     return [
     // 聚合收银台 - 授权私钥【请联系售卖你授权的人索要私钥，每个授权都有一个自己的授权私钥。请勿泄露自己的私钥，否则平台将（不退款）取消你的授权！】
-    'private_key'     => '[QQ:1450839008]https://github.com/xiaoxing1617/cashier',
+    'private_key'     => '【系统已开源免费，无需填写此项，开发者QQ：1450839008！GitHub开源地址：https://github.com/xiaoxing1617/cashier】',
     // 数据库类型
     'type'            => 'mysql',
     // 服务器地址

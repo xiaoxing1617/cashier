@@ -66,7 +66,7 @@ if (!is_file(APP_PATH . 'install/install.lock') && Request::instance()->baseUrl(
 //================================================
 //===================检查更新=======================
 //================================================
-if(Request::instance()->baseUrl() != "/update"){
+if(Request::instance()->baseUrl() != "/update" && Request::instance()->baseUrl() != "/install"){
     if (checkUpdate()) {
         weuiMsg('warn-primary', '系统检查到您的 v'.VERSION.'('.BUILD.') 未更新完成，请完成更新后使用！<br/><br/><br/><a href="/update" class="weui-btn weui-btn_default">去更新</a>', '版本更新', false);
         exit();
@@ -834,7 +834,7 @@ function getPayList($type = null, $field = null)
  * @param bool $show_but 是否显示按钮
  * @param string[] $but_data 按钮数据   ["url"=>"__index__","title"=>"首页"]
  */
-function weuiMsg($type = 'info', $txt = '', $title = '提示信息', $show_but = true,$but_data = ["url"=>"__index__","title"=>"首页"])
+function weuiMsg($type = 'info', $txt = '', $title = '提示信息', $show_but = true,$but_data = ["url"=>"__index__","title"=>"首页","type"=>"default"])
 {
     /*
      * success：成功
@@ -848,6 +848,17 @@ function weuiMsg($type = 'info', $txt = '', $title = '提示信息', $show_but =
         $type = 'info';
     }
     $request = Request::instance();
+
+    $but_html = "";
+    if($show_but){
+        if(count($but_data) == count($but_data,1)){
+            $but_data = [$but_data];
+        }
+
+        foreach ($but_data as $res){
+            $but_html .= '<a href="' .str_replace("__index__",$request->domain(),$res['url']). '" class="weui-btn weui-btn_'.($res['type']?:'default').'">'.$res['title'].'</a>';
+        }
+    }
     exit('
 <html class="weui-msg">
 <head>
@@ -875,7 +886,7 @@ function weuiMsg($type = 'info', $txt = '', $title = '提示信息', $show_but =
 </div>
 <div class="weui-msg__opr-area">
     <p class="weui-btn-area">
-        ' . ($show_but ? '<a href="' .str_replace("__index__",$request->domain(),$but_data['url']). '" class="weui-btn weui-btn_default">'.$but_data['title'].'</a>' : '') . '
+        ' . $but_html . '
     </p>
 </div>
 <div class="weui-msg__extra-area">

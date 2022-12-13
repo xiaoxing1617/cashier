@@ -297,11 +297,17 @@ filter: gray !important;
         }
         if ($getArray['mode'] == 'user') {
             Session::delete('xy_cashier_login_user');
-            weuiMsg('success', '退出成功');
+            weuiMsg('success', '商户后台退出成功','退出成功',true,[
+                ["url"=>"__index__","title"=>"返回首页",'type'=>"primary"],
+                ["url"=>"__index__/user","title"=>"重新登录商户"],
+            ]);
             return;
         } else if ($getArray['mode'] == 'admin') {
             Session::delete('xy_cashier_login_admin');
-            weuiMsg('success', '退出成功');
+            weuiMsg('success', '后台管理退出成功','退出成功',true,[
+                ["url"=>"__index__","title"=>"返回首页",'type'=>"primary"],
+                ["url"=>"__index__/admin","title"=>"重新登录后台"],
+            ]);
             return;
         } else {
             return;

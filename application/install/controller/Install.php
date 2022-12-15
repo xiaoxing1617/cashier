@@ -112,17 +112,7 @@ class Install extends Controller
                     $this->assign('do', $do);  //输出变量
                     return $this->fetch('index/index');  //进入模板
                 }
-                if($array['private_key']!="[QQ:1450839008]https://github.com/xiaoxing1617/cashier"){
-                    $data = [
-                        "code" => 1,
-                        "msg" => "授权私钥不正确，请检查后重试！"
-                    ];
-                    $this->assign('data', $data);  //输出变量
-                    $this->assign('subtitle', $subtitle);  //输出变量
-                    $this->assign('progress', $progress);  //输出变量
-                    $this->assign('do', $do);  //输出变量
-                    return $this->fetch('index/index');  //进入模板
-                }
+                $array['private_key'] = "【系统已开源免费，无需填写此项】GitHub：https://github.com/xiaoxing1617/cashier";
                 $link = mysqli_connect(trim($array['hostname']), trim($array['username']), trim($array['password']), trim($array['database']), trim($array['hostport']));
                 if(!$link){
                     $data = [

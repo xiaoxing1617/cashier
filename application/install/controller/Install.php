@@ -2,6 +2,7 @@
 
 namespace app\install\controller;
 
+use think\Exception;
 use think\Request;
 use think\Controller;
 use think\Db;
@@ -113,13 +114,21 @@ class Install extends Controller
                     return $this->fetch('index/index');  //进入模板
                 }
                 $array['private_key'] = "【系统已开源免费，无需填写此项】GitHub：https://github.com/xiaoxing1617/cashier";
-                $link = mysqli_connect(trim($array['hostname']), trim($array['username']), trim($array['password']), trim($array['database']), trim($array['hostport']));
-                if(!$link){
-                    $data = [
-                        "code" => 1,
-                        "msg" => mysqli_connect_error()
-                    ];
-                }else {
+                try {
+                    $link = Db::connect([
+                        // 数据库类型
+                        'type' => 'mysql',
+                        // 服务器地址
+                        'hostname' => trim($array['hostname']),
+                        // 数据库名
+                        'database' => trim($array['database']),
+                        // 用户名
+                        'username' => trim($array['username']),
+                        // 密码
+                        'password' => trim($array['password']),
+                        // 端口
+                        'hostport' => trim($array['hostport']),
+                    ]);
                     $database = "<?php
     return [
     // 聚合收银台 - 授权私钥【请联系售卖你授权的人索要私钥，每个授权都有一个自己的授权私钥。请勿泄露自己的私钥，否则平台将（不退款）取消你的授权！】
@@ -174,11 +183,18 @@ class Install extends Controller
                         ];
                     }
 
-                    if(mysqli_query($link,"SHOW TABLES LIKE 'xy_cashier_core'")){
-                        $data['istab'] = 1;
-                    }else{
+
+                    $isTable = Db::query('SHOW TABLES LIKE "xy_cashier_core"');
+                    if($isTable){
                         $data['istab'] = 0;
+                    }else{
+                        $data['istab'] = 1;
                     }
+                } catch (Exception $DB_e) {
+                    $data = [
+                        "code" => 1,
+                        "msg" => $DB_e->getMessage()
+                    ];
                 }
                 break;
             case "5":
@@ -192,11 +208,25 @@ class Install extends Controller
                     "password" => config('database.password'),
                     "hostport" => config('database.hostport')
                 ];
-                $link = mysqli_connect($array['hostname'], $array['username'], $array['password'], $array['database'], $array['hostport']);
-                if(!$link){
+                try {
+                    $link = Db::connect([
+                        // 数据库类型
+                        'type' => 'mysql',
+                        // 服务器地址
+                        'hostname' => trim($array['hostname']),
+                        // 数据库名
+                        'database' => trim($array['database']),
+                        // 用户名
+                        'username' => trim($array['username']),
+                        // 密码
+                        'password' => trim($array['password']),
+                        // 端口
+                        'hostport' => trim($array['hostport']),
+                    ]);
+                } catch (Exception $DB_e) {
                     $data = [
                         "code" => 1,
-                        "msg" => "【数据库连接失败】".mysqli_connect_error()
+                        "msg" => "【数据库连接失败】".$DB_e->getMessage()
                     ];
                     $this->assign('data', $data);  //输出变量
                     $this->assign('subtitle', $subtitle);  //输出变量
@@ -257,11 +287,6 @@ class Install extends Controller
             "password" => config('database.password'),
             "hostport" => config('database.hostport')
         ];
-        $link = mysqli_connect($array['hostname'], $array['username'], $array['password'], $array['database'], $array['hostport']);
-        if(!$link){
-            weuiMsg('warn-primary',  "数据库连接失败：".mysqli_connect_error(),'更新失败',true,["url"=>"https://github.com/xiaoxing1617/cashier","title"=>"GitHub开源地址"]);
-            exit();
-        }
         //---------------------------
         $msg = "";
         $path = APP_PATH . "install/update_sql/".BUILD.".sql";

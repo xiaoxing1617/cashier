@@ -332,11 +332,25 @@ function sqlImplement($path = null, $array)
     if ($path == null) {
         return;
     }
-    $link = mysqli_connect($array['hostname'], $array['username'], $array['password'], $array['database'], $array['hostport']);
-    if (!$link) {
+    try {
+        $link = Db::connect([
+            // 数据库类型
+            'type' => 'mysql',
+            // 服务器地址
+            'hostname' => $array['hostname'],
+            // 数据库名
+            'database' => $array['database'],
+            // 用户名
+            'username' => $array['username'],
+            // 密码
+            'password' => $array['password'],
+            // 端口
+            'hostport' => $array['hostport'],
+        ]);
+    } catch (\think\Exception $e) {
         return [
             "code" => 1,
-            "msg" => "【数据库连接失败】" . mysqli_connect_error()
+            "msg" => "【数据库连接失败】" .$e->getMessage()
         ];
     }
     if (trim($path) == "" or $path == NULL) {
@@ -364,11 +378,12 @@ function sqlImplement($path = null, $array)
             ++$t;
             continue;
         }
-        if (mysqli_query($link, $sql[$i] . ";")) {
+        try {
+            $link->query($sql[$i] . ";");
             ++$t;
-        } else {
+        } catch (\think\exception\PDOException $DB_e) {
             ++$e;
-            $error .= mysqli_error($link) . '<br/>';
+            $error .= $DB_e->getMessage() . '<br/>';
         }
     }
 

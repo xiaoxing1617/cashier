@@ -69,6 +69,8 @@
                     <h6 class="mb-0">更多</h6>
                 </div>
                 <div class="card-body">
+                    <a href="/user/fixed_amount" class="btn btn-primary"><span id="fixed-amount">生成固额码</span></a>
+                    <hr/>
                     <button type="button" class="btn btn-primary" id="resetLayer">重置收款码</button>
                 </div>
             </div>
@@ -111,6 +113,10 @@
     layui.use(['layer', 'form'], function () {
         var layer = layui.layer
             , form = layui.form;
+
+        layer.tips('可以生成固额码啦！', '#fixed-amount', {
+            tips: [2, '#000000'] //还可配置颜色
+        });
 
         $("#preview").click(function () {
             photos_json.start=photos_start;

@@ -1,4 +1,17 @@
 {include file='default/head' /}
+{php}
+$user_theme_data_arr = json_decode($core['user_theme_data'],1)?:[];
+{/php}
+<style>
+    .color-box{
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        border-radius: 2px;
+        border: 1px #000 solid;
+        margin-left: 5px;
+    }
+</style>
 <body>
 <div class="layui-fluid">
     <div class="layui-row layui-col-space1">
@@ -14,8 +27,9 @@
                             <li>后台登录模板</li>
                             <li>商户注册模板</li>
                             <li>支付回调模板</li>
+                            <li>商户后台主题色</li>
                         </ul>
-<!--         ==================               -->
+                        <!--         ==================首页模板==================               -->
                         <div class="layui-tab-content">
                             <div class="layui-tab-item layui-show">
 
@@ -37,12 +51,11 @@
                             </div>
 
                         </div>
-<!--         ==================               -->
-<!--         ==================               -->
+                        <!--         ==================商户登录模板==================               -->
                         <div class="layui-tab-item">
 
                             <div class="layui-collapse" lay-accordion>
-                                {foreach name="$temp['login']" item="v" key="key"}
+                                {foreach name="$temp['user_login']" item="v" key="key"}
                                 <div class="layui-colla-item">
                                     <h2 class="layui-colla-title">{$v}</h2>
                                     <div style="text-align: center"
@@ -58,12 +71,11 @@
                             {/foreach}
                         </div>
                     </div>
-<!--         ==================               -->
-<!--         ==================               -->
+                    <!--         ==================后台登录模板==================               -->
                         <div class="layui-tab-item">
 
                             <div class="layui-collapse" lay-accordion>
-                                {foreach name="$temp['login']" item="v" key="key"}
+                                {foreach name="$temp['admin_login']" item="v" key="key"}
                                 <div class="layui-colla-item">
                                     <h2 class="layui-colla-title">{$v}</h2>
                                     <div style="text-align: center"
@@ -80,11 +92,11 @@
                         </div>
 
                     </div>
-<!--         ==================               -->
+                <!--         ==================商户注册模板==================               -->
                     <div class="layui-tab-item">
 
                         <div class="layui-collapse" lay-accordion>
-                            {foreach name="$temp['login']" item="v" key="key"}
+                            {foreach name="$temp['register']" item="v" key="key"}
                             <div class="layui-colla-item">
                                 <h2 class="layui-colla-title">{$v}</h2>
                                 <div style="text-align: center"
@@ -101,7 +113,7 @@
                     </div>
 
                     </div>
-<!--         ==================               -->
+            <!--         ==================支付回调模板==================               -->
                     <div class="layui-tab-item">
 
                         <div class="layui-collapse" lay-accordion>
@@ -121,9 +133,54 @@
                         {/foreach}
 
                     </div>
+                    </div>
+            <!--         ==================商户后台主题色==================               -->
+        <div class="layui-tab-item">
+            <div class="layui-table-box" style="overflow: auto">
+            <table class="layui-table" lay-even lay-skin="row" lay-size="lg">
+                <colgroup>
+                    <col width="80">
+                    <col width="220">
+                    <col width="200">
+                    <col width="200">
+                    <col width="200">
+                    <col width="500">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>别名</th>
+                    <th>名称</th>
+                    <th>主色值</th>
+                    <th>浅调主色值</th>
+                    <th>文字色值</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {foreach name="$user_theme_data_arr['list']" item="v" key="key"}
+                <tr>
+                    <td>{$key}</td>
+                    <td>{$v['name']}</td>
+                    <td>{$v['bg']} <div class="color-box" style="background: {$v['bg']}"></div></td>
+                    <td>{$v['bgs']} <div class="color-box" style="background: {$v['bgs']}"></div></td>
+                    <td>{$v['t']} <div class="color-box" style="background: {$v['t']}"></div></td>
+                    <td>
+                        {if $key == $user_theme_data_arr['use']}
+                        <button type="button" class="layui-btn layui-btn-primary layui-border-green layui-btn-sm">正在使用</button>
+                        {else}
+                        <button type="button" class="layui-btn layui-btn-sm" onclick="template('user_theme_color','{$key}')">使用</button>
+                        {/if}
+                    </td>
+                </tr>
+                {/foreach}
+                </tbody>
+            </table>
+        </div>
+        </div>
 
-                </div>
- <!--         ==================               -->
+
+
+
             </div>
 
         </div>

@@ -166,6 +166,7 @@
                             </div>
                         </div>
                         <div id="demo_div" style="display:{$core['demo_pay']!="0"?"block":"none"};">
+
                         <div class="layui-form-item">
                             <div class="layui-block">
                                 <label class="layui-form-label">收款UID</label>
@@ -194,6 +195,9 @@
                                 </blockquote>
                             </div>
                         </div>
+
+
+                </div>
                         <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
                             <legend>验证码图片</legend>
                         </fieldset>
@@ -239,8 +243,28 @@
                         <blockquote class="layui-elem-quote layui-quote-nm">
                             以上开关建议开启，防止恶意提交等等
                         </blockquote>
-
-                </div>
+                        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+                            <legend>网站置灰</legend>
+                        </fieldset>
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">指定页面置灰</label>
+                                <div class="layui-input-block">
+                                    {php}
+                                    $page_grey = explode("|",$core['page_grey']);
+                                    {/php}
+                                    <input type="checkbox" lay-filter="page_grey" lay-skin="checkbox" name="page_grey[]" value="index"
+                                           {:in_array('index',$page_grey)?" checked ":""}
+                                           title="首页">
+                                    <input type="checkbox" lay-filter="page_grey" lay-skin="checkbox" name="page_grey[]" value="cashier"
+                                           {:in_array('cashier',$page_grey)?" checked ":""}
+                                           title="收银台页">
+                                    <input type="checkbox" lay-filter="page_grey" lay-skin="checkbox" name="page_grey[]" value="user_manage"
+                                           {:in_array('user_manage',$page_grey)?" checked ":""}
+                                           title="用户后台">
+                                </div>
+                            </div>
+                        </div>
 
                         <button type="button" class="layui-btn layui-btn-lg" id="form_submit">立即修改</button>
                         <button type="reset" class="layui-btn layui-btn-primary layui-btn-lg">重置</button>

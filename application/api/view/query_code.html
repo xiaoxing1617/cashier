@@ -1,9 +1,10 @@
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
-    <title>{$title}</title>
+    <title>{$mode=='fixed_amount'?'固额收款':'收银台'}</title>
     <meta name="viewport" content="width=device-width,initial-scale=1.0, user-scalable=no">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="__PUBLIC__/Xadmin/lib/layui/css/layui.css" rel="stylesheet">
     <style>
         .btn-primary {
             background: linear-gradient(to left, #00aeff, #0080ff);
@@ -30,8 +31,13 @@
             color: #fff;
         }
 
-        .progress-bar-success {
-            background: linear-gradient(-8deg, #0ec493, #85e581);
+        .progress-bar-info {
+            background: #f1f1f1;
+            color: #444;
+            border: #e9e9e9 solid 1px;
+        }
+        .layui-layer.layui-layer-dialog{
+            top:100px !important;
         }
 
         /*body{background-image:url(__PUBLIC__/../bj.jpg);background-position:50%;background-repeat:no-repeat;-webkit-background-size:cover;background-size:cover}*/
@@ -43,15 +49,72 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
-                    <div class="panel-heading" id="data">{$title}</div>
+                    <div class="panel-heading" id="data">{$mode=='fixed_amount'?'固额收款':'收银台'}</div>
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-sm-12 col-md-12">
 
+                                {if $mode=='fixed_amount'}
+                                <div style="border: #085bff solid 2px;padding: 10px 20px;padding-bottom:0px;margin-bottom:15px;border-radius: 7px">
+                                <div class="form-group mb-2" style="text-align: center;margin-bottom:10px;">
+                                    <div id="pay-time" style="color:#f00;font-weight: 800;"></div>
+                                    <div class="input-group" style="margin: 8px 0">
+                                        <span class="input-group-addon progress-bar-info">ID</span>
+                                        <input type="text" class="form-control" value="{$fixed_amount_data['id']}" disabled>
+                                    </div>
+                                    <div class="input-group" style="margin: 8px 0">
+                                        <span class="input-group-addon progress-bar-info">收款金额</span>
+                                        <input type="text" class="form-control" value="{$fixed_amount_data['money']/100}" disabled>
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-primary btn-icon progress-bar-info">元</button>
+                                        </span>
+                                    </div>
+                                    <div class="input-group" style="margin: 8px 0">
+                                        <span class="input-group-addon progress-bar-info">截止日期</span>
+                                        <input type="text" class="form-control" value="{$fixed_amount_data['end_time']}" disabled>
+                                    </div>
+                                    <div class="input-group" style="margin: 8px 0">
+                                        <span class="input-group-addon progress-bar-info">支付方式</span>
+                                        <input type="text" class="form-control" value="{$fixed_amount_data['pay_type']}" disabled>
+                                    </div>
+                                    <blockquote class="layui-elem-quote" style="text-align: left;font-size: 16px;margin: 12px 0">
+                                        收款提示： {:empty($fixed_amount_data['tips'])?'[无]':$fixed_amount_data['tips']}
+                                    </blockquote>
+                                    <div style="text-align: right">
+                                        <button type="button" class="btn btn-danger btn-icon" style="padding: 3px 7px;font-width: 17px;" onclick="del({$fixed_amount_data['id']})">删除</button>
+                                    </div>
+                                </div>
+                                </div>
+
+                                <script>
+                                    var setTime = +new Date("{$fixed_amount_data['end_time']}");
+
+                                    countDown();
+                                    setInterval(countDown, 1000);
+                                    function countDown() {
+                                        var date = 0;
+                                        var now = +new Date();
+                                        var times = (setTime - now) / 1000;
+                                        var d = parseInt(times / 60 / 60 / 24); //天
+                                        date = d<=0?"":(d < 10 ? '0' + d : d)+"天";
+
+                                        var h = parseInt(times / 60 / 60 % 24); //时
+                                        date += h<=0?"":(h < 10 ? '0' + h : h)+"小时";
+
+                                        var m = parseInt(times / 60 % 60); //分
+                                        date += m<=0?"":(m < 10 ? '0' + m : m)+"分钟";
+
+                                        var s = parseInt(times % 60); //秒
+                                        date += s<=0?"":(s < 10 ? '0' + s : s)+"秒";
+
+                                        document.getElementById("pay-time").innerHTML = "剩余时间："+(date<=0?"已过期":date);
+                                    }
+                                </script>
+                                {/if}
                                 <div class="form-group mb-2">
                                     <label class="form-control-label">您可以复制分享链接到{$pay_names}等社交平台点击链接进入付款，或复制链接到浏览器打开</label>
                                     <div class="input-group">
-                                        <span class="input-group-addon">收银台链接</span>
+                                        <span class="input-group-addon">{$mode=='fixed_amount'?'固额收款链接':'收银台链接'}</span>
                                         <input type="text" class="form-control" value="{$url}" id="code_url" disabled>
                                         <span class="input-group-btn">
                                             <button type="button" class="btn btn-primary btn-icon"><span
@@ -61,6 +124,7 @@
                                     </div>
                                 </div>
 
+                                <div style="text-align: center;font-size: 18px;">当前模板：<b>{$title}</b></div>
                                 <div class="thumbnail">
                                     <img id="code-img"/>
                                     <canvas id="canvas" style="width: 100%"></canvas>
@@ -102,6 +166,7 @@
         "qq": "{$user['qq']}"
     };
     var circular_portrait = '{$code["circular_portrait"]}';
+    var texts = `{$code["texts"]}`;
     preview();
 
     function preview(download = false) {
@@ -116,11 +181,7 @@
             "__PUBLIC__/qr-bg/{$code['imgName']}",
             {$code['imgWidth']},
             {$code['imgHeight']},
-            "{$code['font']}",
-            "{$code['fontColor']}",
-            "{$name}",
-            {$code['recNameLeft']},
-            {$code['recNameTop']},
+            $.parseJSON(texts),
             {$code['qrLeft']},
             {$code['qrTop']},
             download,
@@ -128,6 +189,46 @@
             $.parseJSON(circular_portrait)
         );
         return layer.close(Load); //关闭加载
+    }
+
+
+    /**
+     * 删除
+     */
+    function del(id){
+        var index1 = layer.confirm('确认要删除该固额码吗？<br/><span style="color: #f00">1.删除后将无法恢复，无法再次查看！！！<br/>2.删除后并不会删除通过该固额码发起的订单记录。<br/></span>', {
+            btn: ['确认删除', '算了'] //按钮
+        }, function () {
+            layer.close(index1);
+            var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+            $.ajax({
+                type: "POST",
+                url: "/user/FixedAmount/del",
+                data: {id},
+                dataType: "json",
+                success: function (json) { //SUCCESS
+                    var data = $.parseJSON(json);
+                    if (data.code == 0) {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                            layer.close(indexa);
+                            list();
+                        });
+                    } else {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                            layer.close(indexa);
+                            location.reload();
+                        })
+                    }
+                },
+                error: function () { //ERROR
+                    layer.close(Load); //关闭加载
+                    layer.msg('系统繁忙');
+                    return false;
+                }
+            });
+        });
     }
 </script>
 

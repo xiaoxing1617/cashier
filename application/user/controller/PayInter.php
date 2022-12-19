@@ -397,6 +397,16 @@ class PayInter extends Controller
 
 
         $form = $pay_extend[$pay['plug_in']]['form'];
+        if($pay['plug_in']=="cashier"){
+            //使用的是收银台插件
+            if (strpos($postArray['value1'],$request->domain()) !== false) {
+                //使用本网站对接
+                if($user['uid']==$postArray['value2']){
+                    //本平台本账号
+                    return json_encode(['code' => 1, 'msg' => "【禁止自己对接自己】本插件是对接同为星益云聚合收银台系统的网站时使用的（同系统对接），同时也禁止自己账号对接自己账号。<br/><span style='color: #f00'>Tips：聚合收银台只是提供一个聚合接口、聚合收款码、聚合三网支付的收银台系统，并不会自主收款，需要您具备官方商户号来使用！</span>"]);
+                }
+            }
+        }
 
         for ($i = 1; $i < 11; $i++) {
             if (array_key_exists('value' . $i . '_name', $form)) {
@@ -405,7 +415,7 @@ class PayInter extends Controller
                 } else {
                     $data = null;
                 }
-                $arr = $this->payExtendFormType($form['value' . $i . '_name'], $form['value' . $i . '_type'], $data, "value" . $i, $postArray);
+                $arr = $this->payExtendFormType($form['value' . $i . '_name'], $form['value' . $i . '_type'], $data, "value" . $i, $postArray,$pay['plug_in']);
                 if ($arr["code"] != 0) {
                     return json_encode(['code' => 1, 'msg' => $arr["msg"]]);
                 } else {
@@ -438,7 +448,7 @@ class PayInter extends Controller
     }
 
 
-    private function payExtendFormType($name, $type, $data, $val, $post)
+    private function payExtendFormType($name, $type, $data, $val, $post,$plug_in)
     {
         if (!array_key_exists($val, $post)) {
 //            return array("code" => 1, "msg" => $name . "不能为空");

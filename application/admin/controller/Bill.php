@@ -62,9 +62,11 @@ class Bill extends Controller
         }
 
         $state = Order::getStateName(null, true);
+        $source = Order::getSourceName(null, true);
         $pay_list = getPayList();
 
         $this->assign('state', $state);  //支付状态
+        $this->assign('source', $source);  //订单来源
         $this->assign('uid', $uid);  //商户UID
         $this->assign('out_trade_no', $out_trade_no);  //系统订单号
         $this->assign('search_value', $out_trade_no);  //查询内容

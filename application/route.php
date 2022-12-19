@@ -35,4 +35,6 @@ return [
 
     "login/:name"=>'login/:name/index',  //快捷登录
     "login/:name/:fun"=>'login/:name/:fun',  //快捷登录
+
+    "update/"=>'install/install/update',  //更新
 ];

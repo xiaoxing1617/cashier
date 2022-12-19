@@ -34,11 +34,14 @@ use app\model\model\Login;
 use app\model\model\Ad;
 
 //引入Login模型Ad
+
+//引入FixedAmount模型
+use app\model\model\FixedAmount as FixedAmountModel;
 class Index extends Controller
 {
     public function cashier()
     {
-        weuiMsg('warn-primary', '请正确打开收银台');
+        weuiMsg('warn-primary', '请正确打开收银台','',false);
         return;
     }
 
@@ -65,6 +68,21 @@ class Index extends Controller
             $core['links'] = [];
         }
 
+        $page_grey = explode("|",$core['page_grey']);
+        if(in_array("index",$page_grey)){
+            //首页置灰
+            $core['head_style'] = '
+
+html{
+-webkit-filter: grayscale(100%) !important;
+-moz-filter: grayscale(100%) !important;
+-ms-filter: grayscale(100%) !important;
+-o-filter: grayscale(100%) !important;
+filter: grayscale(100%) !important;
+filter: gray !important;
+}
+            ';
+        }
         $this->assign('core', $core);  //输出变量
         return $this->fetch('index/' . $template . '/index');  //进入模板
 
@@ -116,7 +134,7 @@ class Index extends Controller
                 exit("<script language='javascript'>window.location.href='/user';</script>");
             }
 
-            if (isTemplateName('login', Core::getByName('login_user_template')['value1'])) {
+            if (isTemplateName('user_login', Core::getByName('login_user_template')['value1'])) {
                 $template = Core::getByName('login_user_template')['value1'];  //用户登录模板
             } else {
                 $template = 'default';
@@ -130,8 +148,8 @@ class Index extends Controller
                 exit("<script language='javascript'>window.location.href='/admin';</script>");
             }
 
-            if (isTemplateName('login', Core::getByName('login_admin_template')['value1'])) {
-                $template = Core::getByName('login_user_template')['value1'];  //用户登录模板
+            if (isTemplateName('admin_login', Core::getByName('login_admin_template')['value1'])) {
+                $template = Core::getByName('login_admin_template')['value1'];  //用户登录模板
             } else {
                 $template = 'default';
             }
@@ -159,14 +177,22 @@ class Index extends Controller
             return json_encode(['code' => 1, 'msg' => '不支持该请求方式，请使用POST请求！']);
         }
         $postArray = $request->post();
-        if (!array_key_exists('uid', $postArray)) {
-            return json_encode(['code' => 1, 'msg' => '请传入商户UID']);
+        if(array_key_exists('fixed_amount_id', $postArray)){
+            $u = FixedAmountModel::getById($postArray['fixed_amount_id']);
+            if(!$u){
+                return json_encode(['code' => 1, 'msg' => '该固额码不存在或已被商家删除']);
+            }
+            $uid = $u['uid'];
+        }else if (array_key_exists('uid', $postArray)) {
+            $uid = $postArray['uid'];
+        }else{
+            return json_encode(['code' => 1, 'msg' => '请传入商户UID或固额码ID']);
         }
         if (!isLogin('admin')) {
             return json_encode(['code' => 1, 'msg' => '请先登录管理员']);
         }
         Session::delete('xy_cashier_login_user');
-        $user = User::getByUid($postArray['uid']);
+        $user = User::getByUid($uid);
         if (!$user) {
             return json_encode(['code' => 1, 'msg' => '该商户不存在或已被删除']);
         }
@@ -174,7 +200,7 @@ class Index extends Controller
         $session = hash('ripemd160', $user['account'] . $user['password'] . XY_SYSTEM_KEY);
         $token = $user['uid'] . "\t" . $session;
         Session::set('xy_cashier_login_user', $token);
-        return json_encode(['code' => 0, 'msg' => '登录成功', "uid" => $postArray['uid']]);
+        return json_encode(['code' => 0, 'msg' => '登录成功', "uid" => $uid]);
     }
 
     //登录页面 - 业务逻辑
@@ -271,11 +297,17 @@ class Index extends Controller
         }
         if ($getArray['mode'] == 'user') {
             Session::delete('xy_cashier_login_user');
-            weuiMsg('success', '退出成功');
+            weuiMsg('success', '商户后台退出成功','退出成功',true,[
+                ["url"=>"__index__","title"=>"返回首页",'type'=>"primary"],
+                ["url"=>"__index__/user","title"=>"重新登录商户"],
+            ]);
             return;
         } else if ($getArray['mode'] == 'admin') {
             Session::delete('xy_cashier_login_admin');
-            weuiMsg('success', '退出成功');
+            weuiMsg('success', '后台管理退出成功','退出成功',true,[
+                ["url"=>"__index__","title"=>"返回首页",'type'=>"primary"],
+                ["url"=>"__index__/admin","title"=>"重新登录后台"],
+            ]);
             return;
         } else {
             return;

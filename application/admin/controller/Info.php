@@ -50,6 +50,7 @@ class Info extends Controller
 
         $this->assign('home_template_array', getTemplateList('home_css'));  //后台管理css模板
         $arr = Core::getCaptchaSwitch(null,true);
+        $core['captcha_switch'] = [];
         foreach ($arr as $v){
             if(Core::getCaptchaSwitch($v)){
                 $core['captcha_switch'][$v] = 1;
@@ -93,11 +94,24 @@ class Info extends Controller
             ['collection_cost', 'require', '请填写收款服务能力续费价格'],
             ['system_uid', 'require|number', '续费收款商户UID不能为空|请正确填写续费收款商户UID'],
             ['free_collection_service_days', 'require|integer', '请填写注册赠送天数|注册赠送天数只能是整数'],
-            ['demo_open', 'number|between:0,1', '请正确选择演示开关|非法的演示开关']
+            ['demo_open', 'number|between:0,1', '请正确选择演示开关|非法的演示开关'],
+            ['page_grey','require|array',"请传入网站置灰项|网站置灰项为非法值"]
         ]);
         if (!$validate->check($postArray)) {
             return json_encode(['code' => 1, 'msg' => $validate->getError()]);
         }
+        $page_grey = [];
+        if(in_array("index",$postArray['page_grey'])){
+            $page_grey[] = "index";
+        }
+        if(in_array("cashier",$postArray['page_grey'])){
+            $page_grey[] = "cashier";
+        }
+        if(in_array("user_manage",$postArray['page_grey'])){
+            $page_grey[] = "user_manage";
+        }
+        $page_grey = implode("|",$page_grey);
+
         if(!isTemplateName("home_css",$postArray['home_template'])){
             return json_encode(['code' => 1, 'msg' => "该后台css样式不存在！"]);
         }
@@ -181,7 +195,8 @@ class Info extends Controller
             "home_template"=>$postArray['home_template'],
             "order_prefix"=>$postArray['order_prefix'],
             "captcha_code"=>$postArray['captcha_code'],
-            "captcha_switch"=>$captcha_switch
+            "captcha_switch"=>$captcha_switch,
+            "page_grey"=>$page_grey
         ];
         $i=0;
         foreach ($arr as $k=>$v){

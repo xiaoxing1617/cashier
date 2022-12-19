@@ -52,9 +52,12 @@ class Temp extends Controller
         //=====首页模板
         $arr = getTemplateList('index');
         $temp['index'] = $arr;
-        //=====登录模板
-        $arr = getTemplateList('login');
-        $temp['login'] = $arr;
+        //=====用户登录模板
+        $arr = getTemplateList('user_login');
+        $temp['user_login'] = $arr;
+        //=====后台登录模板
+        $arr = getTemplateList('admin_login');
+        $temp['admin_login'] = $arr;
         //=====注册模板
         $arr = getTemplateList('register');
         $temp['register'] = $arr;
@@ -99,13 +102,13 @@ class Temp extends Controller
                 $name = "index_template";
                 break;
             case "login_user":
-                if (!isTemplateName('login', $postArray['val'])) {
+                if (!isTemplateName('user_login', $postArray['val'])) {
                     return json_encode(['code' => 1, 'msg' => "该商户登录模板不存在或已被删除"]);
                 }
                 $name = "login_user_template";
                 break;
             case "login_admin":
-                if (!isTemplateName('login', $postArray['val'])) {
+                if (!isTemplateName('admin_login', $postArray['val'])) {
                     return json_encode(['code' => 1, 'msg' => "该后台登录模板不存在或已被删除"]);
                 }
                 $name = "login_admin_template";
@@ -121,6 +124,15 @@ class Temp extends Controller
                     return json_encode(['code' => 1, 'msg' => "该支付回调模板不存在或已被删除"]);
                 }
                 $name = "return_template";
+                break;
+            case "user_theme_color":
+                $user_theme_data_arr = json_decode($core['user_theme_data'],1)?:[];
+                if(!isset($user_theme_data_arr['list'][$postArray['val']])){
+                    return json_encode(['code' => 1, 'msg' => "该商户后台主题色不存在或已被删除"]);
+                }
+                $user_theme_data_arr['use'] = $postArray['val'];
+                $postArray['val'] = json_encode($user_theme_data_arr);
+                $name = "user_theme_data";
                 break;
             default:
                 return json_encode(['code' => 1, 'msg' => "不支持设置此模板类型"]);

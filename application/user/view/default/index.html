@@ -13,7 +13,18 @@
     </div>
 
     <div class="row">
-        <div class="col-xl-12 col-md-12 col-lg-12">
+        <div class="col-xl-4 col-md-4 col-lg-4">
+            <div class="card card-fluid">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6"><a href="/user/qr_code" class="btn btn-block btn-secondary mt-auto">收款码</a></div>
+                        <div class="col-md-6"><a href="/user/fixed_amount" class="btn btn-block btn-secondary mt-auto">固额码</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-8 col-md-8 col-lg-8">
 
             <div class="card">
                 <div class="card-body">
@@ -25,7 +36,7 @@
                         <div class="col-xl-3 col-md-3 col-lg-3 text-sm-right">
                             <!-- Add to cart -->
                             <a href="/user/renew">
-                                <button type="button" class="btn btn-primary btn-block">续费服务</button>
+                                <button type="button" class="btn btn-primary btn-block">续费</button>
                             </a>
                         </div>
                     </div>
@@ -33,6 +44,7 @@
             </div>
         </div>
     </div>
+
     <div class="row">
         <div class="col-xl-8 col-md-8 col-lg-8">
             <div class="card card-fluid">
@@ -46,11 +58,7 @@
                     <!-- Rating -->
                     <div class="row align-items-center">
                         <div class="col-sm-6">
-                    <span class="static-rating static-rating-sm d-block"><i class="star far fa-star voted"></i>
-                      <i class="star far fa-star voted"></i>
-                      <i class="star far fa-star voted"></i>
-                      <i class="star far fa-star voted"></i>
-                      <i class="star far fa-star"></i></span>
+                            {$core['title']}
                         </div>
                         <div class="col-sm-6 text-sm-right">
                             <ul class="list-inline mb-0">
@@ -146,6 +154,40 @@
         <div class="col-xl-4 col-md-4 col-lg-4">
             <div class="row">
                 <div class="col-xl-12 col-md-12">
+                    <div class="card">
+                        <div class="card-body text-center d-flex flex-column justify-content-center">
+                            <h5 class="mb-4">商户公告</h5>
+                            <div class="col-xl-12 col-md-12">
+
+                                {foreach name="$data['notice']" item="v" key="key"}
+                                <!-- 块 -->
+                                <div class="card mb-12 border shadow-none" style="text-align: left">
+                                    <div class="px-1 py-2">
+                                        <div class="col-auto">
+                                            <h6 class="text-sm mb-0">
+                                                <a href="#">{$v['title']}</a>
+                                            </h6>
+                                            <p class="card-text small text-muted">{$v['release_time']}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {/foreach}
+
+                                {if condition="count($data['notice'])<=0"}
+                                <div class="card mb-12 border shadow-none" style="text-align: left">
+                                    <div class="px-1 py-2">
+                                        <div class="col-auto">
+                                            <p class="card-text small text-muted">暂无公告</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {/if}
+                            </div>
+                            <a href="/user/notice_page" class="btn btn-block btn-secondary mt-auto">更多公告</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-12 col-md-12">
 
                     <div class="card">
                         <div class="card-body text-center d-flex flex-column justify-content-center">
@@ -183,40 +225,6 @@
                 </div>
 
 
-                <div class="col-xl-12 col-md-12">
-                    <div class="card">
-                        <div class="card-body text-center d-flex flex-column justify-content-center">
-                            <h5 class="mb-4">商户公告</h5>
-                            <div class="col-xl-12 col-md-12">
-
-                                {foreach name="$data['notice']" item="v" key="key"}
-                                <!-- 块 -->
-                                <div class="card mb-12 border shadow-none" style="text-align: left">
-                                    <div class="px-1 py-2">
-                                        <div class="col-auto">
-                                            <h6 class="text-sm mb-0">
-                                                <a href="#">{$v['title']}</a>
-                                            </h6>
-                                            <p class="card-text small text-muted">{$v['release_time']}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/foreach}
-
-                                {if condition="count($data['notice'])<=0"}
-                                <div class="card mb-12 border shadow-none" style="text-align: left">
-                                    <div class="px-1 py-2">
-                                        <div class="col-auto">
-                                            <p class="card-text small text-muted">暂无公告</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/if}
-                            </div>
-                            <a href="/user/notice_page" class="btn btn-block btn-secondary mt-auto">更多公告</a>
-                        </div>
-                    </div>
-                </div>
             </div>
 
         </div>
@@ -228,8 +236,9 @@
 {include file='default/bottom' /}
 
 <script>
-    {if condition = "$confirm_count>0"}
+
     $(function () {
+        {if condition = "$confirm_count>0"}
         layer.msg('您有{$confirm_count}个公告待确认', {
             offset: 't',
             anim: 6
@@ -239,9 +248,8 @@
         layer.tips('商户公告', '.fa.fa-bullhorn', {
             tips: [1, '#ff0000'] //还可配置颜色
         });
+        {/if}
     })
-    {/if}
-
 
         $.ajax({
             type: "GET",

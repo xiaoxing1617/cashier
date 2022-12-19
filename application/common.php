@@ -54,7 +54,7 @@ $_SERVER['SERVER_NAME'] = get_domain();
 //===================检查安装=======================
 //================================================
 if (!is_file(APP_PATH . 'install/install.lock') && Request::instance()->baseUrl() != "/install") {
-    weuiMsg('warn-primary', '您还没有安装程序哦！<br/><br/><br/><a href="./install" class="weui-btn weui-btn_default">立即安装</a>', '未安装', false);
+    weuiMsg('warn-primary', '您还没有安装程序哦！<br/><br/><br/><a href="/install" class="weui-btn weui-btn_default">立即安装</a>', '未安装', false);
     exit();
 } else {
     if (Request::instance()->baseUrl() != "/install") {
@@ -63,10 +63,38 @@ if (!is_file(APP_PATH . 'install/install.lock') && Request::instance()->baseUrl(
         }
     }
 }
+//================================================
+//===================检查更新=======================
+//================================================
+if(Request::instance()->baseUrl() != "/update" && Request::instance()->baseUrl() != "/install"){
+    if (checkUpdate()) {
+        weuiMsg('warn-primary', '系统检查到您的 v'.VERSION.'('.BUILD.') 未更新完成，请完成更新后使用！<br/><br/><br/><a href="/update" class="weui-btn weui-btn_default">去更新</a>', '版本更新', false);
+        exit();
+    }
+}
 extension_loaded('openssl') or die(weuiMsg('warn-primary', '', '需要支持openssl扩展', false));
 //================================================
 //===================核心函数方法====================
 //================================================
+/**
+ * 检查更新
+ */
+function checkUpdate(){
+    $core = Core::where('id', '<>', 0)->column('value1', 'name');
+    switch (BUILD){
+        case 1019:
+            if(!DB::query("SHOW TABLES LIKE 'xy_cashier_fixed_amount'")){
+                return true;
+            }
+            if(!$core['user_theme_data'] || !$core['page_grey']){
+                return true;
+            }
+            break;
+        default:
+            return false;
+    }
+    return false;
+}
 /**
  * 获取当前域名（不带协议头）
  */
@@ -243,13 +271,18 @@ function isUser($data)
             $password = md5($data['password']);
         }
     }
-    $user = User::where(["account" => $account])->find();
-    if (!$user) {
+
+    $is_account = User::whereOr(["account" => $account,"uid" => $account,"email" => $account])->find("account");
+    if (!$is_account) {
         return ['code' => 1, 'msg' => '商户不存在或已被删除'];
-    } else {
-        if ($account != $user['account'] or $password != $user['password']) {
-            return ['code' => 1, 'msg' => '账号或密码错误'];
-        }
+    }
+    $user = User::where("password",$password)->where(function ($query) use ($account)  {
+        $query->whereOr("account",$account);
+        $query->whereOr("uid",$account);
+        $query->whereOr("email",$account);
+    })->find();
+    if(!$user){
+        return ['code' => 1, 'msg' => '账号或密码错误'];
     }
     if ($user['state'] != 1) {
         return ['code' => 1, 'msg' => '该用户已被封禁'];
@@ -700,9 +733,15 @@ function getTemplateList($type = null)
             $path = APP_PATH . '/../application/pay/view/return/';
             $mb_str = opendir($path);  //模板文件夹路径
             break;
-        case 'login':
-            //登录页面
+        case 'user_login':
+            //用户登录页面
             $name = "user.html";
+            $path = APP_PATH . '/../application/index/view/login/';
+            $mb_str = opendir($path);  //模板文件夹路径
+            break;
+        case 'admin_login':
+            //后台登录页面
+            $name = "admin.html";
             $path = APP_PATH . '/../application/index/view/login/';
             $mb_str = opendir($path);  //模板文件夹路径
             break;
@@ -789,8 +828,13 @@ function getPayList($type = null, $field = null)
 /**
  * weui-msg信息提示
  * @no return
+ * @param string $type 类型
+ * @param string $txt 副标题
+ * @param string $title 标题
+ * @param bool $show_but 是否显示按钮
+ * @param string[] $but_data 按钮数据   ["url"=>"__index__","title"=>"首页"]
  */
-function weuiMsg($type = 'info', $txt = '', $title = '提示信息', $but = true)
+function weuiMsg($type = 'info', $txt = '', $title = '提示信息', $show_but = true,$but_data = ["url"=>"__index__","title"=>"首页","type"=>"default"])
 {
     /*
      * success：成功
@@ -804,6 +848,17 @@ function weuiMsg($type = 'info', $txt = '', $title = '提示信息', $but = true
         $type = 'info';
     }
     $request = Request::instance();
+
+    $but_html = "";
+    if($show_but){
+        if(count($but_data) == count($but_data,1)){
+            $but_data = [$but_data];
+        }
+
+        foreach ($but_data as $res){
+            $but_html .= '<a href="' .str_replace("__index__",$request->domain(),$res['url']). '" class="weui-btn weui-btn_'.($res['type']?:'default').'">'.$res['title'].'</a>';
+        }
+    }
     exit('
 <html class="weui-msg">
 <head>
@@ -831,7 +886,7 @@ function weuiMsg($type = 'info', $txt = '', $title = '提示信息', $but = true
 </div>
 <div class="weui-msg__opr-area">
     <p class="weui-btn-area">
-        ' . ($but ? '<a href="' . $request->domain() . '" class="weui-btn weui-btn_default">首页</a>' : '') . '
+        ' . $but_html . '
     </p>
 </div>
 <div class="weui-msg__extra-area">

@@ -447,6 +447,88 @@
     "qrLeft": 165,
     "qrTop": 158,
     "circular_portrait" : null
+  },
+  {
+    "name": "简约商务蓝",
+    "alias": "simple_blue_business",
+    "qrWidth": 700,
+    "qrHeight": 700,
+    "foreground": "#000000",
+    "background": "#ffffff",
+    "imgName": "24.png",
+    "imgWidth": 1080,
+    "imgHeight": 1920,
+    "font": "80px '黑体'",
+    "fontColor": "#ffffff",
+    "recNameNum": 10,
+    "recNameLeft": 0,
+    "recNameTop": 785,
+    "qrLeft": 198,
+    "qrTop": 900,
+    "circular_portrait" : {
+      "left": 430,
+      "top": 450,
+      "width": 220
+    }
+  },
+  {
+    "name": "账单立体风",
+    "alias": "bill_stereoscopic",
+    "qrWidth": 660,
+    "qrHeight": 660,
+    "foreground": "#3b62e8",
+    "background": "#ffffff",
+    "imgName": "25.png",
+    "imgWidth": 1080,
+    "imgHeight": 1920,
+    "qrLeft": 210,
+    "qrTop": 770,
+    "circular_portrait" : null,
+    "texts": [
+      {
+        "left":0,
+        "top": 1550,
+        "num": 10,
+        "font": "70px '楷体 900'",
+        "color":  "#3060d8",
+        "txt":"聚合收银台",
+        "rule_out_mode":["fixed_amount"]
+      },
+      {
+        "left":0,
+        "top": 1550,
+        "num": 10,
+        "font": "70px '黑体 900'",
+        "color":  "#3060d8",
+        "txt":"__FixedAmountMoney__",
+        "only_mode":["fixed_amount"]
+      },
+      {
+        "left":0,
+        "top": 720,
+        "num": 100,
+        "font": "50px '黑体'",
+        "color":  "#4378de",
+        "txt":"__PayTypeText__"
+      },
+      {
+        "left":0,
+        "top": 1895,
+        "num": 100,
+        "font": "33px '黑体'",
+        "color":  "#589aee",
+        "txt":"请在__FixedAmountEndTime__前完成付款",
+        "only_mode":["fixed_amount"]
+      },
+      {
+        "left":0,
+        "top": 438,
+        "num": 8,
+        "font": "60px '楷体'",
+        "color":  "#ffffff",
+        "txt":"__UserName__"
+      }
+    ]
   }
 ]
 

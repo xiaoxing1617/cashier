@@ -7,10 +7,33 @@
                 <div class="layui-card-header">{$title}<span id="current"></span></div>
                 <div class="layui-card-body">
 
-                    <blockquote class="layui-elem-quote layui-quote-nm" id="isUp">当前为1.45开源版，无需更新</blockquote>
-                    <blockquote class="layui-elem-quote layui-quote-nm" id="data"><div style="text-align: center;font-weight:700;color:#ff0000"><h2>欢迎加入QQ群：741930243</h2></div></blockquote>
+                    <fieldset class="layui-elem-field layui-field-title">
+                        <legend>V{$data['VERSION']}（Build：{$data['BUILD']}）</legend>
+                    </fieldset>
 
-                    <a href="https://jq.qq.com/?_wv=1027&k=XRJStQ3p" target="_blank"><button type="button" class="layui-btn layui-btn-lg">点击加入【网络技术交流QQ群】</button></a>
+                    <blockquote class="layui-elem-quote layui-quote-nm" id="isUp">系统已免费开源至GitHub，系统将持续更新维护，请关注项目动态及时下载更新新版本【项目地址：https://github.com/xiaoxing1617/cashier】</blockquote>
+
+                    <div class="layui-row layui-col-space1">
+                        <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
+                            <blockquote class="layui-elem-quote layui-quote-nm"><div style="text-align: center;font-weight:700;color:#ff0000;height:418px;"><h2>欢迎加入QQ群：741930243</h2>
+                                <span style="font-size: 20px;">扫码添加开发者的微信</span><br/>
+                                <img src="__PUBLIC__/../wx.jpg" style="margin-top: 10px;width: 300px"/>
+                            </div></blockquote>
+                        </div>
+
+                        <div class="layui-col-xs8 layui-col-sm8 layui-col-md8">
+                            <blockquote class="layui-elem-quote layui-quote-nm">
+                                <div style="font-size: 18px;text-align: center;margin-bottom: 4px;color: #0000FF;font-weight: 800">更新日志</div>
+                                <iframe src="__PUBLIC__/../log.txt"
+                                        style="width:100%;height:380px;overflow-x:hidden;resize:none"></iframe>
+                            </blockquote>
+                        </div>
+
+                        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12" style="text-align: center">
+                            <a href="https://jq.qq.com/?_wv=1027&k=XRJStQ3p" target="_blank"><button type="button" class="layui-btn layui-btn-lg">点击加入【网络技术交流QQ群】</button></a>
+                            <a href="https://github.com/xiaoxing1617/cashier" target="_blank"><button type="button" class="layui-btn layui-btn-lg">GitHub项目地址</button></a>
+                        </div>
+                    </div>
 
                 </div>
             </div>
@@ -47,7 +70,7 @@
             , element = layui.element;
 
 
-        var indexa = layer.alert("开发者QQ：1450839008", {title: "强烈警告", icon: 5}, function () {
+        var indexa = layer.alert("开发者QQ：1450839008<br/>系统已免费开源至GitHub：https://github.com/xiaoxing1617/cashier", {title: "温馨提示", icon: 6}, function () {
             layer.close(indexa);
         })
 

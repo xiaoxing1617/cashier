@@ -1,0 +1,572 @@
+{include file='default/head' /}
+<link rel="stylesheet" href="__PUBLIC__/Xadmin/lib/layui/css/layui.css" media="all">
+<link href="__PUBLIC__/Xadmin/lib/layui/css/modules/layer/default/layer.css" rel="stylesheet">
+<link href="__PUBLIC__/Xadmin/lib/layui/css/modules/laydate/default/laydate.css" rel="stylesheet">
+<style>
+    a.zfjk{
+        font-width: 900;
+        color: var(--custom-bg-color);
+    }
+</style>
+<script>
+    let form_type = [];
+</script>
+<!-- Page content -->
+<div class="page-content">
+    <!-- Page title -->
+    <div class="page-title">
+        <div class="row justify-content-between align-items-center">
+            <div class="col-md-6 mb-3 mb-md-0">
+                <h5 class="h3 font-weight-400 mb-0 text-white">{$title}</h5>
+            </div>
+        </div>
+    </div>
+    <!-- 主体 -->
+    <div class="row">
+        <div class="col-xl-12 col-md-12 col-lg-12">
+            <!--主体头部-->
+            <div class="row">
+
+                <div class="col-xl-8 col-md-8 col-lg-8">
+                    <div class="card">
+                        {if(empty($pay_types))}
+                        <div class="card-body">
+                            <div style="text-align: center;height: 350px;line-height: 350px;font-size: 19px">暂无可用的支付方式，请先完善<a href="/user/pay_inter" class="zfjk">支付接口</a>的配置</div>
+                        </div>
+                        {else}
+                        <div class="card-body">
+                            <label class="form-control-label">收款金额</label>
+                            <div class="input-group mb-2">
+                                <input type="text" class="form-control" id="money" placeholder="设置指定的收款金额">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">元</span>
+                                </div>
+                            </div>
+                            <label class="form-control-label">截止日期</label>
+                            <div class="input-group mb-2">
+                                <input type="text" class="form-control" id="end_time" placeholder="选择一个固额码的过期时间">
+                            </div>
+                            <label class="form-control-label">提示信息</label>
+                            <div class="input-group mb-2">
+                                <input type="text" class="form-control" id="tips" placeholder="设置固额码的收款提示信息（可留空，最多24个字）">
+                            </div>
+                            <label class="form-control-label">支付方式（点亮选中）</label>
+                            <div class="input-group mb-2">
+                                {foreach name="pay_types" item="v" key="key"}
+                                <script>form_type.push('{$key}')</script>
+                                <button type="button" class="btn btn-xs btn-primary btn-icon rounded-pil" data-type="{$key}" data-choose="1" id="type-{$key}" onclick="change_type(this)" data-name="{$v}">√ {$v}</button>
+                                {/foreach}
+                            </div>
+                            <br>
+                            <br>
+                            <button type="button" class="btn btn-sm btn-success rounded-pill" id="add_submit">创建固额码
+                            </button>
+                        </div>
+                        {/if}
+                    </div>
+                </div>
+
+                <div class="col-xl-4 col-md-4 col-lg-4">
+                    <div class="card card-fluid">
+                        <div class="card-body">
+                            <p>1.什么固额码？- 就是一个可以指定支付金额的收款码</p><br/>
+                            <p>2.固额码有什么用？- 当需要收取指定金额时可使用</p><br/>
+                            <p>3.什么是收款提示信息？- 用于付款人支付时的提示，填写一些注意事项等信息。可留空，最多24个字</p><br/>
+                            <p>4.什么是截止日期？- 用于指定固额码的过期时间，当超过该时间用户将无法扫码付款，不能少于2分钟</p><br/>
+                            <p>5.什么是支付方式？- 是根据您已配置并开启的支付方式中提供个可选项，用户只能选择当前勾选的支付方式来完成付款</p><br/>
+                            <p>6.注意事项- 创建后无法修改！固额码删除后不会影响通过该码支付的订单</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!--主体内容-->
+        <div class="col-xl-12 col-md-12 col-lg-12">
+
+            <div class="card card-fluid">
+                <div class="card-header">
+                    <h6 class="mb-0">创建记录</h6>
+                </div>
+                <div class="card-body">
+                    <button type="button" class="btn btn-xs btn-primary btn-icon rounded-pil list-but" id="list-but-all" onclick="list('all',1)">全部（<span id="all_count">?</span>）</button>
+                    <button type="button" class="btn btn-xs btn-primary btn-icon rounded-pil list-but" id="list-but-wei_end_time" onclick="list('wei_end_time',1)">仅看未过期的（<span id="wei_count">?</span>）</button>
+                    <button type="button" class="btn btn-xs btn-primary btn-icon rounded-pil list-but" id="list-but-yi_end_time" onclick="list('yi_end_time',1)">仅看已过期的（<span id="yi_count">?</span>）</button>
+                    <br/>
+                    <hr/>
+                    <style>
+                        .box-item{
+                            width: 100%;
+                            border: var(--custom-bg-color) solid 2px;
+                            margin-bottom:15px;
+                            border-radius: 7px;
+                            min-width: 600px;
+                            overflow: hidden;
+                            padding: 0;
+                        }
+                        .box-item .head{
+                            width: 100%;
+                            position: relative;
+                            font-size: 15px;
+                            padding: 0;
+                        }
+                        .box-item .head .left{
+                            border-radius: 0 0 7px 0;
+                            background: var(--custom-bg-color);
+                            display: inline-block;
+                            padding: 2.5px 7px;
+                            padding-right: 9px;
+                            padding-bottom: 3px;
+                            color: var(--custom-t-color);
+                            overflow: hidden;
+                            position: absolute;
+                            top:0;
+                            left: 0;
+                        }
+                        .box-item .head .right{
+                            border-radius: 0 0 0 7px;
+                            background: var(--custom-bg-color);
+                            display: inline-block;
+                            padding: 2.5px 7px;
+                            padding-left: 8px;
+                            padding-bottom: 3px;
+                            color:  var(--custom-t-color);
+                            overflow: hidden;
+                            position: absolute;
+                            top:0;
+                            right: 0;
+                        }
+                        .box-item .con{
+                            padding: 1px 15px;
+                            padding-bottom:0px;
+                            position: relative;
+                            display: flex;
+                            flex-direction:column;
+                            top:29px;
+                            margin-bottom: 45px;
+                        }
+                        .box-item .bottom{
+                            width: 100%;
+                            background: #f1f1f1;
+                            position: relative;
+                            bottom: 0;
+                            left: 0;
+                            display: flex;
+                            padding: 4px 7px;
+                            font-size: 14px;
+                            justify-content: space-between;
+                        }
+                        .box-item .con .type {
+                            width: 100%;
+                            text-align: center;
+                            padding-top: 6px;
+                            padding-bottom: 8px;
+                            border-bottom: 1px solid #eee;
+                        }
+                        .box-item .bottom .left{
+                            /*min-width: 580px;*/
+                            max-width: 95%;
+                            height: 100%;
+                            overflow:hidden;           /* 内容超出宽度时隐藏超出部分的内容 */
+                            text-overflow:ellipsis;    /*溢出时显示省略标记...；需与overflow:hidden;一起使用*/
+                            word-break:keep-all;
+                            white-space:nowrap;
+                            scrollbar-width: none; /* Firefox */
+                            -ms-overflow-style: none; /* IE 10+ */
+                        }
+                        .box-item .bottom .left .amount {
+                            color: var(--custom-bg-color);
+                            font-weight: 800;
+                        }
+                        .box-item .bottom .left::-webkit-scrollbar,.box-item .con .list::-webkit-scrollbar {
+                            display: none; /* Chrome Safari */}
+                        }
+                        .box-item .bottom .right{
+                            border-left: 2px #fff solid;
+                            line-height: 15px;
+                            text-align:right;
+                        }
+                        .box-item .con .list{
+                            font-size: 15px;
+                            overflow: scroll;
+                            max-height: 150px;
+                            scrollbar-width: none; /* Firefox */
+                            -ms-overflow-style: none; /* IE 10+ */
+                        }
+                        .empty-tips{
+                            width: 100%;
+                            text-align: center;
+                            color: #aaa;
+                            padding: 10px 0;
+                        }
+                    </style>
+                    <div class="empty-tips" id="load-title"></div>
+                    <div class="table-responsive" id="table" style="display: none">
+
+                    </div>
+                    <hr/>
+                    <div class="table-responsive">
+                        <div class="btn-toolbar" id="table-pages"></div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+{include file='default/bottom' /}
+
+<script>
+    var laydate;
+    layui.use(['laydate'], function() {
+        laydate = layui.laydate;  //日期
+    });
+    laydate.render({
+        elem: '#end_time'
+        ,type: 'datetime'
+        ,value:"{:date('Y-m-d H:i:s',time()+300)}"
+    });
+    function change_type(e){
+        const type = e.dataset.type;
+        const choose = e.dataset.choose;
+        const name = e.dataset.name;
+        if(choose === "0"){
+            form_type.push(type);
+            $("#type-"+type).attr("data-choose","1");
+            $("#type-"+type).html("√ "+name);
+            $("#type-"+type).attr("class", "btn btn-xs btn-primary btn-icon rounded-pil");
+        }else{
+            form_type = form_type.filter((x) => x !== type);
+            $("#type-"+type).attr("data-choose","0");
+            $("#type-"+type).html("× "+name);
+            $("#type-"+type).attr("class", "btn btn-xs btn-soft-primary btn-icon rounded-pil");
+        }
+        console.log(form_type);
+    }
+
+
+    $("#add_submit").click(function () {
+        var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+        $.ajax({
+            type: "POST",
+            url: "/user/fixed_amount/add",
+            data: {
+                money:$("#money").val(),
+                tips:$("#tips").val(),
+                end_time:$("#end_time").val(),
+                type:form_type,
+            },
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                if (data.code == 0) {
+                    layer.close(Load); //关闭加载
+                    $("#money").val("");
+                    $("#tips").val("");
+                    $("#end_time").val(data.new_end_time)
+                    var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                        layer.close(indexa);
+                        query_code_fixed_amount(data.id,"创建成功");
+                        list();
+                    });
+                } else {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                    })
+                }
+            },
+            error: function () { //ERROR
+                layer.close(Load); //关闭加载
+                layer.msg('系统繁忙');
+                return false;
+            }
+        });
+    });
+    function query_code_fixed_amount(id,title){
+        layer.open({
+            type: 2,
+            scrollbar: false,
+            title: title,
+            shadeClose: true,
+            shade: 0.3,
+            shadeClose: false,
+            area: [layerWidth, '90%'],
+            content: '/api/query_code?mode=fixed_amount&template=bill_stereoscopic&id='+id
+        });
+    }
+
+    list();
+    /**
+     * 获取列表
+     */
+    var list_data = [];
+    var countDownInterval;
+    function list(mode="wei_end_time",page=1){
+        clearInterval(countDownInterval);
+        $(".list-but").attr("class", "btn btn-xs btn-soft-primary btn-icon rounded-pil list-but");
+        $("#list-but-"+mode).attr("class", "btn btn-xs btn-primary btn-icon rounded-pil list-but");
+        $("#load-title").html("正在加载");
+        $("#load-title").css("display", "block");
+        var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+        $.ajax({
+            type: "POST",
+            url: "/user/FixedAmount/getList",
+            data: {mode,page},
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                $("#load-title").css("display", "none");
+                if (data.code == 0) {
+                    layer.close(Load); //关闭加载
+                    list_data = data.list;
+                    $("#all_count").html(data.all_count);
+                    $("#wei_count").html(data.wei_count);
+                    $("#yi_count").html(data.yi_count);
+                    if(list_data.length<=0){
+                        $("#load-title").html("暂无数据");
+                        $("#load-title").css("display", "block");
+                        $("#table").css("display", "none");
+                        return;
+                    }
+                    //===渲染
+                    $("#table").css("display", "block");
+                    var html = "";
+                    for (let i = 0; i < list_data.length; i++) {
+                        var res = data.list[i];
+                        let pay_type_html = "";
+                        for(let j = 0; j < res.pay_type.length;j++){
+                            pay_type_html += `${j!=0?'|&nbsp;&nbsp;':''}<span style="color:${res.pay_type[j].color}"><img style="vertical-align:middle" src="__PUBLIC__/icon/${res.pay_type[j].icon}" width="16"/>&nbsp;${res.pay_type[j].name}（<span id="pay_type_${res.id}_${res.pay_type[j].type}">${res.pay_type[j].count}</span>次）</span>`
+                        }
+                        html += `
+
+                        <div class="box-item">
+                            <div class="head">
+                                <div class="left"><i class="fa fa-tag"></i>&nbsp;${res.id}&nbsp;&nbsp;<button type="button" class="btn btn-xs btn-success btn-icon but-see" style="padding: 0.3px 4px;" onclick="query_code_fixed_amount(${res.id},'查看')">查看</button>|&nbsp;&nbsp;<i class="fa fa-clock"></i>&nbsp;<span id="end_time_${i}" class="end_time" data-date="${res.end_time}">?</span></div>
+                                <div class="right"><i class="fa fa-calendar"></i>&nbsp;&nbsp;${res.end_time}</div>
+                            </div>
+                            <div class="con">
+                                <div class="type">${pay_type_html}</div>
+                                <div class="list" id="list_${res.id}">
+                                    <div class="empty-tips">已收起订单列表，<a href="javascript:getOrderList(${res.id});">点击获取</a></div>
+                                </div>
+                            </div>
+                            <div class="bottom">
+                                <div class="left"><span class="amount">￥${res.money/100}元</span>&nbsp;|&nbsp;收款提示：${res.tips?res.tips:'[无]'}</div>
+                                <div class="right">
+                                    <button type="button" class="btn btn-xs btn-danger btn-icon" style="padding: 0.5px 4px;" onclick="del(${res.id})"><i class="fa fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        `;
+
+                    }
+                    $("#table").html(html);
+                    countDown();
+                    countDownInterval = setInterval(countDown, 1000);
+
+                    //===分页
+                    var ye = "";
+
+                    if (data.total_page > 0) {
+                        if (data.page > 1) {
+                            ye += '<div class="btn-group mr-2"><button class="btn-group btn btn-warning btn-xs" onclick="list(\'' + mode + '\',1)">第一页</button></div>';
+                        }
+                        ye += '<div class="btn-group mr-2">';
+                        for (var i = 0; i < data.total_page; i++) {
+                            var j = i + 1;
+                            if (data.page == j) {
+                                ye += '<button class="btn-group btn btn-primary btn-xs" disabled>' + j + '</button>';
+                            } else {
+                                ye += '<button class="btn-group btn btn-primary btn-xs"  onclick="list(\'' + mode + '\',' + j + ')">' + j + '</button>';
+                            }
+                        }
+                        ye += '</div>';
+                        if (data.page < data.total_page) {
+                            ye += '<div class="btn-group mr-2"><button class="btn-group btn btn-warning btn-xs" onclick="list(\'' + mode + '\',' + data.total_page + ')">尾页</button></div>';
+                        }
+                    }
+                    $("#table-pages").html(ye);
+                } else {
+                    layer.close(Load); //关闭加载
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                        if (data.url != "" && data.url != null) {
+                            window.location.href = data.url;
+                        }
+                    })
+                }
+            },
+            error: function () { //ERROR
+                layer.close(Load); //关闭加载
+                layer.msg('系统繁忙');
+                return false;
+            }
+        });
+    }
+    function countDown() {
+        const obj = $(".end_time");
+        for (let i = 0; i < list_data.length; i++){
+            const setTime = +new Date($(obj[i]).attr("data-date"));
+
+            var date = 0;
+            var now = +new Date();
+            var times = (setTime - now) / 1000;
+            var d = parseInt(times / 60 / 60 / 24); //天
+            date = d<=0?"":(d < 10 ? '0' + d : d)+"天";
+
+            var h = parseInt(times / 60 / 60 % 24); //时
+            date += h<=0?"":(h < 10 ? '0' + h : h)+"小时";
+
+            var m = parseInt(times / 60 % 60); //分
+            date += m<=0?"":(m < 10 ? '0' + m : m)+"分钟";
+
+            var s = parseInt(times % 60); //秒
+            date += s<=0?"":(s < 10 ? '0' + s : s)+"秒";
+
+            $(obj[i]).html( (date<=0?"已过期":date) );
+        }
+    }
+
+    /**
+     * 获取订单列表
+     */
+    function getOrderList(id){
+        var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+        $("#list_"+id).html(`
+         <div class="empty-tips">正在刷新中...</div>
+        `);
+        $.ajax({
+            type: "POST",
+            url: "/user/FixedAmount/getList",
+            data: {
+                "mode":"fixed_amount_id",
+                "value":id,
+                "num":12,
+                type:"all",
+                state:"all",
+                source:"fixed_amount",
+                page:1,
+            },
+            dataType: "json",
+            success: function (json) { //SUCCESS
+                var data = $.parseJSON(json);
+                layer.close(Load); //关闭加载
+                if (data.code == 0) {
+                    if(data.total_page>1){
+                        var html = `<div class="empty-tips">已展示最新的12条订单，更多记录请前往<a href="/user/bill">我的账单</a>查看，<a href="javascript:getOrderList(${id});">刷新</a></div>`;
+                    }else{
+                        var html = `<div class="empty-tips"><a href="javascript:getOrderList(${id});">刷新</a></div>`;
+                    }
+                    html += `
+                    <div class="table-responsive">
+                                        <table class="table align-items-center">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">支付场景/支付方式</th>
+                                                <th scope="col">系统订单号</th>
+                                                <th scope="col">支付金额</th>
+                                                <th scope="col">订单状态</th>
+                                                <th scope="col">订单创建时间/订单支付时间</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                    `;
+                    for (let i = 0; i < data.list.length; i++) {
+                        var res = data.list[i];
+                        html += `
+                        <tr>
+                                                <td style="font-weight: bolder;text-align: center;color: ${res.type_color}">
+                                                    【${res.trade_type}】
+                                                    <br>
+                                                    <img style="vertical-align:middle" src="/static/icon/${res.type_icon}" width="17"> ${res.type}
+                                                </td>
+
+                                                <td>${res.out_trade_no}</td>
+
+                                                <td style="text-align: center"><b>￥${res.money}</b></td>
+
+                                                <td><span style="color:${res.state == "2" ? '#f00' : '#00f'}"><b>${res.state_name}</b></span></td>
+
+                                                <td>${res.creation_time}<br>${res.payment_time}</td>
+                        </tr>
+                    `;
+                    }
+                    html += `
+
+                                            </tbody>
+                                        </table>
+                                    </div>`;
+                    $("#list_"+id).html(html);
+                    for (let k in data.pay_type_count) {
+                        $("#pay_type_"+id+"_"+k).html(data.pay_type_count[k]);
+                    }
+                }else{
+                    $("#list_"+id).html(`
+                          <div class="empty-tips">获取出错，<a href="javascript:getOrderList(${id});">刷新</a></div>
+                    `)
+                    var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                        layer.close(indexa);
+                        if (data.url != "" && data.url != null) {
+                            window.location.href = data.url;
+                        }
+                    })
+                }
+            },
+            error: function () { //ERROR
+                layer.close(Load); //关闭加载
+                layer.msg('系统繁忙');
+                return false;
+            }
+        });
+    }
+
+    /**
+     * 删除
+     */
+    function del(id){
+        var index1 = layer.confirm('确认要删除该固额码吗？<br/><span style="color: #f00">1.删除后将无法恢复，无法再次查看！！！<br/>2.删除后并不会删除通过该固额码发起的订单记录。<br/></span>', {
+            btn: ['确认删除', '算了'] //按钮
+        }, function () {
+            layer.close(index1);
+            var Load = layer.load(2, {shade: [0.3, '#000']}); //开始加载
+            $.ajax({
+                type: "POST",
+                url: "/user/FixedAmount/del",
+                data: {id},
+                dataType: "json",
+                success: function (json) { //SUCCESS
+                    var data = $.parseJSON(json);
+                    if (data.code == 0) {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.msg(data.msg, {time: 1000, icon: 6}, function () {
+                            layer.close(indexa);
+                            list();
+                        });
+                    } else {
+                        layer.close(Load); //关闭加载
+                        var indexa = layer.alert(data.msg, {title: data.title, icon: 5}, function () {
+                            layer.close(indexa);
+                            if (data.url != "" && data.url != null) {
+                                window.location.href = data.url;
+                            }
+                        })
+                    }
+                },
+                error: function () { //ERROR
+                    layer.close(Load); //关闭加载
+                    layer.msg('系统繁忙');
+                    return false;
+                }
+            });
+        });
+    }
+</script>
+</body>
+</html>

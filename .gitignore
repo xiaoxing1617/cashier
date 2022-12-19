@@ -1,3 +1,7 @@
 .idea
 composer.lock
 *.log
+application/install/install.lock
+application/config.php
+application/database.php
+runtime/

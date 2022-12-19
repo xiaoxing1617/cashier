@@ -86,7 +86,7 @@ function checkUpdate(){
             if(!DB::query("SHOW TABLES LIKE 'xy_cashier_fixed_amount'")){
                 return true;
             }
-            if(!$core['user_theme_data'] || !$core['page_grey']){
+            if(!isset($core['user_theme_data']) || !isset($core['page_grey'])){
                 return true;
             }
             break;

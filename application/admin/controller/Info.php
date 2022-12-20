@@ -95,7 +95,7 @@ class Info extends Controller
             ['system_uid', 'require|number', '续费收款商户UID不能为空|请正确填写续费收款商户UID'],
             ['free_collection_service_days', 'require|integer', '请填写注册赠送天数|注册赠送天数只能是整数'],
             ['demo_open', 'number|between:0,1', '请正确选择演示开关|非法的演示开关'],
-            ['page_grey','require|array',"请传入网站置灰项|网站置灰项为非法值"]
+            ['page_grey','array',"网站置灰项为非法值"]
         ]);
         if (!$validate->check($postArray)) {
             return json_encode(['code' => 1, 'msg' => $validate->getError()]);

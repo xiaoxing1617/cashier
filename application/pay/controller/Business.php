@@ -85,6 +85,31 @@ class Business extends Controller
                 }
             }
             //===服务订单
+            /**======发送邮箱=====*/
+            /**
+             * todo 【不上线】避免造成订单堵塞
+            $user = User::getByUid($order['uid']);
+            if($user && !empty($user['email'])){
+                $core = Core::where('id', '<>', 0)->column('value1', 'name');  //获取系统配置
+                $client_arr = getPayList($order['type'], 'alias');//支付方式信息
+                $type_name = empty($client_arr['name'])?'':$client_arr['name'];
+                $title = "【". $type_name . "收款到账】".$order['money']."元（".$core['title']."）";
+
+                $html = "————".$core['title']."————<br/>";
+                $html .= "系统订单号：{$order->out_trade_no}<br/>";
+                $html .= "订单来源：{$order->getSourceName()}<br/>";
+                $html .= "支付场景：{$order->getTradeTypeName()}<br/>";
+                $html .= "商户UID：{$order['uid']}<br/>";
+                $html .= "支付方式：{$type_name}<br/>";
+                $html .= "支付金额：{$order['money']}元<br/>";
+                $html .= "支付时间：{$order['payment_time']}<br/>";
+                $html .= "订单备注：{$order['remarks']}<br/>";
+                $html .= "————[系统收款提示邮件]————<br/>";
+
+                send_mail(trim($user['email']), trim($title), $html);
+            }
+            */
+            /**======发送邮箱=====*/
             return true;
         } else {
             return false;

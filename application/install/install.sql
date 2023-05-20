@@ -100,6 +100,7 @@ CREATE TABLE `xy_cashier_order` (
   `buyer` varchar(255) DEFAULT NULL COMMENT '买家标识',
   `source` varchar(255) DEFAULT NULL COMMENT '订单来源类型',
   `state` int(11) NOT NULL DEFAULT '0' COMMENT '支付状态',
+  `faid` int(11) DEFAULT '0' COMMENT '固额码ID',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单表';</explode>
 

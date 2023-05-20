@@ -203,7 +203,7 @@ class FixedAmount extends Controller
                     $arr['color'] = "#6e00ff";
                     $arr['count'] = 0;
                 }
-                $pay_type[] = $arr;
+                $pay_type = $arr;
             }
             $list[$k]['pay_type'] = $pay_type;
         }

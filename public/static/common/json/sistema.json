@@ -1,6 +1,7 @@
 {
-  "VERSION":"1.46",
-  "BUILD": 1019,
+  "VERSION":"1.47",
+  "BUILD": 1020,
   "ADMIN_BOTTOM": "Copyright © 2023 <a href='http://www.96xy.cn/' target='_blank'>星益云</a> 版权所有",
-  "AUTORE": "小星"
+  "AUTORE": "小星",
+  "IS_UNLINK":true
 }

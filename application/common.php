@@ -37,6 +37,7 @@ use rsa\Rsa;
 //================================================
 error_reporting(E_ERROR | E_PARSE);  // 异常抛出报错级别
 $sistemaInfo = getSistemaInfo();
+define('IS_UNLINK', $sistemaInfo['IS_UNLINK']);
 define('SYSTEM_ROOT', dirname(__FILE__) . '/');
 define('ROOT', dirname(SYSTEM_ROOT) . '/');
 define('PAY_PATH', EXTEND_PATH . "pay/");
@@ -67,9 +68,20 @@ if (!is_file(APP_PATH . 'install/install.lock') && Request::instance()->baseUrl(
 //===================检查更新=======================
 //================================================
 if(Request::instance()->baseUrl() != "/update" && Request::instance()->baseUrl() != "/install"){
-    if (checkUpdate()) {
-        weuiMsg('warn-primary', '系统检查到您的 v'.VERSION.'('.BUILD.') 未更新完成，请完成更新后使用！<br/><br/><br/><a href="/update" class="weui-btn weui-btn_default">去更新</a>', '版本更新', false);
-        exit();
+    if (is_dir(ROOT."application/install/update_sql/")) {
+        $files = scandir(ROOT."application/install/update_sql/");
+        if (count($files) !== 2) {
+            //文件夹不为空
+            foreach ($files as $i=>$filename){
+                if ($filename != "." && $filename != "..") {
+                    $build = pathinfo($filename, PATHINFO_FILENAME);
+                    if (checkUpdate($build)) {
+                        weuiMsg('warn-primary', '系统检查到您当前的版本有需要同步数据库，当前版本v'.VERSION.'('.BUILD.')。请先完成同步后即可正常使用！<br/><br/><br/><a href="/update?build='.$build.'" class="weui-btn weui-btn_default">去更新</a>', '版本更新', false);
+                        exit();
+                    }
+                }
+            }
+        }
     }
 }
 extension_loaded('openssl') or die(weuiMsg('warn-primary', '', '需要支持openssl扩展', false));
@@ -79,21 +91,38 @@ extension_loaded('openssl') or die(weuiMsg('warn-primary', '', '需要支持open
 /**
  * 检查更新
  */
-function checkUpdate(){
-    $core = Core::where('id', '<>', 0)->column('value1', 'name');
-    switch (BUILD){
+function checkUpdate($build=0){
+    $is = false;
+    switch ($build){
         case 1019:
+            $core = Core::where('id', '<>', 0)->column('value1', 'name');
             if(!DB::query("SHOW TABLES LIKE 'xy_cashier_fixed_amount'")){
-                return true;
+                $is = true;
             }
             if(!isset($core['user_theme_data']) || !isset($core['page_grey'])){
-                return true;
+                $is = true;
+            }
+            break;
+        case 1020:
+            if(!DB::query("SHOW COLUMNS FROM `xy_cashier_order` LIKE 'faid' ")){
+                $is = true;
             }
             break;
         default:
-            return false;
+            $build = 0;
+            $is = false;
     }
-    return false;
+    //不需要同步数据库 && 版本序号不是0 && 删除
+    if(!$is && $build!=0 && IS_UNLINK){
+        $path = ROOT."application/install/update_sql/".$build.".sql";
+        if(file_exists($path)){
+            //文件存在
+            if(!unlink(ROOT."application/install/update_sql/".$build.".sql")){
+                weuiMsg('warn-primary', '', '同步数据库的临时文件删除失败，请检查系统是否有删除文件权限', false);
+            }
+        }
+    }
+    return $is;
 }
 /**
  * 获取当前域名（不带协议头）

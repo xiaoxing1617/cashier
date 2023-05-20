@@ -444,7 +444,7 @@
         `);
         $.ajax({
             type: "POST",
-            url: "/user/FixedAmount/getList",
+            url: "/user/bill/getBill",
             data: {
                 "mode":"fixed_amount_id",
                 "value":id,
@@ -482,10 +482,10 @@
                         var res = data.list[i];
                         html += `
                         <tr>
-                                                <td style="font-weight: bolder;text-align: center;color: ${res.type_color}">
+                                                <td style="font-weight: bolder;text-align: center;color: ${res.pay_type.color}">
                                                     【${res.trade_type}】
                                                     <br>
-                                                    <img style="vertical-align:middle" src="/static/icon/${res.type_icon}" width="17"> ${res.type}
+                                                    <img style="vertical-align:middle" src="/static/icon/${res.pay_type.icon}" width="17"> ${res.pay_type.name}
                                                 </td>
 
                                                 <td>${res.out_trade_no}</td>

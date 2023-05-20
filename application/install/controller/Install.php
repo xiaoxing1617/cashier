@@ -274,9 +274,9 @@ class Install extends Controller
      */
     public function update(Request $request)
     {
-        $get = $request->get();
+        $build = intval($request->get('build',0));
         //================页面载入================
-        if (!checkUpdate()) {
+        if (!checkUpdate($build)) {
             weuiMsg('info', '已是最新版本v'.VERSION.'('.BUILD.')','无更新',true,["url"=>"https://github.com/xiaoxing1617/cashier","title"=>"GitHub开源地址"]);
             exit();
         }
@@ -289,9 +289,9 @@ class Install extends Controller
         ];
         //---------------------------
         $msg = "";
-        $path = APP_PATH . "install/update_sql/".BUILD.".sql";
+        $path = APP_PATH . "install/update_sql/".$build.".sql";
         if(!file_exists($path)){
-            weuiMsg('warn-primary',  "更新数据包不存在或已被删除，请自行前往github下载<b> ".BUILD.".sql </b>。并将文件放置在源码<b> /application/install/update_sql </b>文件夹里，重新刷新此页面即可！",'更新失败',true,["url"=>"https://github.com/xiaoxing1617/cashier/tree/master/application/install/update_sql","title"=>"GitHub数据包"]);
+            weuiMsg('warn-primary',  "更新数据包不存在或已被删除，请自行前往github下载<b> ".$build.".sql </b>。并将文件放置在源码<b> /application/install/update_sql </b>文件夹里，重新刷新此页面即可！",'更新失败',true,["url"=>"https://github.com/xiaoxing1617/cashier/tree/master/application/install/update_sql","title"=>"GitHub数据包"]);
             exit();
         }
         //---------------------------
